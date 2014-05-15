@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+<crawler>
+
+	<controller contextpath="/ctl" port="9090" charset="UTF-8" />
+	<manager contextpath="/manager" port="8080" basedir="./manager/webapp"
+		charset="UTF-8" />
+
+<!-- <logger config="./env/localhost/config/log4j.xml" /> -->
+	<logger config="./env/development/config/log4j.xml" />
+
+	<threads>
+		<thread title="ダウンロードタスク" description="ダウンロード実施タスク" startup="true"
+			thread="1">
+			<task classname="org.azkfw.crawler.task.DownloaderCrawlerTask">
+				<parameter key="url" value="http://yahoo.co.jp" />
+				<parameter key="file" value="c:\temp\aaa.html" />
+			</task>
+			<schedule classname="org.azkfw.crawler.schedule.DatetimeSchedule">
+				<parameter key="pattern" value="*/10 * * * *" /> <!-- 10分毎 -->
+			</schedule>
+		</thread>
+
+		<thread title="HTML解析タスク" description="" startup="true">
+			<task classname="org.azkfw.crawler.task.ParserCrawlerTask">
+				<parameter key="file" value="C:\temp\aaa.html" />
+			</task>
+			<schedule classname="org.azkfw.crawler.schedule.DatetimeSchedule">
+				<parameter key="pattern" value="*/10 * * * *" /> <!-- 10分毎 -->
+			</schedule>
+		</thread>
+
+
+		<thread title="Title1" description="">
+			<task classname="org.azkfw.crawler.task.TestCrawlerTask">
+				<parameter key="count" value="10" />
+			</task>
+			<schedule classname="org.azkfw.crawler.schedule.CountSchedule">
+				<parameter key="count" value="1" />
+			</schedule>
+		</thread>
+		<thread title="Title2" description="b">
+			<task classname="org.azkfw.crawler.task.TestCrawlerTask" />
+			<schedule classname="org.azkfw.crawler.schedule.CountSchedule">
+				<parameter key="count" value="10" />
+			</schedule>
+		</thread>
+		<thread title="Title3" description="">
+			<task classname="org.azkfw.crawler.task.TestCrawlerTask" />
+			<schedule classname="org.azkfw.crawler.schedule.TimerSchedule">
+				<parameter key="interval" value="300000" /> <!-- 5分間隔 -->
+			</schedule>
+		</thread>
+		<thread title="Title4" description="" startup="false">
+			<task classname="org.azkfw.crawler.task.TestCrawlerTask" />
+			<schedule classname="org.azkfw.crawler.schedule.DatetimeSchedule">
+				<parameter key="pattern" value="* * * * *" /> <!-- 毎分 -->
+			</schedule>
+		</thread>
+		<thread title="Title5" description="" startup="false">
+			<task classname="org.azkfw.crawler.task.TestCrawlerTask" />
+			<schedule classname="org.azkfw.crawler.schedule.DatetimeSchedule">
+				<parameter key="pattern" value="*/10 * * * *" /> <!-- 10分間隔 -->
+			</schedule>
+		</thread>
+	</threads>
+
+</crawler>
