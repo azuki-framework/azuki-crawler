@@ -22,7 +22,8 @@
 	<packaging>jar</packaging>
 
 	<name>azuki-crawler</name>
-	<url>http://azkfw.org</url>
+	<description>Azuki Framework crawler library</description>
+	<url>https://github.com/azuki-framework/azuki-crawler</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
