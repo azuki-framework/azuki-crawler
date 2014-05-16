@@ -34,7 +34,14 @@ import org.azkfw.crawler.performance.Performance;
  */
 public abstract class AbstractCrawlerTask extends LoggerObject implements CrawlerTask, ParameterSupport {
 
+	/**
+	 * パラメータ
+	 */
 	private Map<String, Object> parameters;
+
+	/**
+	 * 停止要求フラグ
+	 */
 	private boolean requestStopFlag;
 
 	/**

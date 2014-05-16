@@ -29,6 +29,25 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<distributionManagement>
+		<repository>
+			<id>azkfw.jp</id>
+			<name>Azuki Framework Temporary Repository</name>
+			<url>file://${project.build.directory}//maven-repository</url>
+		</repository>
+	</distributionManagement>
+	
+	<repositories>
+		<repository>
+			<id>AzukiFrameworkRepository</id>
+			<url>https://raw.github.com/azuki-framework/maven-repository/master/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
+	
 	<dependencies>
 		<dependency>
 			<groupId>log4j</groupId>

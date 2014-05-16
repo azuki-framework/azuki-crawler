@@ -22,7 +22,23 @@
 	<logger config="./env/development/config/log4j.xml" />
 
 	<threads>
-		<thread title="ダウンロードタスク" description="ダウンロード実施タスク" startup="true"
+		<thread title="コマンドタスク" description="コマンド実行タスク" startup="true"
+			thread="1">
+			<task classname="org.azkfw.crawler.task.ApplicationCrawlerTask">
+				<parameter key="application" value="C:\temp\test.bat" />
+				<parameter key="currentDir" value="C:\temp\log" />
+				<parameter key="parameter1" value="aaa" />
+				<parameter key="parameter2" value="bbb" />
+				<parameter key="parameter3" value="ccc" />
+				<parameter key="parameter4" value="" />
+				<parameter key="parameter5" value="ddd" />
+			</task>
+			<schedule classname="org.azkfw.crawler.schedule.CountSchedule">
+				<parameter key="count" value="1" />
+			</schedule>
+		</thread>
+		
+		<thread title="ダウンロードタスク" description="ダウンロード実施タスク" startup="false"
 			thread="1">
 			<task classname="org.azkfw.crawler.task.DownloaderCrawlerTask">
 				<parameter key="url" value="http://yahoo.co.jp" />
@@ -33,7 +49,7 @@
 			</schedule>
 		</thread>
 
-		<thread title="HTML解析タスク" description="" startup="true">
+		<thread title="HTML解析タスク" description="" startup="false">
 			<task classname="org.azkfw.crawler.task.ParserCrawlerTask">
 				<parameter key="file" value="C:\temp\aaa.html" />
 			</task>

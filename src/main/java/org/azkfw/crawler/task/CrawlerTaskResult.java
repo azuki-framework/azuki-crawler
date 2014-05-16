@@ -39,6 +39,7 @@ public class CrawlerTaskResult {
 
 	/**
 	 * 結果を設定する。
+	 * 
 	 * @param aResult 結果
 	 */
 	public void setResult(final boolean aResult) {
@@ -47,6 +48,7 @@ public class CrawlerTaskResult {
 
 	/**
 	 * 結果を判断する。
+	 * 
 	 * @return 判断
 	 */
 	public boolean isResult() {
@@ -54,13 +56,19 @@ public class CrawlerTaskResult {
 	}
 
 	/**
+	 * 停止を設定する。
 	 * 
-	 * @param aStop
+	 * @param aStop 停止
 	 */
 	public void setStop(final boolean aStop) {
 		stopFlag = aStop;
 	}
 
+	/**
+	 * 停止を判断する。
+	 * 
+	 * @return 停止
+	 */
 	public boolean isStop() {
 		return stopFlag;
 	}

@@ -25,6 +25,15 @@ import org.azkfw.crawler.parser.engine.HtmlTextParseEngine;
 import org.azkfw.crawler.parser.engine.ParseEngine;
 
 /**
+ * このクラスは、解析を行うクローラタスククラスです。
+ * 
+ * <p>
+ * このクローラタスクのパラメータを下記に記す。
+ * <ul>
+ * <li>file - 解析対象ファイル</li>
+ * </ul>
+ * </p>
+ * 
  * @since 1.0.0
  * @version 1.0.0 2014/05/14
  * @author Kawakicchi

@@ -37,6 +37,16 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 
 /**
+ * このクラスは、ダウンロードを行うクローラタスククラスです。
+ * 
+ * <p>
+ * このクローラタスクのパラメータを下記に記す。
+ * <ul>
+ * <li>url - ダウンロード対象のURL</li>
+ * <li>file - ダウンロードファイルの保存先</li>
+ * </ul>
+ * </p>
+ * 
  * @since 1.0.0
  * @version 1.0.0 2014/05/14
  * @author Kawakicchi
