@@ -18,8 +18,7 @@
 	<manager contextpath="/manager" port="8080" basedir="./manager/webapp"
 		charset="UTF-8" />
 
-<!-- <logger config="./env/localhost/config/log4j.xml" /> -->
-	<logger config="./env/development/config/log4j.xml" />
+    <logger config="./env/localhost/conf/log4j.xml" />
 
 	<threads>
 		<thread title="コマンドタスク" description="コマンド実行タスク" startup="true"
