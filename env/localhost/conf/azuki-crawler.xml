@@ -15,7 +15,7 @@
 <crawler>
 
 	<controller contextpath="/ctl" port="9090" charset="UTF-8" />
-	<manager contextpath="/manager" port="8080" basedir="./manager/webapp"
+	<manager contextpath="/manager" port="8080" basedir="./env/base/webapps/manager"
 		charset="UTF-8" />
 
     <logger config="./env/localhost/conf/log4j.xml" />
