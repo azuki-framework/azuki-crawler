@@ -205,4 +205,20 @@ public abstract class AbstractCrawlerTask extends LoggerObject implements Crawle
 		}
 		return result;
 	}
+
+	protected final boolean getParameter(final String aKey, final boolean aDefault) {
+		boolean result = aDefault;
+		if (parameters.containsKey(aKey)) {
+			Object obj = parameters.get(aKey);
+			if (null != obj) {
+				if (obj instanceof Boolean) {
+					result = ((Boolean) obj).booleanValue();
+				} else {
+					result = Boolean.parseBoolean(obj.toString());
+				}
+			}
+		}
+		return result;
+	}
+
 }
