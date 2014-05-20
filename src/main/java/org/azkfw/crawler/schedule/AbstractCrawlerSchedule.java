@@ -17,8 +17,10 @@
  */
 package org.azkfw.crawler.schedule;
 
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.azkfw.crawler.lang.CrawlerSetupException;
 import org.azkfw.crawler.logger.LoggerObject;
@@ -100,6 +102,15 @@ public abstract class AbstractCrawlerSchedule extends LoggerObject implements Cr
 	@Override
 	public final void addParameters(final Map<String, Object> aMap) {
 		parameters.putAll(aMap);
+	}
+
+	@Override
+	public void addParameter(final Properties aProperties) {
+		for (Enumeration<?> e = aProperties.propertyNames(); e.hasMoreElements();) {
+			String key = (String) e.nextElement();
+			String value = aProperties.getProperty(key);
+			parameters.put(key, value);
+		}
 	}
 
 	protected final Object getParameter(final String aKey) {

@@ -17,8 +17,10 @@
  */
 package org.azkfw.crawler.task;
 
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.azkfw.crawler.lang.CrawlerSetupException;
 import org.azkfw.crawler.logger.LoggerObject;
@@ -136,6 +138,15 @@ public abstract class AbstractCrawlerTask extends LoggerObject implements Crawle
 	@Override
 	public final void addParameters(final Map<String, Object> aMap) {
 		parameters.putAll(aMap);
+	}
+
+	@Override
+	public void addParameter(final Properties aProperties) {
+		for (Enumeration<?> e = aProperties.propertyNames(); e.hasMoreElements();) {
+			String key = (String) e.nextElement();
+			String value = aProperties.getProperty(key);
+			parameters.put(key, value);
+		}
 	}
 
 	protected final Object getParameter(final String aKey) {

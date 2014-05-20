@@ -41,6 +41,7 @@ import org.azkfw.crawler.task.CrawlerTask;
 import org.azkfw.crawler.task.CrawlerTaskStateSupport;
 import org.azkfw.crawler.thread.CrawlerThread;
 import org.azkfw.crawler.thread.CrawlerThread.Status;
+import org.azkfw.persistence.context.Context;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -56,16 +57,18 @@ import com.sun.net.httpserver.HttpServer;
 public class CrawlerManagerServer extends LoggerObject implements HttpHandler {
 
 	private CrawlerServer server;
+	private Context context;
 	private CrawlerManagerConfig config;
 
 	private HttpServer httpServer;
 
 	private AccessControl accessControl;
 
-	public CrawlerManagerServer(final CrawlerServer aServer, final CrawlerManagerConfig aConfig) {
+	public CrawlerManagerServer(final CrawlerServer aServer, final Context aContext, final CrawlerManagerConfig aConfig) {
 		super(CrawlerManagerServer.class);
 
 		server = aServer;
+		context = aContext;
 		config = aConfig;
 
 		accessControl = new AccessControl();
@@ -303,7 +306,7 @@ public class CrawlerManagerServer extends LoggerObject implements HttpHandler {
 	}
 
 	private String getFilePath(final String aAreas) {
-		String path = config.getBasedir() + aAreas;
+		String path = context.getAbstractPath(config.getBasedir()) + aAreas;
 		return path;
 	}
 

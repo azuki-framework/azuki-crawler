@@ -20,9 +20,7 @@ package org.azkfw.crawler.config;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.ObjectCreateRule;
@@ -235,7 +233,7 @@ public class CrawlerConfig {
 		public CrawlerThreadConfig() {
 			thread = 1;
 		}
-		
+
 		public void setTitle(final String aTitle) {
 			title = aTitle;
 		}
@@ -259,12 +257,12 @@ public class CrawlerConfig {
 		public boolean isStartup() {
 			return startup;
 		}
-		
+
 		public void setThread(final int aThread) {
 			thread = aThread;
 		}
-		
-		public int getThread(){
+
+		public int getThread() {
 			return thread;
 		}
 
@@ -296,10 +294,10 @@ public class CrawlerConfig {
 
 		private String classname;
 
-		private Map<String, Object> parameters;
+		private List<CrawlerParameterConfig> parameters;
 
 		public CrawlerTaskConfig() {
-			parameters = new HashMap<String, Object>();
+			parameters = new ArrayList<CrawlerParameterConfig>();
 		}
 
 		public void setClassname(final String aClassname) {
@@ -311,10 +309,10 @@ public class CrawlerConfig {
 		}
 
 		public void addParameter(final CrawlerParameterConfig aParameter) {
-			parameters.put(aParameter.getKey(), aParameter.getValue());
+			parameters.add(aParameter);
 		}
 
-		public Map<String, Object> getParameters() {
+		public List<CrawlerParameterConfig> getParameters() {
 			return parameters;
 		}
 	}
@@ -330,10 +328,10 @@ public class CrawlerConfig {
 
 		private String classname;
 
-		private Map<String, Object> parameters;
+		private List<CrawlerParameterConfig> parameters;
 
 		public CrawlerScheduleConfig() {
-			parameters = new HashMap<String, Object>();
+			parameters = new ArrayList<CrawlerParameterConfig>();
 		}
 
 		public void setClassname(final String aClassname) {
@@ -345,10 +343,10 @@ public class CrawlerConfig {
 		}
 
 		public void addParameter(final CrawlerParameterConfig aParameter) {
-			parameters.put(aParameter.getKey(), aParameter.getValue());
+			parameters.add(aParameter);
 		}
 
-		public Map<String, Object> getParameters() {
+		public List<CrawlerParameterConfig> getParameters() {
 			return parameters;
 		}
 	}
@@ -363,6 +361,7 @@ public class CrawlerConfig {
 	public static class CrawlerParameterConfig {
 		private String key;
 		private String value;
+		private String file;
 
 		public void setKey(final String aKey) {
 			key = aKey;
@@ -378,6 +377,14 @@ public class CrawlerConfig {
 
 		public String getValue() {
 			return value;
+		}
+
+		public void setFile(final String aFile) {
+			file = aFile;
+		}
+
+		public String getFile() {
+			return file;
 		}
 	}
 

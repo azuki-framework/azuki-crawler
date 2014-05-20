@@ -15,10 +15,10 @@
 <crawler>
 
 	<controller contextpath="/ctl" port="9090" charset="UTF-8" />
-	<manager contextpath="/manager" port="8080" basedir="./env/base/webapps/manager"
+	<manager contextpath="/manager" port="8080" basedir="../base/webapps/manager"
 		charset="UTF-8" />
 
-    <logger config="./env/localhost/conf/log4j.xml" />
+    <logger config="conf/log4j.xml" />
 
 	<threads>
 		<thread title="コマンドタスク" description="コマンド実行タスク" startup="true"
@@ -88,6 +88,15 @@
 			<task classname="org.azkfw.crawler.task.TestCrawlerTask" />
 			<schedule classname="org.azkfw.crawler.schedule.DatetimeSchedule">
 				<parameter key="pattern" value="*/10 * * * *" /> <!-- 10分間隔 -->
+			</schedule>
+		</thread>
+
+		<thread title="Test" description="" startup="false">
+			<task classname="org.azkfw.crawler.task.TestCrawlerTask">
+				<parameter file="conf/TestTask.properties" />
+			</task>
+			<schedule classname="org.azkfw.crawler.schedule.CountSchedule">
+				<parameter key="count" value="1" />
 			</schedule>
 		</thread>
 	</threads>

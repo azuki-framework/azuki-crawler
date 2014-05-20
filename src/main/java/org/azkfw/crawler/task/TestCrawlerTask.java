@@ -61,6 +61,7 @@ public class TestCrawlerTask extends AbstractCrawlerTask implements CrawlerTaskS
 
 	@Override
 	protected CrawlerTaskResult doExecute() {
+		info("Environment : " + getParameter("environment", "none"));
 		try {
 			while (100.f > progress && !isRequestStop()) {
 				progress += 1.f;

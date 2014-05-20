@@ -35,6 +35,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.azkfw.crawler.config.CrawlerConfig.CrawlerControllerConfig;
 import org.azkfw.crawler.logger.LoggerObject;
+import org.azkfw.persistence.context.Context;
 
 /**
  * このクラスは、クローラを制御するためのコントロールクラスです。
@@ -51,13 +52,20 @@ class CrawlerController extends LoggerObject {
 	private CrawlerControllerConfig config;
 
 	/**
+	 * コンテキスト情報
+	 */
+	private Context context;
+
+	/**
 	 * コンストラクタ
 	 * 
+	 * @param aContext コンテキスト情報
 	 * @param aConfig 設定情報
 	 */
-	CrawlerController(final CrawlerControllerConfig aConfig) {
+	CrawlerController(final Context aContext, final CrawlerControllerConfig aConfig) {
 		super(CrawlerController.class);
 
+		context = aContext;
 		config = aConfig;
 	}
 

@@ -18,6 +18,7 @@
 package org.azkfw.crawler.thread;
 
 import org.azkfw.crawler.config.CrawlerConfig.CrawlerThreadConfig;
+import org.azkfw.persistence.context.Context;
 
 /**
  * このクラスは、標準の機能を備えたクローラスレッドクラスです。
@@ -28,8 +29,8 @@ import org.azkfw.crawler.config.CrawlerConfig.CrawlerThreadConfig;
  */
 public class BasicCrawlerThread extends AbstractCrawlerThread {
 
-	public BasicCrawlerThread(final CrawlerThreadConfig aConfig) {
-		super(aConfig);
+	public BasicCrawlerThread(final Context aContext, final CrawlerThreadConfig aConfig) {
+		super(aContext, aConfig);
 	}
 
 	@Override

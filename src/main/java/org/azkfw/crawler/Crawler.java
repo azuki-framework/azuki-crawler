@@ -19,6 +19,8 @@ package org.azkfw.crawler;
 
 import org.apache.log4j.xml.DOMConfigurator;
 import org.azkfw.crawler.config.CrawlerConfig;
+import org.azkfw.crawler.context.CrawlerContext;
+import org.azkfw.persistence.context.Context;
 
 /**
  * このクラスは、クローラを動作させるためのメインクラスです。
@@ -52,49 +54,83 @@ public final class Crawler {
 				doHelp();
 
 			} else if ("start".equals(cmd)) {
-				String configFile = "./config/crawler.xml";
-				if (2 <= args.length) {
-					configFile = args[1];
-				} else {
-					System.out.println("Read default crawler config.[./config/crawler.xml]");
+				String baseDir = "./";
+				String configFile = "conf/azuki-crawler.xml";
+				for (int i = 1; i < args.length; i += 2) {
+					String key = args[i];
+					if ("-baseDir".equals(key)) {
+						if (i + i < args.length) {
+							baseDir = args[i + 1];
+						}
+					} else if ("-configFile".equals(key)) {
+						if (i + i < args.length) {
+							configFile = args[i + 1];
+						}
+					}
 				}
 
-				CrawlerConfig config = CrawlerConfig.parse(configFile);
-				DOMConfigurator.configure(config.getLogger().getConfig());
+				Context context = new CrawlerContext(baseDir);
 
-				CrawlerServer server = new CrawlerServer(config);
+				CrawlerConfig config = CrawlerConfig.parse(context.getAbstractPath(configFile));
+				DOMConfigurator.configure(context.getAbstractPath(config.getLogger().getConfig()));
+
+				CrawlerServer server = null;
+				server = new CrawlerServer(context, config);
+
 				server.start();
 
 			} else if ("stop".equals(cmd)) {
-				String configFile = "./config/crawler.xml";
-				if (2 <= args.length) {
-					configFile = args[1];
-				} else {
-					System.out.println("Read default crawler config.[./config/crawler.xml]");
+				String baseDir = "./";
+				String configFile = "conf/azuki-crawler.xml";
+				for (int i = 1; i < args.length; i += 2) {
+					String key = args[i];
+					if ("-baseDir".equals(key)) {
+						if (i + i < args.length) {
+							baseDir = args[i + 1];
+						}
+					} else if ("-configFile".equals(key)) {
+						if (i + i < args.length) {
+							configFile = args[i + 1];
+						}
+					}
 				}
 
-				CrawlerConfig config = CrawlerConfig.parse(configFile);
-				DOMConfigurator.configure(config.getLogger().getConfig());
+				Context context = new CrawlerContext(baseDir);
 
-				CrawlerController controller = new CrawlerController(config.getController());
+				CrawlerConfig config = CrawlerConfig.parse(context.getAbstractPath(configFile));
+				DOMConfigurator.configure(context.getAbstractPath(config.getLogger().getConfig()));
+
+				CrawlerController controller = new CrawlerController(context, config.getController());
 				controller.stop();
 
 			} else if ("restart".equals(cmd)) {
-				String configFile = "./config/crawler.xml";
-				if (2 <= args.length) {
-					configFile = args[1];
-				} else {
-					System.out.println("Read default crawler config.[./config/crawler.xml]");
+				String baseDir = "./";
+				String configFile = "conf/azuki-crawler.xml";
+				for (int i = 1; i < args.length; i += 2) {
+					String key = args[i];
+					if ("-baseDir".equals(key)) {
+						if (i + i < args.length) {
+							baseDir = args[i + 1];
+						}
+					} else if ("-configFile".equals(key)) {
+						if (i + i < args.length) {
+							configFile = args[i + 1];
+						}
+					}
 				}
 
-				CrawlerConfig config = CrawlerConfig.parse(configFile);
-				DOMConfigurator.configure(config.getLogger().getConfig());
+				Context context = new CrawlerContext(baseDir);
 
-				CrawlerController controller = new CrawlerController(config.getController());
+				CrawlerConfig config = CrawlerConfig.parse(context.getAbstractPath(configFile));
+				DOMConfigurator.configure(context.getAbstractPath(config.getLogger().getConfig()));
+
+				CrawlerController controller = new CrawlerController(context, config.getController());
 				boolean result = controller.stop();
 
 				if (result) {
-					CrawlerServer server = new CrawlerServer(config);
+					CrawlerServer server = null;
+					server = new CrawlerServer(context, config);
+
 					server.start();
 				}
 

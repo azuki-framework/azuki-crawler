@@ -29,6 +29,7 @@ import org.azkfw.crawler.manager.CrawlerManagerServer;
 import org.azkfw.crawler.thread.BasicCrawlerThread;
 import org.azkfw.crawler.thread.CrawlerThread;
 import org.azkfw.crawler.thread.CrawlerThread.Status;
+import org.azkfw.persistence.context.Context;
 
 /**
  * このクラスは、クローラのサーバクラスです。
@@ -43,6 +44,11 @@ public class CrawlerServer extends LoggerObject {
 	 * 設定情報
 	 */
 	private CrawlerConfig config;
+
+	/**
+	 * コンテキスト情報
+	 */
+	private Context context;
 
 	/**
 	 * スレッド一覧
@@ -67,11 +73,13 @@ public class CrawlerServer extends LoggerObject {
 	/**
 	 * コンストラクタ
 	 * 
+	 * @param aContext コンテキスト情報
 	 * @param aConfig 設定情報
 	 */
-	CrawlerServer(final CrawlerConfig aConfig) {
+	CrawlerServer(final Context aContext, final CrawlerConfig aConfig) {
 		super(CrawlerServer.class);
 
+		context = aContext;
 		config = aConfig;
 	}
 
@@ -105,7 +113,7 @@ public class CrawlerServer extends LoggerObject {
 
 			// ManagerServer start
 			info("Manager server starting...");
-			managerServer = new CrawlerManagerServer(this, config.getManager());
+			managerServer = new CrawlerManagerServer(this, context, config.getManager());
 			managerServer.start();
 			info("Manager server started.");
 
@@ -199,7 +207,7 @@ public class CrawlerServer extends LoggerObject {
 			for (CrawlerThreadConfig threadConfig : threadConfigs) {
 
 				for (int i = 0; i < threadConfig.getThread(); i++) {
-					CrawlerThread thread = new BasicCrawlerThread(threadConfig);
+					CrawlerThread thread = new BasicCrawlerThread(context, threadConfig);
 					threads.add(thread);
 				}
 

@@ -17,9 +17,14 @@
  */
 package org.azkfw.crawler.thread;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
+import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 
+import org.azkfw.crawler.config.CrawlerConfig.CrawlerParameterConfig;
 import org.azkfw.crawler.config.CrawlerConfig.CrawlerThreadConfig;
 import org.azkfw.crawler.lang.CrawlerSetupException;
 import org.azkfw.crawler.logger.LoggerObject;
@@ -27,6 +32,7 @@ import org.azkfw.crawler.parameter.ParameterSupport;
 import org.azkfw.crawler.schedule.CrawlerSchedule;
 import org.azkfw.crawler.task.CrawlerTask;
 import org.azkfw.crawler.task.CrawlerTaskResult;
+import org.azkfw.persistence.context.Context;
 
 /**
  * このクラスは、クローラスレッド機能を実装するための基底クラスです。
@@ -36,6 +42,8 @@ import org.azkfw.crawler.task.CrawlerTaskResult;
  * @author Kawakicchi
  */
 public abstract class AbstractCrawlerThread extends LoggerObject implements CrawlerThread, Runnable {
+
+	private Context context;
 
 	private CrawlerThreadConfig config;
 
@@ -51,12 +59,22 @@ public abstract class AbstractCrawlerThread extends LoggerObject implements Craw
 	private CrawlerTask task;
 	private CrawlerSchedule schedule;
 
-	public AbstractCrawlerThread(final CrawlerThreadConfig aConfig) {
+	public AbstractCrawlerThread(final Context aContext, final CrawlerThreadConfig aConfig) {
 		super(CrawlerThread.class);
+		context = aContext;
 		config = aConfig;
 		status = Status.stoped;
 
 		id = UUID.randomUUID().toString();
+	}
+
+	/**
+	 * コンテキストを取得する。
+	 * 
+	 * @return コンテキスト
+	 */
+	protected final Context getContext() {
+		return context;
 	}
 
 	@Override
@@ -236,7 +254,7 @@ public abstract class AbstractCrawlerThread extends LoggerObject implements Craw
 				bufTask = (CrawlerTask) object;
 				if (bufTask instanceof ParameterSupport) {
 					ParameterSupport support = (ParameterSupport) bufTask;
-					support.addParameters(config.getTask().getParameters());
+					putParameters(support, config.getTask().getParameters());
 				}
 				bufTask.setup();
 
@@ -267,7 +285,7 @@ public abstract class AbstractCrawlerThread extends LoggerObject implements Craw
 				bufSchedule = (CrawlerSchedule) object;
 				if (bufSchedule instanceof ParameterSupport) {
 					ParameterSupport support = (ParameterSupport) bufSchedule;
-					support.addParameters(config.getSchedule().getParameters());
+					putParameters(support, config.getSchedule().getParameters());
 				}
 				bufSchedule.setup();
 
@@ -282,6 +300,28 @@ public abstract class AbstractCrawlerThread extends LoggerObject implements Craw
 		} catch (ClassNotFoundException ex) {
 			fatal(ex);
 			throw new CrawlerSetupException(ex);
+		}
+	}
+
+	private void putParameters(final ParameterSupport aSupport, final List<CrawlerParameterConfig> aParameters) throws CrawlerSetupException {
+		for (CrawlerParameterConfig parameter : aParameters) {
+			if (null != parameter.getFile() && 0 < parameter.getFile().length()) {
+
+				try {
+					InputStream stream = getContext().getResourceAsStream(parameter.getFile());
+					if (null != stream) {
+						Properties p = new Properties();
+						p.load(stream);
+						aSupport.addParameter(p);
+					}
+				} catch (IOException ex) {
+					fatal(ex);
+					throw new CrawlerSetupException(ex);
+				}
+
+			} else if (null != parameter.getKey() && 0 < parameter.getKey().length() && null != parameter.getValue()) {
+				aSupport.addParameter(parameter.getKey(), parameter.getValue());
+			}
 		}
 	}
 }

@@ -18,6 +18,7 @@
 package org.azkfw.crawler.parameter;
 
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * このインターフェースは、パラメータサポート機能を表現したインターフェースです。
@@ -31,4 +32,6 @@ public interface ParameterSupport {
 	public void addParameters(final Map<String, Object> aMap);
 
 	public void addParameter(final String aKey, final Object aValue);
+
+	public void addParameter(final Properties aProperties);
 }
