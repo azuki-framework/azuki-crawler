@@ -21,7 +21,18 @@
     <logger config="conf/log4j.xml" />
 
 	<threads>
-		<thread title="コマンドタスク" description="コマンド実行タスク" startup="true"
+		<thread title="Matlabタスク" description="パラメータファイル実行タスク" startup="false"
+			thread="1">
+			<task classname="org.azkfw.crawler.task.MatlabExecuteTask">
+				<parameter key="workDir" value="C:\temp" />
+				<parameter key="fileName" value="test.m" />
+				<parameter key="logFile" value="test.log" />
+			</task>
+			<schedule classname="org.azkfw.crawler.schedule.CountSchedule">
+				<parameter key="count" value="1" />
+			</schedule>
+		</thread>
+		<thread title="コマンドタスク" description="コマンド実行タスク" startup="false"
 			thread="1">
 			<task classname="org.azkfw.crawler.task.ApplicationCrawlerTask">
 				<parameter key="application" value="C:\temp\test.bat" />
