@@ -162,7 +162,7 @@ public class CrawlerManagerServer extends LoggerObject implements HttpHandler {
 			}
 		}
 
-		Pattern threadPattern = Pattern.compile("^/thread/([0-9a-z]{8}\\-[0-9a-z]{4}\\-[0-9a-z]{4}\\-[0-9a-z]{4}\\-[0-9a-z]{12}){1}(/.*){0,}$");
+		Pattern threadPattern = Pattern.compile("^/thread/([0-9a-z]{8}\\-[0-9a-z]{4}\\-[0-9a-z]{4}\\-[0-9a-z]{4}\\-[0-9a-z]{12}){1}(/.*){0,1}$");
 
 		OutputStream out = exchange.getResponseBody();
 		try {
