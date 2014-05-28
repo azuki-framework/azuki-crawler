@@ -38,7 +38,7 @@ import org.azkfw.crawler.parser.engine.ParseEngine;
  * @version 1.0.0 2014/05/14
  * @author Kawakicchi
  */
-public class ParserCrawlerTask extends AbstractCrawlerTask {
+public class ParserCrawlerTask extends AbstractPersistenceCrawlerTask {
 
 	private String file;
 

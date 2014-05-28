@@ -22,7 +22,7 @@
 		</layout>
 	</appender>
 
-	<category name="org.azkfw.crawler">
+	<category name="org.azkfw">
 		<priority value="debug" />
 		<appender-ref ref="stdout" />
 	</category>

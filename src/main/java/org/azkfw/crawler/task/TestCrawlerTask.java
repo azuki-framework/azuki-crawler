@@ -31,7 +31,7 @@ package org.azkfw.crawler.task;
  * @version 1.0.0 2014/05/12
  * @author Kawakicchi
  */
-public class TestCrawlerTask extends AbstractCrawlerTask implements CrawlerTaskStateSupport {
+public class TestCrawlerTask extends AbstractPersistenceCrawlerTask implements CrawlerTaskStateSupport {
 
 	private float progress;
 

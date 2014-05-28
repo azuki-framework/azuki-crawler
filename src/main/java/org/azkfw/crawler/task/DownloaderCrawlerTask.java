@@ -35,6 +35,7 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
+import org.azkfw.persistence.proterty.PropertyFile;
 
 /**
  * このクラスは、ダウンロードを行うクローラタスククラスです。
@@ -51,7 +52,8 @@ import org.apache.http.message.BasicHeader;
  * @version 1.0.0 2014/05/14
  * @author Kawakicchi
  */
-public class DownloaderCrawlerTask extends AbstractCrawlerTask {
+@PropertyFile("conf/DownloaderCrawlerTask.properties")
+public class DownloaderCrawlerTask extends AbstractPersistenceCrawlerTask {
 
 	private String url;
 	private String file;
@@ -71,6 +73,8 @@ public class DownloaderCrawlerTask extends AbstractCrawlerTask {
 		file = getParameter("file", null);
 		info(String.format("url  : %s", url));
 		info(String.format("file : %s", file));
+		
+		System.out.println(getProperty().getString("message", "None message."));
 	}
 
 	@Override
@@ -85,6 +89,7 @@ public class DownloaderCrawlerTask extends AbstractCrawlerTask {
 
 	@Override
 	protected CrawlerTaskResult doExecute() {
+		
 
 		CrawlerTaskResult result = new CrawlerTaskResult();
 

@@ -33,6 +33,7 @@ import org.azkfw.crawler.parameter.ParameterSupport;
  */
 public abstract class AbstractCrawlerSchedule extends LoggerObject implements CrawlerSchedule, ParameterSupport {
 
+	/** パラメータ */
 	private Map<String, Object> parameters;
 
 	/**

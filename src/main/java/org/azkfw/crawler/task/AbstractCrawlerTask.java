@@ -22,8 +22,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.azkfw.core.lang.LoggingObject;
+import org.azkfw.crawler.CrawlerServiceException;
 import org.azkfw.crawler.lang.CrawlerSetupException;
-import org.azkfw.crawler.logger.LoggerObject;
 import org.azkfw.crawler.parameter.ParameterSupport;
 import org.azkfw.crawler.performance.Performance;
 
@@ -34,23 +35,31 @@ import org.azkfw.crawler.performance.Performance;
  * @version 1.0.0 2014/05/12
  * @author Kawakicchi
  */
-public abstract class AbstractCrawlerTask extends LoggerObject implements CrawlerTask, ParameterSupport {
-
-	/**
-	 * パラメータ
-	 */
-	private Map<String, Object> parameters;
+public abstract class AbstractCrawlerTask extends LoggingObject implements CrawlerTask, ParameterSupport {
 
 	/**
 	 * 停止要求フラグ
 	 */
 	private boolean requestStopFlag;
 
+	/** パラメータ */
+	private Map<String, Object> parameters;
+
 	/**
 	 * コンストラクタ
 	 */
 	public AbstractCrawlerTask() {
 		super(CrawlerTask.class);
+		parameters = new HashMap<String, Object>();
+	}
+
+	/**
+	 * コンストラクタ
+	 * 
+	 * @param aName Name
+	 */
+	public AbstractCrawlerTask(final String aName) {
+		super(aName);
 		parameters = new HashMap<String, Object>();
 	}
 
@@ -81,13 +90,23 @@ public abstract class AbstractCrawlerTask extends LoggerObject implements Crawle
 	}
 
 	@Override
-	public final CrawlerTaskResult execute() {
+	public final CrawlerTaskResult execute() throws CrawlerServiceException {
 		CrawlerTaskResult result = null;
 
-		Performance p = new Performance(getName());
-		p.start();
-		result = doExecute();
-		p.stop();
+		try {
+			doBeforeExecute();
+
+			Performance p = new Performance(getName());
+			p.start();
+			result = doExecute();
+			p.stop();
+
+			doAfterExecute();
+		} catch (CrawlerServiceException ex) {
+			throw ex;
+		} finally {
+
+		}
 
 		return result;
 	}
@@ -124,11 +143,32 @@ public abstract class AbstractCrawlerTask extends LoggerObject implements Crawle
 	protected abstract void doRelease();
 
 	/**
+	 * タスク実行直前の処理を行う。
+	 * <p>
+	 * タスク実行直前に処理を行いたい場合、このメソッドをオーバーライドしスーパークラスの同メソッドを呼び出した後で処理を記述すること。
+	 * </p>
+	 */
+	protected void doBeforeExecute() {
+
+	}
+
+	/**
+	 * タスク実行直後の処理を行う。
+	 * <p>
+	 * タスク実行直後に処理を行いたい場合、このメソッドをオーバーライドし処理を記述した後でスーバークラスの同メソッドを呼び出すこと。
+	 * </p>
+	 */
+	protected void doAfterExecute() {
+
+	}
+
+	/**
 	 * タスクを実行する。
 	 * 
 	 * @return 実行結果
+	 * @throws CrawlerServiceException クローラ機能に起因する問題が発生した場合
 	 */
-	protected abstract CrawlerTaskResult doExecute();
+	protected abstract CrawlerTaskResult doExecute() throws CrawlerServiceException;
 
 	@Override
 	public final void addParameter(final String aKey, final Object aValue) {
@@ -220,5 +260,4 @@ public abstract class AbstractCrawlerTask extends LoggerObject implements Crawle
 		}
 		return result;
 	}
-
 }

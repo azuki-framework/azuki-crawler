@@ -56,15 +56,20 @@ public final class Crawler {
 			} else if ("start".equals(cmd)) {
 				String baseDir = "./";
 				String configFile = "conf/azuki-crawler.xml";
+				String pluginFile = "";
 				for (int i = 1; i < args.length; i += 2) {
 					String key = args[i];
 					if ("-baseDir".equals(key)) {
-						if (i + i < args.length) {
+						if (i + 1 < args.length) {
 							baseDir = args[i + 1];
 						}
 					} else if ("-configFile".equals(key)) {
-						if (i + i < args.length) {
+						if (i + 1 < args.length) {
 							configFile = args[i + 1];
+						}
+					} else if ("-pluginFile".equals(key)) {
+						if (i + 1 < args.length) {
+							pluginFile = args[i + 1];
 						}
 					}
 				}
@@ -75,7 +80,7 @@ public final class Crawler {
 				DOMConfigurator.configure(context.getAbstractPath(config.getLogger().getConfig()));
 
 				CrawlerServer server = null;
-				server = new CrawlerServer(context, config);
+				server = new CrawlerServer(context, config, pluginFile);
 
 				server.start();
 
@@ -85,11 +90,11 @@ public final class Crawler {
 				for (int i = 1; i < args.length; i += 2) {
 					String key = args[i];
 					if ("-baseDir".equals(key)) {
-						if (i + i < args.length) {
+						if (i + 1 < args.length) {
 							baseDir = args[i + 1];
 						}
 					} else if ("-configFile".equals(key)) {
-						if (i + i < args.length) {
+						if (i + 1 < args.length) {
 							configFile = args[i + 1];
 						}
 					}
@@ -106,15 +111,20 @@ public final class Crawler {
 			} else if ("restart".equals(cmd)) {
 				String baseDir = "./";
 				String configFile = "conf/azuki-crawler.xml";
+				String pluginFile = "";
 				for (int i = 1; i < args.length; i += 2) {
 					String key = args[i];
 					if ("-baseDir".equals(key)) {
-						if (i + i < args.length) {
+						if (i + 1 < args.length) {
 							baseDir = args[i + 1];
 						}
 					} else if ("-configFile".equals(key)) {
-						if (i + i < args.length) {
+						if (i + 1 < args.length) {
 							configFile = args[i + 1];
+						}
+					} else if ("-pluginFile".equals(key)) {
+						if (i + 1 < args.length) {
+							pluginFile = args[i + 1];
 						}
 					}
 				}
@@ -129,7 +139,7 @@ public final class Crawler {
 
 				if (result) {
 					CrawlerServer server = null;
-					server = new CrawlerServer(context, config);
+					server = new CrawlerServer(context, config, pluginFile);
 
 					server.start();
 				}

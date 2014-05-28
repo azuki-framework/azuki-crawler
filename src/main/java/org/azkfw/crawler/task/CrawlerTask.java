@@ -17,6 +17,7 @@
  */
 package org.azkfw.crawler.task;
 
+import org.azkfw.crawler.CrawlerServiceException;
 import org.azkfw.crawler.lang.CrawlerSetupException;
 
 /**
@@ -56,8 +57,9 @@ public interface CrawlerTask {
 	 * タスクを実行する。
 	 * 
 	 * @return 結果
+	 * @throws CrawlerServiceException クローラ機能に起因する問題が発生した場合
 	 */
-	public CrawlerTaskResult execute();
+	public CrawlerTaskResult execute() throws CrawlerServiceException;
 
 	/**
 	 * タスクに停止要求する。

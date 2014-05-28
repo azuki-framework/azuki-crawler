@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 
+import org.azkfw.core.util.StringUtility;
 import org.azkfw.crawler.config.CrawlerConfig.CrawlerParameterConfig;
 import org.azkfw.crawler.config.CrawlerConfig.CrawlerThreadConfig;
 import org.azkfw.crawler.lang.CrawlerSetupException;
@@ -33,6 +34,11 @@ import org.azkfw.crawler.schedule.CrawlerSchedule;
 import org.azkfw.crawler.task.CrawlerTask;
 import org.azkfw.crawler.task.CrawlerTaskResult;
 import org.azkfw.persistence.context.Context;
+import org.azkfw.persistence.context.ContextSupport;
+import org.azkfw.persistence.proterty.Property;
+import org.azkfw.persistence.proterty.PropertyFile;
+import org.azkfw.persistence.proterty.PropertyManager;
+import org.azkfw.persistence.proterty.PropertySupport;
 
 /**
  * このクラスは、クローラスレッド機能を実装するための基底クラスです。
@@ -244,21 +250,41 @@ public abstract class AbstractCrawlerThread extends LoggerObject implements Craw
 
 	private void setupCrawlerTask() throws CrawlerSetupException {
 		try {
-			CrawlerTask bufTask = null;
-
 			String classname = config.getTask().getClassname();
 
 			Class<?> clazz = Class.forName(classname);
 			Object object = clazz.newInstance();
 			if (object instanceof CrawlerTask) {
-				bufTask = (CrawlerTask) object;
-				if (bufTask instanceof ParameterSupport) {
-					ParameterSupport support = (ParameterSupport) bufTask;
+				task = (CrawlerTask) object;
+				if (task instanceof ParameterSupport) {
+					ParameterSupport support = (ParameterSupport) task;
 					putParameters(support, config.getTask().getParameters());
 				}
-				bufTask.setup();
 
-				task = bufTask;
+				Property property = null;
+				PropertyFile propertyFile = clazz.getAnnotation(PropertyFile.class);
+				if (null != propertyFile) {
+					String value = propertyFile.value();
+					if (StringUtility.isNotEmpty(value)) {
+						property = PropertyManager.get(clazz);
+						if (null == property) {
+							property = PropertyManager.load(clazz, context);
+						}
+					}
+				}
+
+				if (task instanceof ContextSupport) {
+					((ContextSupport) task).setContext(context);
+				}
+				if (null != property) {
+					if (task instanceof PropertySupport) {
+						((PropertySupport) task).setProperty(property);
+					} else {
+						warn("This task is not property support.[" + task.getClass().getName() + "]");
+					}
+				}
+
+				task.setup();
 			}
 
 		} catch (InstantiationException ex) {

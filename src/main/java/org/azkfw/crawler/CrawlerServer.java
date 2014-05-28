@@ -17,9 +17,12 @@
  */
 package org.azkfw.crawler;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.azkfw.core.util.StringUtility;
 import org.azkfw.crawler.config.CrawlerConfig;
 import org.azkfw.crawler.config.CrawlerConfig.CrawlerThreadConfig;
 import org.azkfw.crawler.control.CrawlerControlServer;
@@ -29,7 +32,10 @@ import org.azkfw.crawler.manager.CrawlerManagerServer;
 import org.azkfw.crawler.thread.BasicCrawlerThread;
 import org.azkfw.crawler.thread.CrawlerThread;
 import org.azkfw.crawler.thread.CrawlerThread.Status;
+import org.azkfw.persistence.ConfigurationFormatException;
 import org.azkfw.persistence.context.Context;
+import org.azkfw.plugin.PluginManager;
+import org.azkfw.plugin.PluginServiceException;
 
 /**
  * このクラスは、クローラのサーバクラスです。
@@ -49,6 +55,11 @@ public class CrawlerServer extends LoggerObject {
 	 * コンテキスト情報
 	 */
 	private Context context;
+
+	/**
+	 * プラグインファイル
+	 */
+	private String pluginFile;
 
 	/**
 	 * スレッド一覧
@@ -76,11 +87,12 @@ public class CrawlerServer extends LoggerObject {
 	 * @param aContext コンテキスト情報
 	 * @param aConfig 設定情報
 	 */
-	CrawlerServer(final Context aContext, final CrawlerConfig aConfig) {
+	CrawlerServer(final Context aContext, final CrawlerConfig aConfig, final String aPluginFile) {
 		super(CrawlerServer.class);
 
 		context = aContext;
 		config = aConfig;
+		pluginFile = aPluginFile;
 	}
 
 	/**
@@ -104,6 +116,8 @@ public class CrawlerServer extends LoggerObject {
 
 		info("Crawler starting...");
 		try {
+
+			initialize();
 
 			// ControlServer start
 			info("Control server starting...");
@@ -177,7 +191,16 @@ public class CrawlerServer extends LoggerObject {
 			controlServer.stop(1);
 			info("Control server stoped.");
 
+			release();
+
 			result = true;
+
+		} catch (ConfigurationFormatException ex) {
+			fatal(ex);
+		} catch (PluginServiceException ex) {
+			fatal(ex);
+		} catch (IOException ex) {
+			fatal(ex);
 		} catch (InterruptedException ex) {
 			fatal(ex);
 		}
@@ -195,6 +218,24 @@ public class CrawlerServer extends LoggerObject {
 	public void requestStop() {
 		stopRequestFlag = true;
 		requestStopThreads();
+	}
+
+	private void initialize() throws IOException, ConfigurationFormatException, PluginServiceException {
+		if (StringUtility.isNotEmpty(pluginFile)) {
+			InputStream stream = context.getResourceAsStream(pluginFile);
+			if (null != stream) {
+				PluginManager.initialize();
+				PluginManager.load(stream, context);
+			} else {
+				fatal("Not found plugin file.[" + pluginFile + "]");
+			}
+		} else {
+			warn("Unsetting plugin file.");
+		}
+	}
+
+	private void release() {
+		PluginManager.destroy();
 	}
 
 	/**

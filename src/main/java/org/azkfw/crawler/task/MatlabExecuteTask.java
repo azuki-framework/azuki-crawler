@@ -32,7 +32,7 @@ import org.azkfw.crawler.lang.CrawlerSetupException;
  * @version 1.0.0 2014/05/21
  * @author kawakita
  */
-public class MatlabExecuteTask extends AbstractCrawlerTask {
+public class MatlabExecuteTask extends AbstractPersistenceCrawlerTask {
 
 	/**
 	 * 実行スクリプトファイル
@@ -64,9 +64,9 @@ public class MatlabExecuteTask extends AbstractCrawlerTask {
 		workDir = getParameter("workDir", null);
 		fileName = getParameter("fileName", null);
 		logFile = getParameter("logFile", null);
-		
+
 		logFile = PathUtility.cat(workDir, logFile);
-		
+
 		scriptName = fileName;
 		int index = scriptName.lastIndexOf(".");
 		if (-1 != index) {

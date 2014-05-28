@@ -40,7 +40,7 @@ import org.azkfw.crawler.lang.CrawlerSetupException;
  * @version 1.0.0 2014/05/16
  * @author Kawakicchi
  */
-public class ApplicationCrawlerTask extends AbstractCrawlerTask {
+public class ApplicationCrawlerTask extends AbstractPersistenceCrawlerTask {
 
 	private String application;
 	private String currentDir;

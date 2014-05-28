@@ -19,6 +19,7 @@ cd ../
 
 rem ##################################################################
 set PROPERTIESFILE=conf/azuki-crawler.xml
+set PLUGINFILE=conf/azuki-plugins.xml
 rem ##################################################################
 
 set CLASSPATH=.\*;
@@ -62,7 +63,7 @@ goto execCmd
 
 :execCmd
 set MAIN
-call java -cp %CLASSPATH% %MAINCLASS% %ACTION% -baseDir ./ -configFile %PROPERTIESFILE%
+call java -cp %CLASSPATH% %MAINCLASS% %ACTION% -baseDir ./ -configFile %PROPERTIESFILE% -pluginFile %PLUGINFILE%
 goto end
 
 :end
