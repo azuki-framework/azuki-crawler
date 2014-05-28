@@ -223,6 +223,7 @@ public abstract class AbstractCrawlerThread extends LoggerObject implements Craw
 					info("Run task stop.");
 
 					if (null == result) {
+						warn("Crawler task result = null.");
 						break;
 					} else {
 						if (result.isResult()) {

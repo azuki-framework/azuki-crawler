@@ -329,11 +329,11 @@ public class CrawlerManagerServer extends LoggerObject implements HttpHandler {
 	private String doThreadListJavascript() {
 		StringBuilder s = new StringBuilder();
 		s.append(" function onClickThreadStart(threadId) {");
-		s.append(" var url = '/manager/thread?ctrl=start&thread=' + threadId;");
+		s.append(" var url = '").append(getUrl("/thread")).append("?ctrl=start&thread=' + threadId;");
 		s.append(" document.location = url;");
 		s.append(" }");
 		s.append(" function onClickThreadStop(threadId) {");
-		s.append(" var url = '/manager/thread?ctrl=stop&thread=' + threadId;");
+		s.append(" var url = '").append(getUrl("/thread")).append("?ctrl=stop&thread=' + threadId;");
 		s.append(" document.location = url;");
 		s.append(" }");
 		return s.toString();
