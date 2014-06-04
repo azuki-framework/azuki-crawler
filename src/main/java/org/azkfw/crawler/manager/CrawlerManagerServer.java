@@ -39,6 +39,7 @@ import org.azkfw.crawler.logger.LoggerObject;
 import org.azkfw.crawler.schedule.CrawlerSchedule;
 import org.azkfw.crawler.task.CrawlerTask;
 import org.azkfw.crawler.task.CrawlerTaskStateSupport;
+import org.azkfw.crawler.thread.CrawlerTaskLog;
 import org.azkfw.crawler.thread.CrawlerThread;
 import org.azkfw.crawler.thread.CrawlerThread.Status;
 import org.azkfw.persistence.context.Context;
@@ -552,6 +553,11 @@ public class CrawlerManagerServer extends LoggerObject implements HttpHandler {
 
 		s.append("<h3 class=\"sub-header\">Task</h3>");
 		s.append("<div class=\"row placeholders\">");
+		
+		for (CrawlerTaskLog log : aThread.getLogs()) {
+			s.append("Run").append("<br />");
+		}
+		
 		s.append("</div>");
 
 		return s.toString();

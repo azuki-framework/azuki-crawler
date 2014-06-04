@@ -19,6 +19,7 @@ package org.azkfw.crawler.thread;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -31,6 +32,7 @@ import org.azkfw.crawler.lang.CrawlerSetupException;
 import org.azkfw.crawler.logger.LoggerObject;
 import org.azkfw.crawler.parameter.ParameterSupport;
 import org.azkfw.crawler.schedule.CrawlerSchedule;
+import org.azkfw.crawler.store.CrawlerSessionStore;
 import org.azkfw.crawler.task.CrawlerTask;
 import org.azkfw.crawler.task.CrawlerTaskResult;
 import org.azkfw.persistence.context.Context;
@@ -39,6 +41,8 @@ import org.azkfw.persistence.proterty.Property;
 import org.azkfw.persistence.proterty.PropertyFile;
 import org.azkfw.persistence.proterty.PropertyManager;
 import org.azkfw.persistence.proterty.PropertySupport;
+import org.azkfw.persistence.session.SessionSupport;
+import org.azkfw.persistence.store.Store;
 
 /**
  * このクラスは、クローラスレッド機能を実装するための基底クラスです。
@@ -64,6 +68,9 @@ public abstract class AbstractCrawlerThread extends LoggerObject implements Craw
 
 	private CrawlerTask task;
 	private CrawlerSchedule schedule;
+	private Store<String, Object> session;
+
+	private List<CrawlerTaskLog> logs;
 
 	public AbstractCrawlerThread(final Context aContext, final CrawlerThreadConfig aConfig) {
 		super(CrawlerThread.class);
@@ -129,9 +136,16 @@ public abstract class AbstractCrawlerThread extends LoggerObject implements Craw
 	}
 
 	@Override
+	public List<CrawlerTaskLog> getLogs() {
+		return logs;
+	}
+
+	@Override
 	public void setup() throws CrawlerSetupException {
 		setupCrawlerSchedule();
 		setupCrawlerTask();
+
+		logs = new ArrayList<CrawlerTaskLog>();
 
 		doSetup();
 	}
@@ -207,6 +221,10 @@ public abstract class AbstractCrawlerThread extends LoggerObject implements Craw
 					break;
 				} else if (schedule.isRun()) {
 
+					CrawlerTaskLog log = new CrawlerTaskLog();
+					log.setStartDate(new Date());
+					logs.add(log);
+
 					info("Run task start.");
 					status = Status.running;
 					CrawlerTaskResult result = null;
@@ -219,6 +237,7 @@ public abstract class AbstractCrawlerThread extends LoggerObject implements Craw
 						if (null != task) {
 							task.release();
 						}
+						log.setStopDate(new Date());
 					}
 					info("Run task stop.");
 
@@ -257,6 +276,13 @@ public abstract class AbstractCrawlerThread extends LoggerObject implements Craw
 			Object object = clazz.newInstance();
 			if (object instanceof CrawlerTask) {
 				task = (CrawlerTask) object;
+
+				if (task instanceof SessionSupport) {
+					SessionSupport support = (SessionSupport) task;
+					session = new CrawlerSessionStore();
+					support.setSession(session);
+				}
+
 				if (task instanceof ParameterSupport) {
 					ParameterSupport support = (ParameterSupport) task;
 					putParameters(support, config.getTask().getParameters());

@@ -21,6 +21,8 @@ import org.azkfw.persistence.context.Context;
 import org.azkfw.persistence.context.ContextSupport;
 import org.azkfw.persistence.proterty.Property;
 import org.azkfw.persistence.proterty.PropertySupport;
+import org.azkfw.persistence.session.SessionSupport;
+import org.azkfw.persistence.store.Store;
 
 /**
  * このクラスは、永続化層の機能を実装したクローラタスククラスです。
@@ -29,7 +31,12 @@ import org.azkfw.persistence.proterty.PropertySupport;
  * @version 1.0.0 2014/05/28
  * @author Kawakicchi
  */
-public abstract class AbstractPersistenceCrawlerTask extends AbstractCrawlerTask implements ContextSupport, PropertySupport {
+public abstract class AbstractPersistenceCrawlerTask extends AbstractCrawlerTask implements ContextSupport, PropertySupport, SessionSupport {
+
+	/**
+	 * Session store
+	 */
+	private Store<String, Object> session;
 
 	/**
 	 * コンテキスト情報
@@ -78,6 +85,20 @@ public abstract class AbstractPersistenceCrawlerTask extends AbstractCrawlerTask
 		// TODO Write doAfterExecute code.
 
 		super.doAfterExecute();
+	}
+
+	@Override
+	public final void setSession(final Store<String, Object> aSession) {
+		session = aSession;
+	}
+
+	/**
+	 * セッション情報を取得する。
+	 * 
+	 * @return セッション情報
+	 */
+	protected final Store<String, Object> getSession() {
+		return session;
 	}
 
 	@Override

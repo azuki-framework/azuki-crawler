@@ -18,6 +18,7 @@
 package org.azkfw.crawler.thread;
 
 import java.util.Date;
+import java.util.List;
 
 import org.azkfw.crawler.config.CrawlerConfig.CrawlerThreadConfig;
 import org.azkfw.crawler.lang.CrawlerSetupException;
@@ -95,6 +96,13 @@ public interface CrawlerThread {
 	 * @return 設定
 	 */
 	public CrawlerThreadConfig getConfig();
+
+	/**
+	 * タスクのログを取得する。
+	 * 
+	 * @return タスクログ一覧
+	 */
+	public List<CrawlerTaskLog> getLogs();
 
 	/**
 	 * セットアップ処理を行う。

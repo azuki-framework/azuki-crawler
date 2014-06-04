@@ -21,6 +21,15 @@
     <logger config="conf/log4j.xml" />
 
 	<threads>
+		<thread title="Webタスク" description="Webタスク" startup="false"
+			thread="1">
+			<task classname="org.azkfw.crawler.task.WebCrawlerTask">
+			</task>
+			<schedule classname="org.azkfw.crawler.schedule.CountSchedule">
+				<parameter key="count" value="1" />
+			</schedule>
+		</thread>
+	
 		<thread title="Matlabタスク" description="パラメータファイル実行タスク" startup="false"
 			thread="1">
 			<task classname="org.azkfw.crawler.task.MatlabExecuteTask">
