@@ -17,31 +17,22 @@
  */
 package org.azkfw.crawler.context;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-
-import org.azkfw.persistence.context.AbstractContext;
+import org.azkfw.persistence.context.LocalContext;
 
 /**
  * このクラスは、Crawler用のコンテキスト機能を実装するクラスです。
  * 
  * @since 1.0.0
- * @version 1.0.0 2014/05/20
+ * @version 1.0.1 2014/06/06
  * @author Kawakicchi
  */
-public class CrawlerContext extends AbstractContext {
-
-	/**
-	 * ベースディレクトリ
-	 */
-	private String baseDir;
+public class CrawlerContext extends LocalContext {
 
 	/**
 	 * コンストラクタ
 	 */
 	public CrawlerContext() {
-		baseDir = "./";
+		super();
 	}
 
 	/**
@@ -50,51 +41,7 @@ public class CrawlerContext extends AbstractContext {
 	 * @param aBaseDir ベースディレクトリ
 	 */
 	public CrawlerContext(final String aBaseDir) {
-		if (null == aBaseDir || 0 == aBaseDir.length()) {
-			baseDir = "";
-		} else if (!aBaseDir.endsWith("/") && !aBaseDir.endsWith("\\")) {
-			baseDir = aBaseDir + "/";
-		}
+		super(aBaseDir);
 	}
 
-	@Override
-	public String getAbstractPath(final String aName) {
-		return getFullPath(aName);
-	}
-
-	@Override
-	@SuppressWarnings("resource")
-	public InputStream getResourceAsStream(final String aName) {
-		InputStream stream = null;
-		try {
-			stream = new FileInputStream(getFullPath(aName));
-		} catch (FileNotFoundException ex) {
-			;
-		}
-		if (null == stream) {
-			stream = this.getClass().getResourceAsStream(aName);
-		}
-		if (null == stream) {
-			stream = Class.class.getResourceAsStream(aName);
-		}
-		return stream;
-	}
-
-	/**
-	 * フルパスを取得する。
-	 * 
-	 * @param aName 名前
-	 * @return パス
-	 */
-	private String getFullPath(final String aName) {
-		StringBuilder path = new StringBuilder();
-		if (aName.startsWith("/")) {
-			// 絶対パス
-			path.append(aName);
-		} else {
-			path.append(baseDir);
-			path.append(aName);
-		}
-		return path.toString();
-	}
 }
