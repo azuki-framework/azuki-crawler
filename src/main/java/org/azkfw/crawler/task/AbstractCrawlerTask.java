@@ -22,11 +22,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.azkfw.core.lang.LoggingObject;
 import org.azkfw.crawler.CrawlerServiceException;
 import org.azkfw.crawler.lang.CrawlerSetupException;
 import org.azkfw.crawler.parameter.ParameterSupport;
 import org.azkfw.crawler.performance.Performance;
+import org.azkfw.lang.LoggingObject;
 
 /**
  * このクラスは、クローラタスク機能の実装を行うための基底クラスです。

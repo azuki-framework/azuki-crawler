@@ -17,7 +17,7 @@
  */
 package org.azkfw.crawler.context;
 
-import org.azkfw.persistence.context.LocalContext;
+import org.azkfw.context.LocalContext;
 
 /**
  * このクラスは、Crawler用のコンテキスト機能を実装するクラスです。

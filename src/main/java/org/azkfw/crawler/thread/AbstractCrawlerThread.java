@@ -25,7 +25,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 
-import org.azkfw.core.util.StringUtility;
+import org.azkfw.context.Context;
+import org.azkfw.context.ContextSupport;
 import org.azkfw.crawler.config.CrawlerConfig.CrawlerParameterConfig;
 import org.azkfw.crawler.config.CrawlerConfig.CrawlerThreadConfig;
 import org.azkfw.crawler.lang.CrawlerSetupException;
@@ -35,14 +36,13 @@ import org.azkfw.crawler.schedule.CrawlerSchedule;
 import org.azkfw.crawler.store.CrawlerSessionStore;
 import org.azkfw.crawler.task.CrawlerTask;
 import org.azkfw.crawler.task.CrawlerTaskResult;
-import org.azkfw.persistence.context.Context;
-import org.azkfw.persistence.context.ContextSupport;
 import org.azkfw.persistence.proterty.Property;
 import org.azkfw.persistence.proterty.PropertyFile;
 import org.azkfw.persistence.proterty.PropertyManager;
 import org.azkfw.persistence.proterty.PropertySupport;
 import org.azkfw.persistence.session.SessionSupport;
 import org.azkfw.persistence.store.Store;
+import org.azkfw.util.StringUtility;
 
 /**
  * このクラスは、クローラスレッド機能を実装するための基底クラスです。

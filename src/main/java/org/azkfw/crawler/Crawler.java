@@ -20,7 +20,7 @@ package org.azkfw.crawler;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.azkfw.crawler.config.CrawlerConfig;
 import org.azkfw.crawler.context.CrawlerContext;
-import org.azkfw.persistence.context.Context;
+import org.azkfw.context.Context;
 
 /**
  * このクラスは、クローラを動作させるためのメインクラスです。

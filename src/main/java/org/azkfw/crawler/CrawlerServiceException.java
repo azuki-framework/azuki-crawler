@@ -17,7 +17,7 @@
  */
 package org.azkfw.crawler;
 
-import org.azkfw.core.lang.PrimitiveException;
+import org.azkfw.lang.PrimitiveException;
 
 /**
  * このクラスは、クローラサービス層に起因する例外クラスです。

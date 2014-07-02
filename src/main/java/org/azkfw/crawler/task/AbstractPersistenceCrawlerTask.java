@@ -17,8 +17,8 @@
  */
 package org.azkfw.crawler.task;
 
-import org.azkfw.persistence.context.Context;
-import org.azkfw.persistence.context.ContextSupport;
+import org.azkfw.context.Context;
+import org.azkfw.context.ContextSupport;
 import org.azkfw.persistence.proterty.Property;
 import org.azkfw.persistence.proterty.PropertySupport;
 import org.azkfw.persistence.session.SessionSupport;

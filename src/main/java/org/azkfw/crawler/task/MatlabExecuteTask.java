@@ -23,9 +23,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.azkfw.core.util.PathUtility;
-import org.azkfw.core.util.StringUtility;
 import org.azkfw.crawler.lang.CrawlerSetupException;
+import org.azkfw.util.PathUtility;
+import org.azkfw.util.StringUtility;
 
 /**
  * @since 1.0.0

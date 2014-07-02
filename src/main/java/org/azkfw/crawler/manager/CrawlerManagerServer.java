@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.azkfw.context.Context;
 import org.azkfw.crawler.CrawlerServer;
 import org.azkfw.crawler.access.AccessControl;
 import org.azkfw.crawler.config.CrawlerConfig.CrawlerManagerConfig;
@@ -42,7 +43,6 @@ import org.azkfw.crawler.task.CrawlerTaskStateSupport;
 import org.azkfw.crawler.thread.CrawlerTaskLog;
 import org.azkfw.crawler.thread.CrawlerThread;
 import org.azkfw.crawler.thread.CrawlerThread.Status;
-import org.azkfw.persistence.context.Context;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -553,11 +553,11 @@ public class CrawlerManagerServer extends LoggerObject implements HttpHandler {
 
 		s.append("<h3 class=\"sub-header\">Task</h3>");
 		s.append("<div class=\"row placeholders\">");
-		
+
 		for (CrawlerTaskLog log : aThread.getLogs()) {
 			s.append("Run").append("<br />");
 		}
-		
+
 		s.append("</div>");
 
 		return s.toString();

@@ -33,9 +33,9 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
+import org.azkfw.context.Context;
 import org.azkfw.crawler.config.CrawlerConfig.CrawlerControllerConfig;
 import org.azkfw.crawler.logger.LoggerObject;
-import org.azkfw.persistence.context.Context;
 
 /**
  * このクラスは、クローラを制御するためのコントロールクラスです。

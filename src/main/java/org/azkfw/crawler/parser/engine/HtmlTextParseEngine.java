@@ -36,7 +36,7 @@ import javax.swing.text.html.parser.ParserDelegator;
 
 import org.atilika.kuromoji.Token;
 import org.atilika.kuromoji.Tokenizer;
-import org.azkfw.core.util.URLUtility;
+import org.azkfw.util.URLUtility;
 
 /**
  * @since 1.0.0
@@ -107,7 +107,7 @@ public class HtmlTextParseEngine extends TextParseEngine {
 			Integer count = wordCounts.get(key);
 			System.out.println(String.format("%5d %s", count, key));
 		}
-		
+
 		Map<String, Integer> urlCounts = cb.getUrlCounts();
 		for (String key : urlCounts.keySet()) {
 			Integer count = urlCounts.get(key);
@@ -154,7 +154,7 @@ public class HtmlTextParseEngine extends TextParseEngine {
 				//				System.out.println("未知語? : " + token.isUnknown());
 				//				System.out.println("ユーザ定義? : " + token.isUser());
 				String word = token.getAllFeaturesArray()[6];
-				
+
 				if (wordCounts.containsKey(word)) {
 					Integer i = wordCounts.get(word);
 					wordCounts.put(word, i + 1);

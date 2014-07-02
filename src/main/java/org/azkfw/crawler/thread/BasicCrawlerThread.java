@@ -17,8 +17,8 @@
  */
 package org.azkfw.crawler.thread;
 
+import org.azkfw.context.Context;
 import org.azkfw.crawler.config.CrawlerConfig.CrawlerThreadConfig;
-import org.azkfw.persistence.context.Context;
 
 /**
  * このクラスは、標準の機能を備えたクローラスレッドクラスです。

@@ -22,7 +22,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.azkfw.core.util.StringUtility;
+import org.azkfw.configuration.ConfigurationFormatException;
+import org.azkfw.context.Context;
 import org.azkfw.crawler.config.CrawlerConfig;
 import org.azkfw.crawler.config.CrawlerConfig.CrawlerThreadConfig;
 import org.azkfw.crawler.control.CrawlerControlServer;
@@ -32,10 +33,9 @@ import org.azkfw.crawler.manager.CrawlerManagerServer;
 import org.azkfw.crawler.thread.BasicCrawlerThread;
 import org.azkfw.crawler.thread.CrawlerThread;
 import org.azkfw.crawler.thread.CrawlerThread.Status;
-import org.azkfw.persistence.ConfigurationFormatException;
-import org.azkfw.persistence.context.Context;
 import org.azkfw.plugin.PluginManager;
 import org.azkfw.plugin.PluginServiceException;
+import org.azkfw.util.StringUtility;
 
 /**
  * このクラスは、クローラのサーバクラスです。

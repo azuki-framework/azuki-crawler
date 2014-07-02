@@ -18,7 +18,7 @@
 
 	<groupId>org.azkfw</groupId>
 	<artifactId>azuki-crawler</artifactId>
-	<version>1.0.1</version>
+	<version>1.2.0</version>
 	<packaging>jar</packaging>
 
 	<name>azuki-crawler</name>
@@ -56,8 +56,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.azkfw</groupId>
-			<artifactId>azuki-base</artifactId>
-			<version>1.0.1</version>
+			<artifactId>azuki-business</artifactId>
+			<version>1.2.0</version>
 		</dependency>
 
 		<dependency>
@@ -68,11 +68,6 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
-		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>

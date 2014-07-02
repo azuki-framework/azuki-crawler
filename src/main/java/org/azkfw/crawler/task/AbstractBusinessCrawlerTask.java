@@ -24,12 +24,12 @@ import java.util.Map;
 import org.azkfw.business.BusinessServiceException;
 import org.azkfw.business.logic.Logic;
 import org.azkfw.business.logic.LogicManager;
-import org.azkfw.core.util.StringUtility;
-import org.azkfw.persistence.context.ContextSupport;
+import org.azkfw.context.ContextSupport;
 import org.azkfw.persistence.database.DatabaseConnectionSupport;
 import org.azkfw.persistence.proterty.Property;
 import org.azkfw.persistence.proterty.PropertyManager;
 import org.azkfw.persistence.proterty.PropertySupport;
+import org.azkfw.util.StringUtility;
 
 /**
  * このクラスは、ビジネス機能を実装するクローラタスククラスです。
