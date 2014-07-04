@@ -54,6 +54,7 @@ class CrawlerController extends LoggerObject {
 	/**
 	 * コンテキスト情報
 	 */
+	@SuppressWarnings("unused")
 	private Context context;
 
 	/**

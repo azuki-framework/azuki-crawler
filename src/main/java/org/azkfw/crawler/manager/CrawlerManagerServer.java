@@ -555,7 +555,7 @@ public class CrawlerManagerServer extends LoggerObject implements HttpHandler {
 		s.append("<div class=\"row placeholders\">");
 
 		for (CrawlerTaskLog log : aThread.getLogs()) {
-			s.append("Run").append("<br />");
+			s.append("Run ").append(log.getStartDate()).append("<br />");
 		}
 
 		s.append("</div>");
