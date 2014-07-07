@@ -15,31 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.azkfw.crawler.parser.engine;
+package org.azkfw.crawler.content;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
- * このインターフェースは、解析エンジンを定義するインターフェースです。
+ * このインターフェースは、コンテンツ機能を表現したインターフェースです。
  * 
  * @since 1.0.0
- * @version 1.0.0 2014/05/08
+ * @version 1.0.0 2014/07/07
  * @author Kawakicchi
  */
-public interface ParseEngine {
+public interface Content {
 
-	/**
-	 * 初期化処理を行う。
-	 */
-	public void initialize();
-
-	/**
-	 * 解放処理を行う。
-	 */
-	public void release();
-
-	/**
-	 * 解析処理を行う。
-	 * 
-	 * @return 解析結果
-	 */
-	public boolean parse();
+	public InputStream getInputStream() throws IOException;
 }

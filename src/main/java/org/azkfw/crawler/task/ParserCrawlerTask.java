@@ -17,12 +17,12 @@
  */
 package org.azkfw.crawler.task;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.File;
 
-import org.azkfw.crawler.parser.engine.HtmlTextParseEngine;
+import org.azkfw.crawler.content.Content;
+import org.azkfw.crawler.content.FileContent;
 import org.azkfw.crawler.parser.engine.ParseEngine;
+import org.azkfw.crawler.parser.engine.SampleHtmlTextParseEngine;
 
 /**
  * このクラスは、解析を行うクローラタスククラスです。
@@ -38,7 +38,7 @@ import org.azkfw.crawler.parser.engine.ParseEngine;
  * @version 1.0.0 2014/05/14
  * @author Kawakicchi
  */
-public class ParserCrawlerTask extends AbstractPersistenceCrawlerTask {
+public final class ParserCrawlerTask extends AbstractPersistenceCrawlerTask {
 
 	private String file;
 
@@ -64,7 +64,6 @@ public class ParserCrawlerTask extends AbstractPersistenceCrawlerTask {
 
 	@Override
 	protected void doRelease() {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -88,29 +87,15 @@ public class ParserCrawlerTask extends AbstractPersistenceCrawlerTask {
 	private boolean parse(final String aName) {
 		boolean result = false;
 
-		ParseEngine engine = new HtmlTextParseEngine("http://yahoo.co.jp");
+		Content content = new FileContent(new File(aName));
+		//ParseEngine engine = new HtmlTextParseEngine("http://yahoo.co.jp", content, Charset.forName("UTF-8"));
+		ParseEngine engine = new SampleHtmlTextParseEngine("http://yahoo.co.jp", content);
 
-		InputStream stream = null;
+		engine.initialize();
+		engine.parse();
+		engine.release();
 
-		try {
-			stream = new FileInputStream(aName);
-
-			engine.initialize();
-			engine.parse(stream);
-			engine.release();
-
-			result = true;
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		} finally {
-			if (null != stream) {
-				try {
-					stream.close();
-				} catch (IOException ex) {
-					ex.printStackTrace();
-				}
-			}
-		}
+		result = true;
 
 		return result;
 	}

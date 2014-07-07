@@ -15,13 +15,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.azkfw.crawler.parser.engine;
+package org.azkfw.crawler.task;
+
+import org.azkfw.crawler.CrawlerServiceException;
+import org.azkfw.crawler.lang.CrawlerSetupException;
 
 /**
+ * このクラスは、Webクロール機能を実装したクローラタスククラスです。
+ * 
  * @since 1.0.0
- * @version 1.0.0 2014/05/08
+ * @version 1.0.0 2014/07/07
  * @author Kawakicchi
  */
-public abstract class ContentParseEngine extends AbstractParseEngine {
+public class StandAloneWebCrawlerTask extends AbstractCrawlerTask {
+
+	@Override
+	public String getName() {
+		return getClass().getSimpleName();
+	}
+
+	@Override
+	protected void doSetup() throws CrawlerSetupException {
+
+	}
+
+	@Override
+	protected void doInitialize() {
+
+	}
+
+	@Override
+	protected void doRelease() {
+
+	}
+
+	@Override
+	protected CrawlerTaskResult doExecute() throws CrawlerServiceException {
+
+		return null;
+	}
 
 }

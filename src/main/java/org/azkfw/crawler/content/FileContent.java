@@ -15,13 +15,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.azkfw.crawler.parser.engine;
+package org.azkfw.crawler.content;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
+ * このインターフェースは、コンテンツ機能を表現したインターフェースです。
+ * 
  * @since 1.0.0
- * @version 1.0.0 2014/05/08
+ * @version 1.0.0 2014/07/07
  * @author Kawakicchi
  */
-public abstract class TextParseEngine extends ContentParseEngine {
+public class FileContent implements Content {
 
+	private File file;
+
+	public FileContent(final File aFile) {
+		file = aFile;
+	}
+
+	@Override
+	public InputStream getInputStream() throws IOException {
+		return new FileInputStream(file);
+	}
 }

@@ -17,7 +17,7 @@
  */
 package org.azkfw.crawler.parser.engine;
 
-import org.azkfw.lang.LoggingObject;
+import org.azkfw.crawler.content.Content;
 
 /**
  * このクラスは、解析エンジンを定義するための基底クラスです。
@@ -26,71 +26,64 @@ import org.azkfw.lang.LoggingObject;
  * @version 1.0.0 2014/05/08
  * @author Kawakicchi
  */
-public abstract class AbstractParseEngine extends LoggingObject implements ParseEngine {
+public abstract class AbstractContentParseEngine extends AbstractParseEngine {
+
+	/** Content */
+	private Content content;
 
 	/**
 	 * コンストラクタ
+	 * 
+	 * @param aContent コンテンツ
 	 */
-	public AbstractParseEngine() {
-		super(ParseEngine.class);
+	public AbstractContentParseEngine(final Content aContent) {
+		super();
+		content = aContent;
 	}
 
 	/**
 	 * コンストラクタ
 	 * 
 	 * @param aName 名前
+	 * @param aContent コンテンツ
 	 */
-	public AbstractParseEngine(final String aName) {
+	public AbstractContentParseEngine(final String aName, final Content aContent) {
 		super(aName);
+		content = aContent;
 	}
 
 	/**
 	 * コンストラクタ
 	 * 
 	 * @param aClass クラス
+	 * @param aContent コンテンツ
 	 */
-	public AbstractParseEngine(final Class<?> aClass) {
+	public AbstractContentParseEngine(final Class<?> aClass, final Content aContent) {
 		super(aClass);
-	}
-
-	@Override
-	public final void initialize() {
-		doInitialize();
-	}
-
-	@Override
-	public final void release() {
-		doRelease();
-	}
-
-	@Override
-	public final boolean parse() {
-		return doParse();
+		content = aContent;
 	}
 
 	/**
-	 * 初期化処理を記述する。
-	 * <p>
-	 * このメソッドをオーバーライドし初期化処理を記述する。
-	 * </p>
+	 * コンテンツを取得する。
+	 * 
+	 * @return コンテンツ
 	 */
-	protected abstract void doInitialize();
+	protected final Content getContent() {
+		return content;
+	}
+
+	@Override
+	protected final boolean doParse() {
+		return doParseContent(getContent());
+	}
 
 	/**
-	 * 解放処理を行う。
+	 * コンテンツ解析処理を行う。
 	 * <p>
-	 * このメソッドをオーバーライドし解放処理を記述する。
-	 * </p>
-	 */
-	protected abstract void doRelease();
-
-	/**
-	 * 解析処理を行う。
-	 * <p>
-	 * このメソッドをオーバーライドし解析処理を記述する。
+	 * このメソッドをオーバーライドしコンテンツ解析処理を記述する。
 	 * </p>
 	 * 
 	 * @return 解析結果
 	 */
-	protected abstract boolean doParse();
+	protected abstract boolean doParseContent(final Content aContent);
 }

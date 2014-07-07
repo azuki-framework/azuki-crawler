@@ -18,12 +18,10 @@
 package org.azkfw.crawler.parser.engine;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +34,7 @@ import javax.swing.text.html.parser.ParserDelegator;
 
 import org.atilika.kuromoji.Token;
 import org.atilika.kuromoji.Tokenizer;
+import org.azkfw.crawler.content.Content;
 import org.azkfw.util.URLUtility;
 
 /**
@@ -43,76 +42,65 @@ import org.azkfw.util.URLUtility;
  * @version 1.0.0 2014/05/08
  * @author Kawakicchi
  */
-public class HtmlTextParseEngine extends TextParseEngine {
-
-	public static void main(final String[] args) {
-		ParseEngine engine = new HtmlTextParseEngine("http://yahoo.co.jp");
-
-		try {
-			InputStream stream = new FileInputStream(new File("C:\\temp\\aaa.html"));
-			engine.parse(stream);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
+public final class HtmlTextParseEngine extends AbstractHtmlTextParseEngine {
 
 	private String url;
 
-	public HtmlTextParseEngine(final String aUrl) {
+	public HtmlTextParseEngine(final String aUrl, final Content aContent, final Charset aCharset) {
+		super(HtmlTextParseEngine.class, aContent, aCharset);
 		url = aUrl;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.azkfw.crawler.parser.engine.AbstractParseEngine#doInitialize()
-	 */
 	@Override
 	protected void doInitialize() {
-		// TODO Auto-generated method stub
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.azkfw.crawler.parser.engine.AbstractParseEngine#doRelease()
-	 */
 	@Override
 	protected void doRelease() {
-		// TODO Auto-generated method stub
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.azkfw.crawler.parser.engine.AbstractParseEngine#doParse()
-	 */
 	@Override
-	protected void doParse(final InputStream aStream) throws IOException {
-		// TODO Auto-generated method stub
+	protected boolean doParseHtmlTextContent(final Content aContent) {
+		BufferedReader reader = null;
 
-		BufferedReader br = new BufferedReader(new InputStreamReader(aStream, "UTF-8"));
-		ParserDelegator pd = new ParserDelegator();
-		MyParserCallback cb = new MyParserCallback(url);
-		pd.parse(br, cb, true);
+		try {
 
-		if (null != cb.getCharset() && !"UTF-8".equals(cb.getCharset().toUpperCase())) {
+			reader = new BufferedReader(new InputStreamReader(aContent.getInputStream(), getCharset()));
+			ParserDelegator pd = new ParserDelegator();
+			MyParserCallback cb = new MyParserCallback(url);
+			pd.parse(reader, cb, true);
 
+			if (null != cb.getCharset() && !"UTF-8".equals(cb.getCharset().toUpperCase())) {
+
+			}
+
+			Map<String, Integer> wordCounts = cb.getWordCounts();
+			for (String key : wordCounts.keySet()) {
+				Integer count = wordCounts.get(key);
+				System.out.println(String.format("%5d %s", count, key));
+			}
+
+			Map<String, Integer> urlCounts = cb.getUrlCounts();
+			for (String key : urlCounts.keySet()) {
+				Integer count = urlCounts.get(key);
+				System.out.println(String.format("%5d %s", count, key));
+			}
+
+		} catch (IOException ex) {
+
+		} finally {
+			if (null != reader) {
+				try {
+					reader.close();
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+			}
 		}
 
-		Map<String, Integer> wordCounts = cb.getWordCounts();
-		for (String key : wordCounts.keySet()) {
-			Integer count = wordCounts.get(key);
-			System.out.println(String.format("%5d %s", count, key));
-		}
-
-		Map<String, Integer> urlCounts = cb.getUrlCounts();
-		for (String key : urlCounts.keySet()) {
-			Integer count = urlCounts.get(key);
-			System.out.println(String.format("%5d %s", count, key));
-		}
+		return true;
 	}
 
 	public class MyParserCallback extends ParserCallback {
