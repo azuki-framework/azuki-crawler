@@ -17,6 +17,8 @@
  */
 package org.azkfw.crawler.schedule;
 
+import org.azkfw.persistence.parameter.Parameter;
+
 /**
  * @since 1.0.0
  * @version 1.0.0 2014/05/12
@@ -29,7 +31,9 @@ public class CountSchedule extends AbstractCrawlerSchedule {
 
 	@Override
 	protected void doSetup() {
-		maxCount = getParameter("count", 0);
+		Parameter p = getParameter();
+
+		maxCount = p.getInteger("count", Integer.valueOf(0));
 	}
 
 	@Override

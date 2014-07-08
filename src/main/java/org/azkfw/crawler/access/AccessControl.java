@@ -19,7 +19,7 @@ package org.azkfw.crawler.access;
 
 import java.net.InetSocketAddress;
 
-import org.azkfw.crawler.logger.LoggerObject;
+import org.azkfw.lang.LoggingObject;
 
 /**
  * このクラスは、マネージャーへのアクセス制限を行うクラスです。
@@ -28,7 +28,7 @@ import org.azkfw.crawler.logger.LoggerObject;
  * @version 1.0.0 2014/05/13
  * @author Kawakicchi
  */
-public class AccessControl extends LoggerObject {
+public class AccessControl extends LoggingObject {
 
 	public AccessControl() {
 		super(AccessControl.class);

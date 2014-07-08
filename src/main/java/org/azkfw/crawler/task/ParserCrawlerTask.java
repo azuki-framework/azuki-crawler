@@ -22,7 +22,8 @@ import java.io.File;
 import org.azkfw.crawler.content.Content;
 import org.azkfw.crawler.content.FileContent;
 import org.azkfw.crawler.parser.engine.ParseEngine;
-import org.azkfw.crawler.parser.engine.SampleHtmlTextParseEngine;
+import org.azkfw.crawler.parser.engine.SampleHtmlParseEngine;
+import org.azkfw.persistence.parameter.Parameter;
 
 /**
  * このクラスは、解析を行うクローラタスククラスです。
@@ -53,7 +54,10 @@ public final class ParserCrawlerTask extends AbstractPersistenceCrawlerTask {
 
 	@Override
 	protected void doSetup() {
-		file = getParameter("file", null);
+		Parameter p = getParameter();
+
+		file = p.getString("file");
+
 		info(String.format("file : %s", file));
 	}
 
@@ -89,7 +93,7 @@ public final class ParserCrawlerTask extends AbstractPersistenceCrawlerTask {
 
 		Content content = new FileContent(new File(aName));
 		//ParseEngine engine = new HtmlTextParseEngine("http://yahoo.co.jp", content, Charset.forName("UTF-8"));
-		ParseEngine engine = new SampleHtmlTextParseEngine("http://yahoo.co.jp", content);
+		ParseEngine engine = new SampleHtmlParseEngine("http://yahoo.co.jp", content);
 
 		engine.initialize();
 		engine.parse();

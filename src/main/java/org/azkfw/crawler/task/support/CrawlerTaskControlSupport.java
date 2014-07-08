@@ -15,28 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.azkfw.crawler.task;
+package org.azkfw.crawler.task.support;
 
 /**
- * このインターフェースは、クローラタスクの状態サポート機能を表現したインターフェースです。
+ * このインターフェースは、クローラタスクの制御サポート機能を表現するインターフェースです。
  * 
  * @since 1.0.0
- * @version 1.0.0 2014/05/15
+ * @version 1.0.0 2014/07/08
  * @author Kawakicchi
  */
-public interface CrawlerTaskStateSupport {
+public interface CrawlerTaskControlSupport {
 
 	/**
-	 * 進行状況を取得する。
-	 * 
-	 * @return 進行状況(0.0～100.0)
+	 * タスクに停止要求する。
 	 */
-	public float getStateProgress();
+	public void stop();
 
-	/**
-	 * 状況メッセージを取得する。
-	 * 
-	 * @return メッセージ
-	 */
-	public String getStateMessage();
 }

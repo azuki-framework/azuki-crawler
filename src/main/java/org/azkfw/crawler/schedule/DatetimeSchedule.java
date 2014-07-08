@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.azkfw.crawler.matcher.DateTimeMatcher;
+import org.azkfw.persistence.parameter.Parameter;
 
 /**
  * @since 1.0.0
@@ -36,7 +37,9 @@ public class DatetimeSchedule extends AbstractCrawlerSchedule {
 
 	@Override
 	protected void doSetup() {
-		pattern = getParameter("pattern", "* * * * *");
+		Parameter p = getParameter();
+
+		pattern = p.getString("pattern", "* * * * *");
 		matcher = new DateTimeMatcher();
 		matcher.compile(pattern);
 	}

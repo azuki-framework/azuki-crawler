@@ -21,7 +21,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -30,12 +33,14 @@ import org.azkfw.context.ContextSupport;
 import org.azkfw.crawler.config.CrawlerConfig.CrawlerParameterConfig;
 import org.azkfw.crawler.config.CrawlerConfig.CrawlerThreadConfig;
 import org.azkfw.crawler.lang.CrawlerSetupException;
-import org.azkfw.crawler.logger.LoggerObject;
-import org.azkfw.crawler.parameter.ParameterSupport;
 import org.azkfw.crawler.schedule.CrawlerSchedule;
 import org.azkfw.crawler.store.CrawlerSessionStore;
 import org.azkfw.crawler.task.CrawlerTask;
 import org.azkfw.crawler.task.CrawlerTaskResult;
+import org.azkfw.crawler.task.support.CrawlerTaskControlSupport;
+import org.azkfw.lang.LoggingObject;
+import org.azkfw.persistence.parameter.Parameter;
+import org.azkfw.persistence.parameter.ParameterSupport;
 import org.azkfw.persistence.proterty.Property;
 import org.azkfw.persistence.proterty.PropertyFile;
 import org.azkfw.persistence.proterty.PropertyManager;
@@ -51,7 +56,7 @@ import org.azkfw.util.StringUtility;
  * @version 1.0.0 2014/05/15
  * @author Kawakicchi
  */
-public abstract class AbstractCrawlerThread extends LoggerObject implements CrawlerThread, Runnable {
+public abstract class AbstractCrawlerThread extends LoggingObject implements CrawlerThread, Runnable {
 
 	private Context context;
 
@@ -175,7 +180,9 @@ public abstract class AbstractCrawlerThread extends LoggerObject implements Craw
 			status = Status.stoping;
 			stopRequest = true;
 
-			task.requestStop();
+			if (task instanceof CrawlerTaskControlSupport) {
+				((CrawlerTaskControlSupport) task).stop();
+			}
 		}
 	}
 
@@ -357,6 +364,8 @@ public abstract class AbstractCrawlerThread extends LoggerObject implements Craw
 	}
 
 	private void putParameters(final ParameterSupport aSupport, final List<CrawlerParameterConfig> aParameters) throws CrawlerSetupException {
+		Map<String, Object> parameters = new HashMap<String, Object>();
+
 		for (CrawlerParameterConfig parameter : aParameters) {
 			if (null != parameter.getFile() && 0 < parameter.getFile().length()) {
 
@@ -365,7 +374,12 @@ public abstract class AbstractCrawlerThread extends LoggerObject implements Craw
 					if (null != stream) {
 						Properties p = new Properties();
 						p.load(stream);
-						aSupport.addParameter(p);
+
+						for (Enumeration<?> e = p.propertyNames(); e.hasMoreElements();) {
+							String name = (String) e.nextElement();
+							String value = p.getProperty(name);
+							parameters.put(name, value);
+						}
 					}
 				} catch (IOException ex) {
 					fatal(ex);
@@ -373,8 +387,10 @@ public abstract class AbstractCrawlerThread extends LoggerObject implements Craw
 				}
 
 			} else if (null != parameter.getKey() && 0 < parameter.getKey().length() && null != parameter.getValue()) {
-				aSupport.addParameter(parameter.getKey(), parameter.getValue());
+				parameters.put(parameter.getKey(), parameter.getValue());
 			}
 		}
+
+		aSupport.setParameter(Parameter.Builder.build(parameters));
 	}
 }

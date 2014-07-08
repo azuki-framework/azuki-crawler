@@ -28,11 +28,11 @@ import org.azkfw.crawler.config.CrawlerConfig;
 import org.azkfw.crawler.config.CrawlerConfig.CrawlerThreadConfig;
 import org.azkfw.crawler.control.CrawlerControlServer;
 import org.azkfw.crawler.lang.CrawlerSetupException;
-import org.azkfw.crawler.logger.LoggerObject;
 import org.azkfw.crawler.manager.CrawlerManagerServer;
 import org.azkfw.crawler.thread.BasicCrawlerThread;
 import org.azkfw.crawler.thread.CrawlerThread;
 import org.azkfw.crawler.thread.CrawlerThread.Status;
+import org.azkfw.lang.LoggingObject;
 import org.azkfw.plugin.PluginManager;
 import org.azkfw.plugin.PluginServiceException;
 import org.azkfw.util.StringUtility;
@@ -44,7 +44,7 @@ import org.azkfw.util.StringUtility;
  * @version 1.0.0 2014/05/13
  * @author Kawakicchi
  */
-public class CrawlerServer extends LoggerObject {
+public class CrawlerServer extends LoggingObject {
 
 	/**
 	 * 設定情報

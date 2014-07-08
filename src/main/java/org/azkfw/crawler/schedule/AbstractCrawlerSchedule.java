@@ -17,31 +17,27 @@
  */
 package org.azkfw.crawler.schedule;
 
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
 import org.azkfw.crawler.lang.CrawlerSetupException;
-import org.azkfw.crawler.logger.LoggerObject;
-import org.azkfw.crawler.parameter.ParameterSupport;
+import org.azkfw.lang.LoggingObject;
+import org.azkfw.persistence.parameter.Parameter;
+import org.azkfw.persistence.parameter.ParameterSupport;
 
 /**
  * @since 1.0.0
  * @version 1.0.0 2014/05/12
  * @author Kawakicchi
  */
-public abstract class AbstractCrawlerSchedule extends LoggerObject implements CrawlerSchedule, ParameterSupport {
+public abstract class AbstractCrawlerSchedule extends LoggingObject implements CrawlerSchedule, ParameterSupport {
 
 	/** パラメータ */
-	private Map<String, Object> parameters;
+	private Parameter parameter;
 
 	/**
 	 * コンストラクタ
 	 */
 	public AbstractCrawlerSchedule() {
 		super(CrawlerSchedule.class);
-		parameters = new HashMap<String, Object>();
+		parameter = null;
 	}
 
 	/**
@@ -51,7 +47,7 @@ public abstract class AbstractCrawlerSchedule extends LoggerObject implements Cr
 	 */
 	public AbstractCrawlerSchedule(final Class<?> aClass) {
 		super(aClass);
-		parameters = new HashMap<String, Object>();
+		parameter = null;
 	}
 
 	@Override
@@ -96,93 +92,16 @@ public abstract class AbstractCrawlerSchedule extends LoggerObject implements Cr
 	protected abstract void doRelease();
 
 	@Override
-	public final void addParameter(final String aKey, final Object aValue) {
-		parameters.put(aKey, aValue);
+	public final void setParameter(final Parameter aParameter) {
+		parameter = aParameter;
 	}
 
-	@Override
-	public final void addParameters(final Map<String, Object> aMap) {
-		parameters.putAll(aMap);
-	}
-
-	@Override
-	public void addParameter(final Properties aProperties) {
-		for (Enumeration<?> e = aProperties.propertyNames(); e.hasMoreElements();) {
-			String key = (String) e.nextElement();
-			String value = aProperties.getProperty(key);
-			parameters.put(key, value);
-		}
-	}
-
-	protected final Object getParameter(final String aKey) {
-		return parameters.get(aKey);
-	}
-
-	protected final String getParameter(final String aKey, final String aDefault) {
-		String result = aDefault;
-		if (parameters.containsKey(aKey)) {
-			Object obj = parameters.get(aKey);
-			if (null == obj) {
-				result = null;
-			} else if (obj instanceof String) {
-				result = (String) obj;
-			} else {
-				result = obj.toString();
-			}
-		}
-		return result;
-	}
-
-	protected final int getParameter(final String aKey, final int aDefault) {
-		int result = aDefault;
-		if (parameters.containsKey(aKey)) {
-			Object obj = parameters.get(aKey);
-			if (null != obj) {
-				if (obj instanceof Integer) {
-					result = ((Integer) obj).intValue();
-				} else {
-					try {
-						result = Integer.parseInt(obj.toString());
-					} catch (NumberFormatException ex) {
-						error("Integer parse error.[Key: " + aKey + "; value: " + obj.toString() + "]", ex);
-					}
-				}
-			}
-		}
-		return result;
-	}
-
-	protected final long getParameter(final String aKey, final long aDefault) {
-		long result = aDefault;
-		if (parameters.containsKey(aKey)) {
-			Object obj = parameters.get(aKey);
-			if (null != obj) {
-				if (obj instanceof Long) {
-					result = ((Long) obj).intValue();
-				} else {
-					try {
-						result = Long.parseLong(obj.toString());
-					} catch (NumberFormatException ex) {
-						error("Long parse error.[Key: " + aKey + "; value: " + obj.toString() + "]", ex);
-					}
-				}
-			}
-		}
-		return result;
-	}
-
-	protected final boolean getParameter(final String aKey, final boolean aDefault) {
-		boolean result = aDefault;
-		if (parameters.containsKey(aKey)) {
-			Object obj = parameters.get(aKey);
-			if (null != obj) {
-				if (obj instanceof Boolean) {
-					result = ((Boolean) obj).booleanValue();
-				} else {
-					result = Boolean.parseBoolean(obj.toString());
-				}
-			}
-		}
-		return result;
+	/**
+	 * パラメータ情報を取得する。
+	 * 
+	 * @return パラメータ情報
+	 */
+	protected final Parameter getParameter() {
+		return parameter;
 	}
 }

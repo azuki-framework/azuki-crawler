@@ -15,17 +15,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.azkfw.crawler.logger;
+package org.azkfw.crawler.task.support;
 
 /**
- * このインターフェースは、ログサポート機能を表現するインターフェースです。
+ * このインターフェースは、クローラタスクの状態サポート機能を表現するインターフェースです。
  * 
  * @since 1.0.0
- * @version 1.0.0 2014/05/13
+ * @version 1.0.0 2014/05/15
  * @author Kawakicchi
  */
-public interface LoggerSupport {
+public interface CrawlerTaskStateSupport {
 
-	public void setLogger(final Logger aLogger);
+	/**
+	 * 進行状況を取得する。
+	 * 
+	 * @return 進行状況(0.0～100.0)
+	 */
+	public float getStateProgress();
 
+	/**
+	 * 状況メッセージを取得する。
+	 * 
+	 * @return メッセージ
+	 */
+	public String getStateMessage();
 }

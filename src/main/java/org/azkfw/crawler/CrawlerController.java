@@ -35,7 +35,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.azkfw.context.Context;
 import org.azkfw.crawler.config.CrawlerConfig.CrawlerControllerConfig;
-import org.azkfw.crawler.logger.LoggerObject;
+import org.azkfw.lang.LoggingObject;
 
 /**
  * このクラスは、クローラを制御するためのコントロールクラスです。
@@ -44,7 +44,7 @@ import org.azkfw.crawler.logger.LoggerObject;
  * @version 1.0.0 2014/05/13
  * @author Kawakicchi
  */
-class CrawlerController extends LoggerObject {
+class CrawlerController extends LoggingObject {
 
 	/**
 	 * 設定情報

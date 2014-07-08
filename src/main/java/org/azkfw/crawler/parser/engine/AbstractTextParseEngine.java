@@ -22,7 +22,7 @@ import java.nio.charset.Charset;
 import org.azkfw.crawler.content.Content;
 
 /**
- * このクラスは、テキスト解析を行うためのエンジンを定義するための基底クラスです。
+ * このクラスは、テキストコンテンツに対して解析を行うエンジンを定義するための基底クラスです。
  * 
  * @since 1.0.0
  * @version 1.0.0 2014/05/08
@@ -97,6 +97,15 @@ public abstract class AbstractTextParseEngine extends AbstractContentParseEngine
 	 */
 	public AbstractTextParseEngine(final Class<?> aClass, final Content aContent, final Charset aCharset) {
 		super(aClass, aContent);
+		charset = aCharset;
+	}
+
+	/**
+	 * 文字コードを設定する。
+	 * 
+	 * @param aCharset 文字コード
+	 */
+	protected final void setCharset(final Charset aCharset) {
 		charset = aCharset;
 	}
 

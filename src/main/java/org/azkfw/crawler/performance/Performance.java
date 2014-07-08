@@ -17,14 +17,14 @@
  */
 package org.azkfw.crawler.performance;
 
-import org.azkfw.crawler.logger.LoggerObject;
+import org.azkfw.lang.LoggingObject;
 
 /**
  * @since 1.0.0
  * @version 1.0.0 2014/05/15
  * @author Kawakicchi
  */
-public class Performance extends LoggerObject {
+public class Performance extends LoggingObject {
 
 	private String name;
 	private long start;

@@ -61,8 +61,4 @@ public interface CrawlerTask {
 	 */
 	public CrawlerTaskResult execute() throws CrawlerServiceException;
 
-	/**
-	 * タスクに停止要求する。
-	 */
-	public void requestStop();
 }

@@ -35,6 +35,7 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
+import org.azkfw.persistence.parameter.Parameter;
 import org.azkfw.persistence.proterty.PropertyFile;
 
 /**
@@ -69,12 +70,13 @@ public class DownloaderCrawlerTask extends AbstractPersistenceCrawlerTask {
 
 	@Override
 	protected void doSetup() {
-		url = getParameter("url", null);
-		file = getParameter("file", null);
+		Parameter p = getParameter();
+
+		url = p.getString("url");
+		file = p.getString("file");
+
 		info(String.format("url  : %s", url));
 		info(String.format("file : %s", file));
-		
-		System.out.println(getProperty().getString("message", "None message."));
 	}
 
 	@Override
@@ -89,7 +91,6 @@ public class DownloaderCrawlerTask extends AbstractPersistenceCrawlerTask {
 
 	@Override
 	protected CrawlerTaskResult doExecute() {
-		
 
 		CrawlerTaskResult result = new CrawlerTaskResult();
 

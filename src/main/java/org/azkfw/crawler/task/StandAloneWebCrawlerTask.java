@@ -51,8 +51,9 @@ public class StandAloneWebCrawlerTask extends AbstractCrawlerTask {
 
 	@Override
 	protected CrawlerTaskResult doExecute() throws CrawlerServiceException {
+		CrawlerTaskResult result = new CrawlerTaskResult();
 
-		return null;
+		return result;
 	}
 
 }

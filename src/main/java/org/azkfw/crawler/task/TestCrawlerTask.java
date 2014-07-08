@@ -17,6 +17,9 @@
  */
 package org.azkfw.crawler.task;
 
+import org.azkfw.crawler.task.support.CrawlerTaskStateSupport;
+import org.azkfw.persistence.parameter.Parameter;
+
 /**
  * このクラスは、テスト用のクローラタスククラスです。
  * 
@@ -61,7 +64,9 @@ public class TestCrawlerTask extends AbstractPersistenceCrawlerTask implements C
 
 	@Override
 	protected CrawlerTaskResult doExecute() {
-		info("Environment : " + getParameter("environment", "none"));
+		Parameter p = getParameter();
+
+		info("Environment : " + p.getString("environment", "none"));
 		try {
 			while (100.f > progress && !isRequestStop()) {
 				progress += 1.f;

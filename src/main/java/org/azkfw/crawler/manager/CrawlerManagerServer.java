@@ -36,13 +36,13 @@ import org.azkfw.crawler.CrawlerServer;
 import org.azkfw.crawler.access.AccessControl;
 import org.azkfw.crawler.config.CrawlerConfig.CrawlerManagerConfig;
 import org.azkfw.crawler.localization.LocalizeTransform;
-import org.azkfw.crawler.logger.LoggerObject;
 import org.azkfw.crawler.schedule.CrawlerSchedule;
 import org.azkfw.crawler.task.CrawlerTask;
-import org.azkfw.crawler.task.CrawlerTaskStateSupport;
+import org.azkfw.crawler.task.support.CrawlerTaskStateSupport;
 import org.azkfw.crawler.thread.CrawlerTaskLog;
 import org.azkfw.crawler.thread.CrawlerThread;
 import org.azkfw.crawler.thread.CrawlerThread.Status;
+import org.azkfw.lang.LoggingObject;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -55,7 +55,7 @@ import com.sun.net.httpserver.HttpServer;
  * @version 1.0.0 2014/05/14
  * @author Kawakicchi
  */
-public class CrawlerManagerServer extends LoggerObject implements HttpHandler {
+public class CrawlerManagerServer extends LoggingObject implements HttpHandler {
 
 	private CrawlerServer server;
 	private Context context;

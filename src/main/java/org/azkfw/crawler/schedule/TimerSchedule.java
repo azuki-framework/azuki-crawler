@@ -17,6 +17,8 @@
  */
 package org.azkfw.crawler.schedule;
 
+import org.azkfw.persistence.parameter.Parameter;
+
 /**
  * このクラスは、一定時間単位にスケジュールするクラスです。
  * 
@@ -43,7 +45,9 @@ public class TimerSchedule extends AbstractCrawlerSchedule {
 
 	@Override
 	protected void doSetup() {
-		interval = getParameter("interval", 60 * 1000);
+		Parameter p = getParameter();
+
+		interval = p.getLong("interval", Long.valueOf(60 * 1000));
 	}
 
 	@Override

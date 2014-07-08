@@ -33,7 +33,7 @@ import org.azkfw.util.StringUtility;
  * @version 1.0.0 2014/05/08
  * @author Kawakicchi
  */
-public final class SampleHtmlTextParseEngine extends SimpleHtmlTextParseEngine {
+public final class SampleHtmlParseEngine extends SimpleHtmlParseEngine {
 
 	/**
 	 * メイン関数
@@ -44,7 +44,7 @@ public final class SampleHtmlTextParseEngine extends SimpleHtmlTextParseEngine {
 		//Content content = new FileContent(new File("C:\\temp\\bbb.html"));
 		//ParseEngine engin = new SampleHtmlTextParseEngine("http://yahoo.co.jp", content);
 		Content content = new FileContent(new File("C:\\html\\6\\6.html"));
-		ParseEngine engin = new SampleHtmlTextParseEngine("http://tabelog.com/osaka/A2704/A270402/27041365", content);
+		ParseEngine engin = new SampleHtmlParseEngine("http://tabelog.com/osaka/A2704/A270402/27041365", content);
 
 		engin.initialize();
 		engin.parse();
@@ -57,8 +57,8 @@ public final class SampleHtmlTextParseEngine extends SimpleHtmlTextParseEngine {
 	 * @param aUrl URL
 	 * @param aContent コンテンツ
 	 */
-	public SampleHtmlTextParseEngine(final String aUrl, final Content aContent) {
-		super(SampleHtmlTextParseEngine.class, aUrl, aContent);
+	public SampleHtmlParseEngine(final String aUrl, final Content aContent) {
+		super(SampleHtmlParseEngine.class, aUrl, aContent);
 	}
 
 	/**
@@ -68,8 +68,8 @@ public final class SampleHtmlTextParseEngine extends SimpleHtmlTextParseEngine {
 	 * @param aContent コンテンツ
 	 * @param aCharset 文字コード
 	 */
-	public SampleHtmlTextParseEngine(final String aUrl, final Content aContent, final Charset aCharset) {
-		super(SampleHtmlTextParseEngine.class, aUrl, aContent, aCharset);
+	public SampleHtmlParseEngine(final String aUrl, final Content aContent, final Charset aCharset) {
+		super(SampleHtmlParseEngine.class, aUrl, aContent, aCharset);
 	}
 
 	@Override
@@ -82,14 +82,17 @@ public final class SampleHtmlTextParseEngine extends SimpleHtmlTextParseEngine {
 
 	}
 
+	@Override
 	protected void doFindTitle(final String aTitle) {
 		System.out.println("Title  : " + aTitle);
 	}
 
+	@Override
 	protected void doFindDescription(final String aDescription) {
 		System.out.println("Descrip: " + aDescription);
 	}
 
+	@Override
 	protected void doFindKeywords(final List<String> aKeywords) {
 		for (String keyword : aKeywords) {
 			System.out.println("Keyword: " + keyword);

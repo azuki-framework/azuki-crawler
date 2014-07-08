@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.azkfw.crawler.lang.CrawlerSetupException;
+import org.azkfw.persistence.parameter.Parameter;
 
 /**
  * このクラスは、外部アプリケーションの実行を行うクローラタスククラスです。
@@ -53,12 +54,14 @@ public class ApplicationCrawlerTask extends AbstractPersistenceCrawlerTask {
 
 	@Override
 	protected void doSetup() throws CrawlerSetupException {
-		application = getParameter("application", null);
-		currentDir = getParameter("currentDir", null);
+		Parameter p = getParameter();
+
+		application = p.getString("application");
+		currentDir = p.getString("currentDir");
 		parameters = new ArrayList<String>();
 		int index = 1;
 		while (true) {
-			String value = getParameter("parameter" + index, null);
+			String value = p.getString("parameter" + index);
 			if (null == value)
 				break;
 			parameters.add(value);

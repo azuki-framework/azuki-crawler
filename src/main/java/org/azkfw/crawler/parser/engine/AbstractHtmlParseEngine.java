@@ -22,20 +22,20 @@ import java.nio.charset.Charset;
 import org.azkfw.crawler.content.Content;
 
 /**
- * このクラスは、HTMLテキスト解析を行うためのエンジンを定義するための基底クラスです。
+ * このクラスは、テキストコンテンツに対して解析を行うエンジンを定義するための基底クラスです。
  * 
  * @since 1.0.0
  * @version 1.0.0 2014/05/08
  * @author Kawakicchi
  */
-public abstract class AbstractHtmlTextParseEngine extends AbstractTextParseEngine {
+public abstract class AbstractHtmlParseEngine extends AbstractTextParseEngine {
 
 	/**
 	 * コンストラクタ
 	 * 
 	 * @param aContent コンテンツ
 	 */
-	public AbstractHtmlTextParseEngine(final Content aContent) {
+	public AbstractHtmlParseEngine(final Content aContent) {
 		super(aContent);
 	}
 
@@ -45,7 +45,7 @@ public abstract class AbstractHtmlTextParseEngine extends AbstractTextParseEngin
 	 * @param aContent コンテンツ
 	 * @param aCharset 文字コード
 	 */
-	public AbstractHtmlTextParseEngine(final Content aContent, final Charset aCharset) {
+	public AbstractHtmlParseEngine(final Content aContent, final Charset aCharset) {
 		super(aContent, aCharset);
 	}
 
@@ -55,7 +55,7 @@ public abstract class AbstractHtmlTextParseEngine extends AbstractTextParseEngin
 	 * @param aName 名前
 	 * @param aContent コンテンツ
 	 */
-	public AbstractHtmlTextParseEngine(final String aName, final Content aContent) {
+	public AbstractHtmlParseEngine(final String aName, final Content aContent) {
 		super(aName, aContent);
 	}
 
@@ -66,7 +66,7 @@ public abstract class AbstractHtmlTextParseEngine extends AbstractTextParseEngin
 	 * @param aContent コンテンツ
 	 * @param aCharset 文字コード
 	 */
-	public AbstractHtmlTextParseEngine(final String aName, final Content aContent, final Charset aCharset) {
+	public AbstractHtmlParseEngine(final String aName, final Content aContent, final Charset aCharset) {
 		super(aName, aContent, aCharset);
 	}
 
@@ -76,7 +76,7 @@ public abstract class AbstractHtmlTextParseEngine extends AbstractTextParseEngin
 	 * @param aClass クラス
 	 * @param aContent コンテンツ
 	 */
-	public AbstractHtmlTextParseEngine(final Class<?> aClass, final Content aContent) {
+	public AbstractHtmlParseEngine(final Class<?> aClass, final Content aContent) {
 		super(aClass, aContent);
 	}
 
@@ -87,13 +87,13 @@ public abstract class AbstractHtmlTextParseEngine extends AbstractTextParseEngin
 	 * @param aContent コンテンツ
 	 * @param aCharset 文字コード
 	 */
-	public AbstractHtmlTextParseEngine(final Class<?> aClass, final Content aContent, final Charset aCharset) {
+	public AbstractHtmlParseEngine(final Class<?> aClass, final Content aContent, final Charset aCharset) {
 		super(aClass, aContent, aCharset);
 	}
 
 	@Override
 	protected final boolean doParseTextContent(final Content aContent) {
-		return doParseHtmlTextContent(aContent);
+		return doParseHtmlContent(aContent);
 	}
 
 	/**
@@ -104,5 +104,5 @@ public abstract class AbstractHtmlTextParseEngine extends AbstractTextParseEngin
 	 * 
 	 * @return 解析結果
 	 */
-	protected abstract boolean doParseHtmlTextContent(final Content aContent);
+	protected abstract boolean doParseHtmlContent(final Content aContent);
 }

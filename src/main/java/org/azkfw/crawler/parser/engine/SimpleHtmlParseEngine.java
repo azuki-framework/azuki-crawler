@@ -45,7 +45,7 @@ import org.azkfw.util.URLUtility;
  * @version 1.0.0 2014/05/08
  * @author Kawakicchi
  */
-public abstract class SimpleHtmlTextParseEngine extends AbstractHtmlTextParseEngine {
+public abstract class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 
 	/** URL */
 	private String url;
@@ -56,8 +56,8 @@ public abstract class SimpleHtmlTextParseEngine extends AbstractHtmlTextParseEng
 	 * @param aUrl URL
 	 * @param aContent コンテンツ
 	 */
-	public SimpleHtmlTextParseEngine(final String aUrl, final Content aContent) {
-		super(SimpleHtmlTextParseEngine.class, aContent);
+	public SimpleHtmlParseEngine(final String aUrl, final Content aContent) {
+		super(SimpleHtmlParseEngine.class, aContent);
 		url = aUrl;
 	}
 
@@ -68,7 +68,7 @@ public abstract class SimpleHtmlTextParseEngine extends AbstractHtmlTextParseEng
 	 * @param aUrl URL
 	 * @param aContent コンテンツ
 	 */
-	public SimpleHtmlTextParseEngine(final String aName, final String aUrl, final Content aContent) {
+	public SimpleHtmlParseEngine(final String aName, final String aUrl, final Content aContent) {
 		super(aName, aContent);
 		url = aUrl;
 	}
@@ -80,7 +80,7 @@ public abstract class SimpleHtmlTextParseEngine extends AbstractHtmlTextParseEng
 	 * @param aUrl URL
 	 * @param aContent コンテンツ
 	 */
-	public SimpleHtmlTextParseEngine(final Class<?> aClass, final String aUrl, final Content aContent) {
+	public SimpleHtmlParseEngine(final Class<?> aClass, final String aUrl, final Content aContent) {
 		super(aClass, aContent);
 		url = aUrl;
 	}
@@ -92,8 +92,8 @@ public abstract class SimpleHtmlTextParseEngine extends AbstractHtmlTextParseEng
 	 * @param aContent コンテンツ
 	 * @param aCharset 文字コード
 	 */
-	public SimpleHtmlTextParseEngine(final String aUrl, final Content aContent, final Charset aCharset) {
-		super(SimpleHtmlTextParseEngine.class, aContent, aCharset);
+	public SimpleHtmlParseEngine(final String aUrl, final Content aContent, final Charset aCharset) {
+		super(SimpleHtmlParseEngine.class, aContent, aCharset);
 		url = aUrl;
 	}
 
@@ -105,7 +105,7 @@ public abstract class SimpleHtmlTextParseEngine extends AbstractHtmlTextParseEng
 	 * @param aContent コンテンツ
 	 * @param aCharset 文字コード
 	 */
-	public SimpleHtmlTextParseEngine(final String aName, final String aUrl, final Content aContent, final Charset aCharset) {
+	public SimpleHtmlParseEngine(final String aName, final String aUrl, final Content aContent, final Charset aCharset) {
 		super(aName, aContent, aCharset);
 		url = aUrl;
 	}
@@ -118,13 +118,13 @@ public abstract class SimpleHtmlTextParseEngine extends AbstractHtmlTextParseEng
 	 * @param aContent コンテンツ
 	 * @param aCharset 文字コード
 	 */
-	public SimpleHtmlTextParseEngine(final Class<?> aClass, final String aUrl, final Content aContent, final Charset aCharset) {
+	public SimpleHtmlParseEngine(final Class<?> aClass, final String aUrl, final Content aContent, final Charset aCharset) {
 		super(aClass, aContent, aCharset);
 		url = aUrl;
 	}
 
 	@Override
-	protected boolean doParseHtmlTextContent(final Content aContent) {
+	protected boolean doParseHtmlContent(final Content aContent) {
 		boolean result = false;
 
 		Charset charset = getCharset();
@@ -340,7 +340,7 @@ public abstract class SimpleHtmlTextParseEngine extends AbstractHtmlTextParseEng
 	 */
 	private final class HtmlParserCallback extends ParserCallback {
 
-		private SimpleHtmlTextParseEngine engin;
+		private SimpleHtmlParseEngine engin;
 		private String source;
 
 		private boolean titleFlag;
@@ -348,6 +348,7 @@ public abstract class SimpleHtmlTextParseEngine extends AbstractHtmlTextParseEng
 
 		private boolean scriptFlag;
 		private String scriptSrc;
+		@SuppressWarnings("unused")
 		private int scriptStartPos;
 		private int scriptEndPos;
 
@@ -361,7 +362,7 @@ public abstract class SimpleHtmlTextParseEngine extends AbstractHtmlTextParseEng
 		 * @param aEngin エンジン
 		 * @param aSource HTML文字列
 		 */
-		public HtmlParserCallback(final SimpleHtmlTextParseEngine aEngin, final String aSource) {
+		public HtmlParserCallback(final SimpleHtmlParseEngine aEngin, final String aSource) {
 			engin = aEngin;
 			source = aSource;
 
@@ -378,6 +379,7 @@ public abstract class SimpleHtmlTextParseEngine extends AbstractHtmlTextParseEng
 			anchorInnerTexts = new ArrayList<String>();
 		}
 
+		@SuppressWarnings("unused")
 		@Override
 		public void handleSimpleTag(final Tag tag, final MutableAttributeSet attr, final int pos) {
 			if (tag.equals(HTML.Tag.IMG)) {
@@ -416,6 +418,7 @@ public abstract class SimpleHtmlTextParseEngine extends AbstractHtmlTextParseEng
 			super.handleSimpleTag(tag, attr, pos);
 		}
 
+		@SuppressWarnings("unused")
 		@Override
 		public void handleStartTag(final Tag tag, final MutableAttributeSet attr, final int pos) {
 			if (tag.equals(HTML.Tag.A)) {

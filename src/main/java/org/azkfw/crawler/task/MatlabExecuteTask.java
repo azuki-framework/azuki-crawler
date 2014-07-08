@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.azkfw.crawler.lang.CrawlerSetupException;
+import org.azkfw.persistence.parameter.Parameter;
 import org.azkfw.util.PathUtility;
 import org.azkfw.util.StringUtility;
 
@@ -61,9 +62,11 @@ public class MatlabExecuteTask extends AbstractPersistenceCrawlerTask {
 
 	@Override
 	protected void doSetup() throws CrawlerSetupException {
-		workDir = getParameter("workDir", null);
-		fileName = getParameter("fileName", null);
-		logFile = getParameter("logFile", null);
+		Parameter p = getParameter();
+
+		workDir = p.getString("workDir");
+		fileName = p.getString("fileName");
+		logFile = p.getString("logFile");
 
 		logFile = PathUtility.cat(workDir, logFile);
 

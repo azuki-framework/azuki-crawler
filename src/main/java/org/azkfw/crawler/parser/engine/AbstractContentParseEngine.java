@@ -20,7 +20,7 @@ package org.azkfw.crawler.parser.engine;
 import org.azkfw.crawler.content.Content;
 
 /**
- * このクラスは、解析エンジンを定義するための基底クラスです。
+ * このクラスは、コンテンツに対して解析を行うエンジンを定義するための基底クラスです。
  * 
  * @since 1.0.0
  * @version 1.0.0 2014/05/08
