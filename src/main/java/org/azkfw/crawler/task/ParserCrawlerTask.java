@@ -41,7 +41,7 @@ import org.azkfw.persistence.parameter.Parameter;
  */
 public final class ParserCrawlerTask extends AbstractPersistenceCrawlerTask {
 
-	private String file;
+	private File file;
 
 	public ParserCrawlerTask() {
 		super(ParserCrawlerTask.class);
@@ -56,9 +56,9 @@ public final class ParserCrawlerTask extends AbstractPersistenceCrawlerTask {
 	protected void doSetup() {
 		Parameter p = getParameter();
 
-		file = p.getString("file");
+		file = new File(p.getString("file"));
 
-		info(String.format("file : %s", file));
+		info(String.format("file : %s", file.getAbsolutePath()));
 	}
 
 	@Override
@@ -88,10 +88,10 @@ public final class ParserCrawlerTask extends AbstractPersistenceCrawlerTask {
 		return result;
 	}
 
-	private boolean parse(final String aName) {
+	private boolean parse(final File aFile) {
 		boolean result = false;
 
-		Content content = new FileContent(new File(aName));
+		Content content = new FileContent(aFile);
 		//ParseEngine engine = new HtmlTextParseEngine("http://yahoo.co.jp", content, Charset.forName("UTF-8"));
 		ParseEngine engine = new SampleHtmlParseEngine("http://yahoo.co.jp", content);
 

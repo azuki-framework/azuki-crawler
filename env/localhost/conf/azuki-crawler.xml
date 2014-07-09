@@ -61,11 +61,16 @@
 			thread="1">
 			<task classname="org.azkfw.crawler.task.DownloaderCrawlerTask">
 				<parameter key="url" value="http://yahoo.co.jp" />
-				<parameter key="file" value="c:\temp\aaa.html" />
+				<parameter key="file" value="c:\temp\ccc.html" />
 			</task>
+			<!-- 
 			<schedule classname="org.azkfw.crawler.schedule.DatetimeSchedule">
-				<parameter key="pattern" value="*/10 * * * *" /> <!-- 10分毎 -->
+				<parameter key="pattern" value="*/10 * * * *" />
 			</schedule>
+			-->
+			<schedule classname="org.azkfw.crawler.schedule.CountSchedule">
+				<parameter key="count" value="1" />
+			</schedule>			
 		</thread>
 
 		<thread title="HTML解析タスク" description="" startup="true">

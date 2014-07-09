@@ -124,7 +124,7 @@ public abstract class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	}
 
 	@Override
-	protected boolean doParseHtmlContent(final Content aContent) {
+	protected final boolean doParseHtmlContent(final Content aContent) {
 		boolean result = false;
 
 		Charset charset = getCharset();
