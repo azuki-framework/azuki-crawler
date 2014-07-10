@@ -51,13 +51,11 @@ public class DownloaderCrawlerTask extends AbstractPersistenceCrawlerTask {
 
 	private String userAgent;
 
+	/**
+	 * コンストラクタ
+	 */
 	public DownloaderCrawlerTask() {
 		super(DownloaderCrawlerTask.class);
-	}
-
-	@Override
-	public String getName() {
-		return this.getClass().getSimpleName();
 	}
 
 	@Override
@@ -77,6 +75,14 @@ public class DownloaderCrawlerTask extends AbstractPersistenceCrawlerTask {
 		Property pp = getProperty();
 		userAgent = pp.getString("userAgent", "Azuki crawler task 1.0");
 		info(String.format("userAgent : %s", userAgent));
+	}
+
+	@Override
+	protected void doStartup() {
+	}
+
+	@Override
+	protected void doShutdown() {
 	}
 
 	@Override

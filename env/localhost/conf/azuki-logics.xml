@@ -14,5 +14,6 @@
 -->
 <azuki>
 	<logics>
+		<logic name="WebCrawlerManager" logic="org.azkfw.crawler.logic.impl.WebCrawlerManagerImpl" interface="org.azkfw.crawler.logic.WebCrawlerManager" />
 	</logics>
 </azuki>

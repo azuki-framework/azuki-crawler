@@ -47,9 +47,11 @@ public class ApplicationCrawlerTask extends AbstractPersistenceCrawlerTask {
 	private String currentDir;
 	private List<String> parameters;
 
-	@Override
-	public String getName() {
-		return this.getClass().getSimpleName();
+	/**
+	 * コンストラクタ
+	 */
+	public ApplicationCrawlerTask() {
+		super(ApplicationCrawlerTask.class);
 	}
 
 	@Override
@@ -69,6 +71,14 @@ public class ApplicationCrawlerTask extends AbstractPersistenceCrawlerTask {
 		}
 	}
 
+	@Override
+	protected void doStartup() {
+	}
+
+	@Override
+	protected void doShutdown() {
+	}
+	
 	@Override
 	protected void doInitialize() {
 	}

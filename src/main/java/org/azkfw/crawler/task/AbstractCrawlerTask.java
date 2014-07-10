@@ -71,18 +71,33 @@ public abstract class AbstractCrawlerTask extends LoggingObject implements Crawl
 	}
 
 	@Override
+	public String getName() {
+		return this.getClass().getSimpleName();
+	}
+
+	@Override
 	public final void setup() throws CrawlerSetupException {
 		doSetup();
 	}
 
 	@Override
-	public final void initialize() {
+	public final void startup() throws CrawlerServiceException {
+		doStartup();
+	}
+
+	@Override
+	public final void shutdown() throws CrawlerServiceException {
+		doShutdown();
+	}
+
+	@Override
+	public final void initialize() throws CrawlerServiceException {
 		doInitialize();
 		requestStopFlag = false;
 	}
 
 	@Override
-	public final void release() {
+	public final void release() throws CrawlerServiceException {
 		doRelease();
 	}
 
@@ -126,20 +141,53 @@ public abstract class AbstractCrawlerTask extends LoggingObject implements Crawl
 
 	/**
 	 * セットアップ処理を行う。
+	 * <p>
+	 * クローラサーバ起動時に１度のみ実行される。
+	 * </p>
 	 * 
 	 * @throws CrawlerSetupException セットアップ処理において問題が発生した場合
 	 */
 	protected abstract void doSetup() throws CrawlerSetupException;
 
 	/**
-	 * 初期化処理を行う。
+	 * スタートアップ処理を行う。
+	 * <p>
+	 * クローラスレッド起動時に実行される。
+	 * </p>
+	 * 
+	 * @throws CrawlerServiceException クローラ機能に起因する問題が発生した場合
 	 */
-	protected abstract void doInitialize();
+	protected abstract void doStartup() throws CrawlerServiceException;
+
+	/**
+	 * シャットダウン処理を行う。
+	 * <p>
+	 * クローラスレッド停止時に実行される。
+	 * </p>
+	 * 
+	 * @throws CrawlerServiceException クローラ機能に起因する問題が発生した場合
+	 */
+	protected abstract void doShutdown() throws CrawlerServiceException;
+
+	/**
+	 * 初期化処理を行う。
+	 * <p>
+	 * タスク実行前に実行される。
+	 * </p>
+	 * 
+	 * @throws CrawlerServiceException クローラ機能に起因する問題が発生した場合
+	 */
+	protected abstract void doInitialize() throws CrawlerServiceException;
 
 	/**
 	 * 解放処理を行う。
+	 * <p>
+	 * タスク実行後に実行される。
+	 * </p>
+	 * 
+	 * @throws CrawlerServiceException クローラ機能に起因する問題が発生した場合
 	 */
-	protected abstract void doRelease();
+	protected abstract void doRelease() throws CrawlerServiceException;
 
 	/**
 	 * タスク実行直前の処理を行う。
@@ -181,5 +229,24 @@ public abstract class AbstractCrawlerTask extends LoggingObject implements Crawl
 	 */
 	protected final Parameter getParameter() {
 		return parameter;
+	}
+
+	/**
+	 * ログを出力する。
+	 * 
+	 * @param aMessage メッセージ
+	 */
+	protected final void log(final String aMessage) {
+		String message = aMessage;
+	}
+
+	/**
+	 * ログを出力する。
+	 * 
+	 * @param aMessage メッセージ
+	 * @param objs メッセージ
+	 */
+	protected final void log(final String aMessage, final Object... objs) {
+		String message = String.format(aMessage, objs);
 	}
 }

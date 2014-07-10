@@ -55,9 +55,11 @@ public class MatlabExecuteTask extends AbstractPersistenceCrawlerTask {
 	private String logFile;
 	private String scriptName;
 
-	@Override
-	public String getName() {
-		return this.getClass().getSimpleName();
+	/**
+	 * コンストラクタ
+	 */
+	public MatlabExecuteTask() {
+		super(MatlabExecuteTask.class);
 	}
 
 	@Override
@@ -77,6 +79,14 @@ public class MatlabExecuteTask extends AbstractPersistenceCrawlerTask {
 		}
 
 		errorFileName = scriptName + ".error.log";
+	}
+
+	@Override
+	protected void doStartup() {
+	}
+
+	@Override
+	protected void doShutdown() {
 	}
 
 	@Override

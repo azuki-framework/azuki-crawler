@@ -23,6 +23,8 @@ import org.azkfw.persistence.parameter.Parameter;
 import org.azkfw.persistence.parameter.ParameterSupport;
 
 /**
+ * このクラスは、クローラのスケジュール機能を実装するための基底クラスです。
+ * 
  * @since 1.0.0
  * @version 1.0.0 2014/05/12
  * @author Kawakicchi

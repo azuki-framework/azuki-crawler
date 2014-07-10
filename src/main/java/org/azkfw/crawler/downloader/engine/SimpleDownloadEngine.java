@@ -116,8 +116,10 @@ public abstract class SimpleDownloadEngine extends AbstractDownloadEngine {
 	@Override
 	protected final boolean doDownload() {
 		boolean result = false;
+		
 		URL url = getDownloadURL();
 		File file = getDownloadFile();
+		
 		if (ObjectUtility.isAllNotNull(url, file)) {
 
 			result = get(url, null, file);

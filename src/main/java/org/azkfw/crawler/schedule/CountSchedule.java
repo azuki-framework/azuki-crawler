@@ -20,25 +20,33 @@ package org.azkfw.crawler.schedule;
 import org.azkfw.persistence.parameter.Parameter;
 
 /**
+ * このクラスは、指定回数実行を行うスケジュールクラスです。
+ * 
+ * <p>
+ * パラメータ一覧
+ * <ul>
+ * <li>count - 実行する回数(default:1)</li>
+ * </ul>
+ * </p>
+ * 
  * @since 1.0.0
  * @version 1.0.0 2014/05/12
  * @author Kawakicchi
  */
-public class CountSchedule extends AbstractCrawlerSchedule {
+public final class CountSchedule extends AbstractCrawlerSchedule {
 
 	private int maxCount;
-	private int count;
+	private int nowCount;
 
 	@Override
 	protected void doSetup() {
 		Parameter p = getParameter();
-
 		maxCount = p.getInteger("count", Integer.valueOf(0));
 	}
 
 	@Override
 	protected void doInitialize() {
-		count = 0;
+		nowCount = 0;
 	}
 
 	@Override
@@ -55,18 +63,18 @@ public class CountSchedule extends AbstractCrawlerSchedule {
 
 	@Override
 	public boolean check() {
-		count++;
+		nowCount++;
 		return true;
 	}
 
 	@Override
 	public boolean isStop() {
-		return (count > maxCount);
+		return (nowCount > maxCount);
 	}
 
 	@Override
 	public boolean isRun() {
-		return !(count > maxCount);
+		return !(nowCount > maxCount);
 	}
 
 	@Override

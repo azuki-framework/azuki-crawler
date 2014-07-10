@@ -38,20 +38,53 @@ public interface CrawlerTask {
 
 	/**
 	 * セットアップ処理を行う。
+	 * <p>
+	 * クローラサーバ起動時に一度のみ実行される。
+	 * </p>
 	 * 
 	 * @throws CrawlerSetupException セットアップ処理において問題が発生した場合
 	 */
 	public void setup() throws CrawlerSetupException;
 
 	/**
-	 * 初期化処理を行う。
+	 * スタートアップ処理を行う。
+	 * <p>
+	 * スレッド起動時に実行される。
+	 * </p>
+	 * 
+	 * @throws CrawlerServiceException クローラ機能に起因する問題が発生した場合
 	 */
-	public void initialize();
+	public void startup() throws CrawlerServiceException;
+
+	/**
+	 * シャットダウン処理を行う。
+	 * <p>
+	 * スレッド停止時に実行される。
+	 * </p>
+	 * 
+	 * @throws CrawlerServiceException クローラ機能に起因する問題が発生した場合
+	 */
+	public void shutdown() throws CrawlerServiceException;
+
+	/**
+	 * 初期化処理を行う。
+	 * <p>
+	 * タスク実行前に実行される。
+	 * </p>
+	 * 
+	 * @throws CrawlerServiceException クローラ機能に起因する問題が発生した場合
+	 */
+	public void initialize() throws CrawlerServiceException;
 
 	/**
 	 * 解放処理を行う。
+	 * <p>
+	 * タスク実行後に実行される。
+	 * </p>
+	 * 
+	 * @throws CrawlerServiceException クローラ機能に起因する問題が発生した場合
 	 */
-	public void release();
+	public void release() throws CrawlerServiceException;
 
 	/**
 	 * タスクを実行する。

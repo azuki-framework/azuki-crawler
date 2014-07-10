@@ -20,6 +20,8 @@ package org.azkfw.crawler.schedule;
 import org.azkfw.crawler.lang.CrawlerSetupException;
 
 /**
+ * このインターフェースは、クローラのスケジュール機能を表現するインターフェースです。
+ * 
  * @since 1.0.0
  * @version 1.0.0 2014/05/12
  * @author Kawakicchi

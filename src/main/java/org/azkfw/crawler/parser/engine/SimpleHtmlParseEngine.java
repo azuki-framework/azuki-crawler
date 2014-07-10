@@ -237,6 +237,14 @@ public abstract class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 		}
 	}
 
+	private void findBase(final String aHref) {
+		try {
+			doFindBase(new URL(aHref));
+		} catch (MalformedURLException ex) {
+			fatal("Base href : " + ex);
+		}
+	}
+
 	private void findText(final String aText) {
 		doFindText(aText);
 	}
@@ -291,6 +299,13 @@ public abstract class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	 * @param aUrl リンクソースURL
 	 */
 	protected abstract void doFindLink(final URL aUrl);
+
+	/**
+	 * リンクが見つかった場合に呼び出される。
+	 * 
+	 * @param aUrl リンクソースURL
+	 */
+	protected abstract void doFindBase(final URL aUrl);
 
 	/**
 	 * テキストが見つかった場合に呼び出される。
@@ -413,6 +428,11 @@ public abstract class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 							engin.findKeywords(keywords);
 						}
 					}
+				}
+			} else if (tag.equals(HTML.Tag.BASE)) {
+				String href = (String) attr.getAttribute(HTML.Attribute.HREF);
+				if (StringUtility.isNotEmpty(href)) {
+					engin.findBase(href);
 				}
 			}
 			super.handleSimpleTag(tag, attr, pos);

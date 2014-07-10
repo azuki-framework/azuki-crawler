@@ -17,44 +17,44 @@
  */
 package org.azkfw.crawler.task;
 
-import org.azkfw.crawler.task.support.CrawlerTaskStateSupport;
-import org.azkfw.persistence.parameter.Parameter;
+import org.azkfw.crawler.CrawlerServiceException;
+import org.azkfw.crawler.lang.CrawlerSetupException;
+import org.azkfw.persistence.store.Store;
 
 /**
- * このクラスは、テスト用のクローラタスククラスです。
- * 
- * <p>
- * このクローラタスクのパラメータを下記に記す。
- * <ul>
- * <li>パラメータなし</li>
- * </ul>
- * </p>
+ * このクラスは、テストを行うクローラタスククラスです。
  * 
  * @since 1.0.0
- * @version 1.0.0 2014/05/12
+ * @version 1.0.0 2014/07/10
  * @author Kawakicchi
  */
-public class TestCrawlerTask extends AbstractPersistenceCrawlerTask implements CrawlerTaskStateSupport {
+public class TestCrawlerTask extends AbstractPersistenceCrawlerTask {
 
-	private float progress;
-
+	/**
+	 * コンストラクタ
+	 */
 	public TestCrawlerTask() {
 		super(TestCrawlerTask.class);
 	}
 
 	@Override
-	public String getName() {
-		return this.getClass().getSimpleName();
+	protected void doSetup() throws CrawlerSetupException {
+
 	}
 
 	@Override
-	protected void doSetup() {
+	protected void doStartup() {
+
+	}
+
+	@Override
+	protected void doShutdown() {
 
 	}
 
 	@Override
 	protected void doInitialize() {
-		progress = 0.0f;
+
 	}
 
 	@Override
@@ -63,35 +63,18 @@ public class TestCrawlerTask extends AbstractPersistenceCrawlerTask implements C
 	}
 
 	@Override
-	protected CrawlerTaskResult doExecute() {
-		Parameter p = getParameter();
+	protected CrawlerTaskResult doExecute() throws CrawlerServiceException {
+		Store<String, Object> session = getSession();
+		Integer count = (Integer) session.get("count", Integer.valueOf(0));
 
-		info("Environment : " + p.getString("environment", "none"));
-		try {
-			while (100.f > progress && !isRequestStop()) {
-				progress += 1.f;
-				Thread.sleep(600);
-			}
-		} catch (Exception ex) {
+		info(String.format("Count %4d", count));
 
-		}
+		session.put("count", count + 1);
+
 		CrawlerTaskResult result = new CrawlerTaskResult();
 		result.setResult(true);
+		result.setStop(false);
 		return result;
-	}
-
-	@Override
-	public float getStateProgress() {
-		if (0 > progress)
-			return 0;
-		if (100 < progress)
-			return 100;
-		return progress;
-	}
-
-	@Override
-	public String getStateMessage() {
-		return String.format("進捗状況 - %.2f%%", progress);
 	}
 
 }

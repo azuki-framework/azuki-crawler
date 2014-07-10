@@ -17,26 +17,52 @@
  */
 package org.azkfw.crawler.task;
 
+import java.io.File;
+
+import org.azkfw.business.BusinessServiceException;
 import org.azkfw.crawler.CrawlerServiceException;
 import org.azkfw.crawler.lang.CrawlerSetupException;
+import org.azkfw.crawler.logic.WebCrawlerManager;
+import org.azkfw.persistence.proterty.Property;
+import org.azkfw.persistence.proterty.PropertyFile;
 
 /**
- * このクラスは、Webクロール機能を実装したクローラタスククラスです。
+ * このクラスは、スタントアロンでWebクロールを行うクローラタスククラスです。
  * 
  * @since 1.0.0
- * @version 1.0.0 2014/07/07
+ * @version 1.0.0 2014/07/10
  * @author Kawakicchi
  */
-public class StandAloneWebCrawlerTask extends AbstractCrawlerTask {
+@PropertyFile("conf/StandAloneWebCrawler.properties")
+public class StandAloneWebCrawlerTask extends AbstractBusinessCrawlerTask {
 
-	@Override
-	public String getName() {
-		return getClass().getSimpleName();
+	private File baseDirectory;
+
+	/**
+	 * コンストラクタ
+	 */
+	public StandAloneWebCrawlerTask() {
+		super(StandAloneWebCrawlerTask.class);
 	}
 
 	@Override
 	protected void doSetup() throws CrawlerSetupException {
+		Property p = getProperty();
 
+		String dir = p.getString("base.directory");
+		baseDirectory = new File(dir);
+
+		baseDirectory.mkdirs();
+
+		info("Base Directory : " + baseDirectory.getAbsolutePath());
+	}
+
+	@Override
+	protected void doStartup() {
+	}
+
+	@Override
+	protected void doShutdown() {
 	}
 
 	@Override
@@ -51,8 +77,16 @@ public class StandAloneWebCrawlerTask extends AbstractCrawlerTask {
 
 	@Override
 	protected CrawlerTaskResult doExecute() throws CrawlerServiceException {
-		CrawlerTaskResult result = new CrawlerTaskResult();
+		try {
+			WebCrawlerManager manager = (WebCrawlerManager) getLogic("WebCrawlerManager");
 
+		} catch (BusinessServiceException ex) {
+			throw new CrawlerServiceException(ex);
+		}
+
+		CrawlerTaskResult result = new CrawlerTaskResult();
+		result.setResult(true);
+		result.setStop(false);
 		return result;
 	}
 

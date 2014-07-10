@@ -35,6 +35,10 @@ public abstract class AbstractPersistenceCrawlerTask extends AbstractCrawlerTask
 
 	/**
 	 * Session store
+	 * <p>
+	 * セッション情報はスレッド起動時のみ有効
+	 * TODO: これは永続化層の機能ではない
+	 * </p>
 	 */
 	private Store<String, Object> session;
 

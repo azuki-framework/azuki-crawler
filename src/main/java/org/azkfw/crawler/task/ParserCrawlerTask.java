@@ -43,13 +43,11 @@ public final class ParserCrawlerTask extends AbstractPersistenceCrawlerTask {
 
 	private File file;
 
+	/**
+	 * コンストラクタ
+	 */
 	public ParserCrawlerTask() {
 		super(ParserCrawlerTask.class);
-	}
-
-	@Override
-	public String getName() {
-		return this.getClass().getSimpleName();
 	}
 
 	@Override
@@ -59,6 +57,14 @@ public final class ParserCrawlerTask extends AbstractPersistenceCrawlerTask {
 		file = new File(p.getString("file"));
 
 		info(String.format("file : %s", file.getAbsolutePath()));
+	}
+
+	@Override
+	protected void doStartup() {
+	}
+
+	@Override
+	protected void doShutdown() {
 	}
 
 	@Override

@@ -57,6 +57,7 @@ public class SampleDownloadEngine extends SimpleDownloadEngine {
 	 * @param aDestFile 保存ファイル
 	 */
 	public SampleDownloadEngine(final URL aUrl, final File aDestFile) {
+		super(SampleDownloadEngine.class);
 		url = aUrl;
 		file = aDestFile;
 	}

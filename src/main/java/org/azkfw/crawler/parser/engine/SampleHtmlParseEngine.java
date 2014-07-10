@@ -126,6 +126,11 @@ public final class SampleHtmlParseEngine extends SimpleHtmlParseEngine {
 	protected void doFindLink(final URL aUrl) {
 		System.out.println("Link   : " + aUrl.toExternalForm());
 	}
+	
+	@Override
+	protected void doFindBase(final URL aUrl) {
+		System.out.println("Base   : " + aUrl.toExternalForm());
+	}
 
 	@Override
 	protected void doFindText(final String aText) {

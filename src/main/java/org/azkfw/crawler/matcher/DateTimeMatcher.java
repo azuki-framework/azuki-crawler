@@ -21,7 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 
+ * このクラスは、 日付文字列のマッチング機能を実装するクラスです。
  * 
  * @since 1.0.0
  * @version 1.0.0 2014/05/13

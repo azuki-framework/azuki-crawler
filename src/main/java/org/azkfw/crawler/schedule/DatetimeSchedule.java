@@ -24,6 +24,25 @@ import org.azkfw.crawler.matcher.DateTimeMatcher;
 import org.azkfw.persistence.parameter.Parameter;
 
 /**
+ * このクラスは、指定時間に実行を行うスケジュールクラスです。
+ * 
+ * <p>
+ * パラメータ一覧
+ * <ul>
+ * <li>pattern - 指定時間(default:*&frasl;10 * * * *)</li>
+ * </ul>
+ * </p>
+ * <p>
+ * パターンサンプル
+ * <ul>
+ * <li>*&frasl;10 * * * * - 10分間隔に実行する</li>
+ * <li>10 0 * * * - 毎日0時10分に実行する</li>
+ * <li>10 0 1 * * - 毎月1日0時10分に実行する</li>
+ * <li>10 0 1 12 * - 毎年12月1日0時10分に実行する</li>
+ * <li>10 0 * * 1 - 毎週月曜0時10分に実行する</li>
+ * </ul>
+ * </p>
+ * 
  * @since 1.0.0
  * @version 1.0.0 2014/05/12
  * @author Kawakicchi
@@ -39,7 +58,7 @@ public class DatetimeSchedule extends AbstractCrawlerSchedule {
 	protected void doSetup() {
 		Parameter p = getParameter();
 
-		pattern = p.getString("pattern", "* * * * *");
+		pattern = p.getString("pattern", "*/10 * * * *");
 		matcher = new DateTimeMatcher();
 		matcher.compile(pattern);
 	}

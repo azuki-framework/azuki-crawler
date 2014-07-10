@@ -30,6 +30,7 @@ import java.util.UUID;
 
 import org.azkfw.context.Context;
 import org.azkfw.context.ContextSupport;
+import org.azkfw.crawler.CrawlerServiceException;
 import org.azkfw.crawler.config.CrawlerConfig.CrawlerParameterConfig;
 import org.azkfw.crawler.config.CrawlerConfig.CrawlerThreadConfig;
 import org.azkfw.crawler.lang.CrawlerSetupException;
@@ -73,7 +74,6 @@ public abstract class AbstractCrawlerThread extends LoggingObject implements Cra
 
 	private CrawlerTask task;
 	private CrawlerSchedule schedule;
-	private Store<String, Object> session;
 
 	private List<CrawlerTaskLog> logs;
 
@@ -210,8 +210,17 @@ public abstract class AbstractCrawlerThread extends LoggingObject implements Cra
 		threadStartDate = new Date();
 		threadStopDate = null;
 
+		Store<String, Object> session = null;
+		if (task instanceof SessionSupport) {
+			SessionSupport support = (SessionSupport) task;
+			session = new CrawlerSessionStore();
+			support.setSession(session);
+		}
+
 		try {
 			schedule.initialize();
+
+			task.startup();
 
 			stopRequest = false;
 			while (true) {
@@ -238,12 +247,13 @@ public abstract class AbstractCrawlerThread extends LoggingObject implements Cra
 					try {
 						task.initialize();
 						result = task.execute();
-					} catch (Exception ex) {
-						throw ex;
 					} finally {
-						if (null != task) {
+						try {
 							task.release();
+						} catch (CrawlerServiceException ex) {
+							warn(ex);
 						}
+
 						log.setStopDate(new Date());
 					}
 					info("Run task stop.");
@@ -264,9 +274,15 @@ public abstract class AbstractCrawlerThread extends LoggingObject implements Cra
 
 		} catch (Exception ex) {
 			status = Status.error;
-			fatal("Thread runing exception.", ex);
-
+			fatal("Thread runing exception.");
+			fatal(ex);
 		} finally {
+			try {
+				task.shutdown();
+			} catch (CrawlerServiceException ex) {
+				warn(ex);
+			}
+
 			schedule.release();
 		}
 
@@ -283,12 +299,6 @@ public abstract class AbstractCrawlerThread extends LoggingObject implements Cra
 			Object object = clazz.newInstance();
 			if (object instanceof CrawlerTask) {
 				task = (CrawlerTask) object;
-
-				if (task instanceof SessionSupport) {
-					SessionSupport support = (SessionSupport) task;
-					session = new CrawlerSessionStore();
-					support.setSession(session);
-				}
 
 				if (task instanceof ParameterSupport) {
 					ParameterSupport support = (ParameterSupport) task;

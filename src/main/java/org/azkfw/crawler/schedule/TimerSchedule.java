@@ -18,9 +18,17 @@
 package org.azkfw.crawler.schedule;
 
 import org.azkfw.persistence.parameter.Parameter;
+import org.azkfw.util.StringUtility;
 
 /**
- * このクラスは、一定時間単位にスケジュールするクラスです。
+ * このクラスは、一定時間単位に実行を行うスケジュールクラスです。
+ * 
+ * <p>
+ * パラメータ一覧
+ * <ul>
+ * <li>interval - 実行する間隔(default:1min)</li>
+ * </ul>
+ * </p>
  * 
  * @since 1.0.0
  * @version 1.0.0 2014/05/12
@@ -47,7 +55,7 @@ public class TimerSchedule extends AbstractCrawlerSchedule {
 	protected void doSetup() {
 		Parameter p = getParameter();
 
-		interval = p.getLong("interval", Long.valueOf(60 * 1000));
+		interval = toMillis(p.getString("interval", "1min"));
 	}
 
 	@Override
@@ -97,4 +105,31 @@ public class TimerSchedule extends AbstractCrawlerSchedule {
 		Thread.sleep(sleepInterval);
 	}
 
+	private long toMillis(final String aString) {
+		long ms = 0;
+		if (StringUtility.isNotEmpty(aString)) {
+			String buf = aString.trim().toLowerCase();
+
+			if (buf.endsWith("ms")) {
+				ms = Long.parseLong(buf.substring(0, buf.length() - 2).trim());
+
+			} else if (buf.endsWith("sec")) {
+				ms = Long.parseLong(buf.substring(0, buf.length() - 3).trim()) * 1000;
+			} else if (buf.endsWith("min")) {
+				ms = Long.parseLong(buf.substring(0, buf.length() - 3).trim()) * 1000 * 60;
+			} else if (buf.endsWith("hor")) {
+				ms = Long.parseLong(buf.substring(0, buf.length() - 3).trim()) * 1000 * 60 * 60;
+
+			} else if (buf.endsWith("s")) {
+				ms = Long.parseLong(buf.substring(0, buf.length() - 1).trim()) * 1000;
+			} else if (buf.endsWith("m")) {
+				ms = Long.parseLong(buf.substring(0, buf.length() - 1).trim()) * 1000 * 60;
+			} else if (buf.endsWith("h")) {
+				ms = Long.parseLong(buf.substring(0, buf.length() - 1).trim()) * 1000 * 60 * 60;
+			} else {
+				ms = Long.parseLong(buf);
+			}
+		}
+		return ms;
+	}
 }
