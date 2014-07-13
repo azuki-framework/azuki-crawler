@@ -144,6 +144,7 @@ class CrawlerController extends LoggingObject {
 		BufferedReader reader = null;
 		try {
 			info("Command " + aCommand + " " + parameter.toString());
+			info("Request " + url);
 
 			httpGet = new HttpGet(url);
 			HttpResponse response = httpClient.execute(httpGet);

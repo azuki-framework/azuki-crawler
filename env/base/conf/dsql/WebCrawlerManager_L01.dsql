@@ -1,0 +1,11 @@
+# WebCrawlerManagerL01
+
+            SELECT
+                A.host_id    AS id
+              , A.host_name  AS name
+            FROM
+                tm_host A
+            WHERE
+                A.status = 1
+            ORDER BY
+                A.last_access_date

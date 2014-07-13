@@ -17,12 +17,15 @@
  */
 package org.azkfw.crawler.task;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +41,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.azkfw.business.BusinessServiceException;
+import org.azkfw.business.dao.DataAccessServiceException;
 import org.azkfw.crawler.CrawlerServiceException;
 import org.azkfw.crawler.lang.CrawlerSetupException;
 import org.azkfw.crawler.logic.WebCrawlerManager;
@@ -56,7 +60,7 @@ import org.azkfw.util.URLUtility;
  * @author Kawakicchi
  */
 @PropertyFile("conf/StandAloneWebDownloader.properties")
-public class StandAloneWebDownloaderTask extends AbstractBusinessCrawlerTask {
+public class StandAloneWebDownloaderTask extends StandAloneWebTask {
 
 	private File baseDirectory;
 
@@ -112,21 +116,27 @@ public class StandAloneWebDownloaderTask extends AbstractBusinessCrawlerTask {
 				String hostName = MapUtility.getString(host, "name");
 				Integer hostPort = MapUtility.getInteger(host, "port");
 
+				try {
+					URL hostUrl = URLUtility.toURL(hostProtocol, hostName, hostPort, "");
+					debug("Target host : " + hostUrl.toExternalForm());
+				} catch (MalformedURLException ex) {
+				}
+
 				List<Map<String, Object>> pages = manager.getDownloadPages(hostId, 5);
 				if (ListUtility.isNotEmpty(pages)) {
 
 					for (int i = 0; i < pages.size(); i++) {
 						Map<String, Object> page = pages.get(i);
 
-						String pageId = MapUtility.getString(page, "id");
-						String pageAreas = MapUtility.getString(page, "areas");
+						String contentId = MapUtility.getString(page, "id");
+						String contentAreas = MapUtility.getString(page, "areas");
 
 						try {
-							URL url = URLUtility.toURL(hostProtocol, hostName, hostPort, pageAreas);
+							URL url = URLUtility.toURL(hostProtocol, hostName, hostPort, contentAreas);
 
 							info("Download url : " + url.toExternalForm());
 
-							File dir = new File(PathUtility.cat(baseDirectory.getAbsolutePath(), "data", hostId, pageId));
+							File dir = new File(PathUtility.cat(baseDirectory.getAbsolutePath(), "data", hostId, contentId));
 							dir.mkdirs();
 
 							Map<String, Object> download = download(url, dir);
@@ -138,27 +148,59 @@ public class StandAloneWebDownloaderTask extends AbstractBusinessCrawlerTask {
 								int statusCode = MapUtility.getInteger(download, "statusCode", Integer.valueOf(-1));
 								info("Status code : " + statusCode);
 
+								@SuppressWarnings("unchecked")
 								List<Header> headers = (List<Header>) MapUtility.getObject(download, "headers", new ArrayList<Header>());
+
+								String contentType = null;
 								for (Header header : headers) {
 									String name = header.getName().toLowerCase();
 									String value = header.getValue();
 
 									if (name.startsWith("content-type")) {
 										info("Content type : " + value);
+										contentType = value;
 									}
 								}
-								
+
+								{ // write header
+									BufferedWriter writer = null;
+									try {
+										String headerFilePath = PathUtility.cat(dir.getAbsolutePath(), "header.txt");
+										writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(headerFilePath), "UTF-8"));
+										for (Header header : headers) {
+											String name = header.getName().toLowerCase();
+											String value = header.getValue();
+											writer.write(String.format("%s:%s\n", name, value));
+										}
+									} catch (IOException ex) {
+									} finally {
+										if (null != writer) {
+											try {
+												writer.close();
+											} catch (IOException ex) {
+
+											}
+										}
+									}
+								}
+
 								if (200 == statusCode) {
 									Long length = MapUtility.getLong(download, "length", Long.valueOf(-1));
-									
 									info("Length : " + length);
-									
+
+									manager.downloadContent(contentId, statusCode, length, contentType);
+
+									if (isParseContent(url, contentType)) {
+										manager.requestContentParse(contentId);
+									}
 								} else {
 									// Error
+									manager.downloadContent(contentId, statusCode);
 								}
 
 							} else {
 								// not found host
+								manager.downloadErrorContent(contentId);
 							}
 
 						} catch (MalformedURLException ex) {
@@ -166,6 +208,8 @@ public class StandAloneWebDownloaderTask extends AbstractBusinessCrawlerTask {
 						}
 					}
 
+				} else {
+					debug("Not found download content.");
 				}
 
 				manager.unlockHost(hostId, 0);
@@ -173,6 +217,16 @@ public class StandAloneWebDownloaderTask extends AbstractBusinessCrawlerTask {
 
 			result.setResult(true);
 			result.setStop(false);
+		} catch (SQLException ex) {
+			fatal(ex);
+
+			result.setResult(false);
+			result.setStop(true);
+		} catch (DataAccessServiceException ex) {
+			fatal(ex);
+
+			result.setResult(false);
+			result.setStop(true);
 		} catch (BusinessServiceException ex) {
 			fatal(ex);
 
@@ -189,7 +243,7 @@ public class StandAloneWebDownloaderTask extends AbstractBusinessCrawlerTask {
 	 * <li>result - 結果</li>
 	 * <li>statusCode - ステータスコード</li>
 	 * <li>headers - ヘッダーリスト</li>
-	 * <li>length - </li>
+	 * <li>length -</li>
 	 * </ul>
 	 * </p>
 	 * 
@@ -238,7 +292,7 @@ public class StandAloneWebDownloaderTask extends AbstractBusinessCrawlerTask {
 					writer.write(buffer, 0, len);
 					length += len;
 				}
-				
+
 				result.put("length", length);
 			}
 
@@ -292,8 +346,12 @@ public class StandAloneWebDownloaderTask extends AbstractBusinessCrawlerTask {
 		List<Header> headers = new ArrayList<Header>();
 		headers.add(new BasicHeader("Accept-Charset", "utf-8"));
 		headers.add(new BasicHeader("Accept-Language", "ja, en;q=0.8"));
+		// chrom
+		//		headers.add(new BasicHeader("User-Agent",
+		//				"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.63 Safari/537.36"));
+		// IOS5
 		headers.add(new BasicHeader("User-Agent",
-				"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.63 Safari/537.36"));
+				"Mozilla/5.0 (iPhone; CPU iPhone OS 5_0_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Mobile/9A405 Safari/7534.48.3"));
 
 		HttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).setDefaultHeaders(headers).build();
 		return httpClient;

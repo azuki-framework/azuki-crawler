@@ -90,7 +90,8 @@ public class CrawlerControlServer extends LoggingObject implements HttpHandler {
 
 		OutputStream out = exchange.getResponseBody();
 		try {
-			if (!"127.0.0.1".equals(exchange.getRemoteAddress().getHostName())) {
+			String clientName = exchange.getRemoteAddress().getHostName();
+			if (!"127.0.0.1".equals(clientName) && !"localhost".equals(clientName)) {
 				exchange.sendResponseHeaders(404, NOT_FOUND.length);
 				out.write(NOT_FOUND);
 				out.flush();

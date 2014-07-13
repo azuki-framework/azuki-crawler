@@ -17,9 +17,11 @@
  */
 package org.azkfw.crawler.logic;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import org.azkfw.business.dao.DataAccessServiceException;
 import org.azkfw.business.logic.Logic;
 
 /**
@@ -43,7 +45,7 @@ public interface WebCrawlerManager extends Logic {
 	 * 
 	 * @return ホスト情報
 	 */
-	public Map<String, Object> lockHost();
+	public Map<String, Object> lockHost() throws DataAccessServiceException, SQLException;
 
 	/**
 	 * 対象ホストを解放する。
@@ -51,7 +53,7 @@ public interface WebCrawlerManager extends Logic {
 	 * @param aHostId ホストID
 	 * @param aResultCode 結果コード
 	 */
-	public void unlockHost(final String aHostId, final int aResultCode);
+	public void unlockHost(final String aHostId, final int aResultCode) throws DataAccessServiceException, SQLException;
 
 	/**
 	 * 対象ホストからダウンロードページの一覧を取得する。
@@ -62,10 +64,20 @@ public interface WebCrawlerManager extends Logic {
 	 * <li>areas - エイリアス</li>
 	 * </ul>
 	 * </p>
+	 * 
 	 * @param aHostId ホストID
 	 * @param aPageSize ページ数
 	 * @return　ページ情報
 	 */
-	public List<Map<String, Object>> getDownloadPages(final String aHostId, final int aPageSize);
+	public List<Map<String, Object>> getDownloadPages(final String aHostId, final int aPageSize) throws DataAccessServiceException, SQLException;
+
+	public void downloadContent(final String aContentId, final int aStatusCode, final long aLength, final String aType)
+			throws DataAccessServiceException, SQLException;
+
+	public void downloadContent(final String aContentId, final int aStatusCode) throws DataAccessServiceException, SQLException;
+
+	public void downloadErrorContent(final String aContentId) throws DataAccessServiceException, SQLException;
+
+	public void requestContentParse(final String aContentId) throws DataAccessServiceException, SQLException;
 
 }

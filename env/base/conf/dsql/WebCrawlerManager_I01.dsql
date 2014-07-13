@@ -1,0 +1,15 @@
+# WebCrawlerManagerI01
+
+            INSERT INTO
+                td_content_parse
+            (
+                content_parse_id
+              , content_id
+              , status
+            )
+            VALUES
+            (
+${parseId}      ?
+${contentId}  , ?
+${status}     , ?
+            )

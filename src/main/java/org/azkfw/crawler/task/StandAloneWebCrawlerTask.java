@@ -34,7 +34,7 @@ import org.azkfw.persistence.proterty.PropertyFile;
  * @author Kawakicchi
  */
 @PropertyFile("conf/StandAloneWebCrawler.properties")
-public class StandAloneWebCrawlerTask extends AbstractBusinessCrawlerTask {
+public class StandAloneWebCrawlerTask extends StandAloneWebTask {
 
 	private File baseDirectory;
 
