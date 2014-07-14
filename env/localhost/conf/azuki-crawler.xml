@@ -39,48 +39,21 @@
 			-->
 		</thread>
 
-		<thread title="スタンドアロンクローラタスク" description="" startup="false">
-			<task classname="org.azkfw.crawler.task.StandAloneWebCrawlerTask">
-				<parameter key="directory" value="C:\crawler" />
+		<thread title="スタンドアロンクローラパーサタスク" description="" startup="false">
+			<task classname="org.azkfw.crawler.task.StandAloneWebCrawleParserTask">
 			</task>
 			<schedule classname="org.azkfw.crawler.schedule.TimerSchedule">
 				<parameter key="interval" value="10s" />
 			</schedule>
 		</thread>
-		<thread title="スタンドアロンダウンローダタスク" description="" startup="true">
-			<task classname="org.azkfw.crawler.task.StandAloneWebDownloaderTask">
-				<parameter key="directory" value="C:\crawler" />
+		<thread title="スタンドアロンクローラダウンローダタスク" description="" startup="true">
+			<task classname="org.azkfw.crawler.task.StandAloneWebCrawleDownloaderTask">
 			</task>
 			<!-- 
 			<schedule classname="org.azkfw.crawler.schedule.TimerSchedule">
 				<parameter key="interval" value="10s" />
 			</schedule>
 			-->
-			<schedule classname="org.azkfw.crawler.schedule.CountSchedule">
-				<parameter key="count" value="1" />
-			</schedule>
-		</thread>
-
-		<thread title="ダウンロードタスク" description="ダウンロード実施タスク" startup="false"
-			thread="1">
-			<task classname="org.azkfw.crawler.task.DownloaderCrawlerTask">
-				<parameter key="url" value="http://yahoo.co.jp" />
-				<parameter key="file" value="c:\temp\ccc.html" />
-			</task>
-			<!-- 
-			<schedule classname="org.azkfw.crawler.schedule.DatetimeSchedule">
-				<parameter key="pattern" value="*/10 * * * *" />
-			</schedule>
-			-->
-			<schedule classname="org.azkfw.crawler.schedule.CountSchedule">
-				<parameter key="count" value="1" />
-			</schedule>			
-		</thread>
-
-		<thread title="HTML解析タスク" description="" startup="false">
-			<task classname="org.azkfw.crawler.task.ParserCrawlerTask">
-				<parameter key="file" value="C:\temp\aaa.html" />
-			</task>
 			<schedule classname="org.azkfw.crawler.schedule.CountSchedule">
 				<parameter key="count" value="1" />
 			</schedule>

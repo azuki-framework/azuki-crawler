@@ -17,28 +17,38 @@
  */
 package org.azkfw.crawler.task;
 
-import java.net.URL;
-
-import org.azkfw.util.StringUtility;
-
 /**
+ * このクラスは、スタンドアロンで動作するWebクローラを実装するためのクラスです。
+ * 
  * @since 1.0.0
  * @version 1.0.0 2014/07/11
  * @author Kawakicchi
  */
-public abstract class StandAloneWebTask extends AbstractBusinessCrawlerTask {
+public abstract class StandAloneWebCrawleTask extends AbstractBusinessCrawlerTask {
 
-	public StandAloneWebTask(final Class<?> aClass) {
+	/**
+	 * コンストラクタ
+	 */
+	public StandAloneWebCrawleTask() {
+		super(StandAloneWebCrawleTask.class);
+	}
+
+	/**
+	 * コンストラクタ
+	 * 
+	 * @param aClass クラス
+	 */
+	public StandAloneWebCrawleTask(final Class<?> aClass) {
 		super(aClass);
 	}
 
-	protected boolean isParseContent(final URL aURL, final String aContentType) {
-		if (StringUtility.isNotEmpty(aContentType)) {
-			if (-1 != aContentType.toLowerCase().indexOf("html")) {
-				return true;
-			}
-		}
-		return false;
+	/**
+	 * コンストラクタ
+	 * 
+	 * @param aName 名前
+	 */
+	public StandAloneWebCrawleTask(final String aName) {
+		super(aName);
 	}
 
 }

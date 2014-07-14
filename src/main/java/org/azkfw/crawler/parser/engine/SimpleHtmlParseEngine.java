@@ -26,7 +26,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML;
@@ -45,10 +47,17 @@ import org.azkfw.util.URLUtility;
  * @version 1.0.0 2014/05/08
  * @author Kawakicchi
  */
-public abstract class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
+public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 
 	/** URL */
-	private String url;
+	private URL url;
+
+	/** */
+	private Set<String> setUrl;
+
+	private String baseUrl;
+
+	private List<String> urlList;
 
 	/**
 	 * コンストラクタ
@@ -56,9 +65,13 @@ public abstract class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	 * @param aUrl URL
 	 * @param aContent コンテンツ
 	 */
-	public SimpleHtmlParseEngine(final String aUrl, final Content aContent) {
+	public SimpleHtmlParseEngine(final URL aUrl, final Content aContent) {
 		super(SimpleHtmlParseEngine.class, aContent);
 		url = aUrl;
+
+		baseUrl = null;
+		setUrl = new HashSet<String>();
+		urlList = null;
 	}
 
 	/**
@@ -68,9 +81,13 @@ public abstract class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	 * @param aUrl URL
 	 * @param aContent コンテンツ
 	 */
-	public SimpleHtmlParseEngine(final String aName, final String aUrl, final Content aContent) {
+	protected SimpleHtmlParseEngine(final String aName, final URL aUrl, final Content aContent) {
 		super(aName, aContent);
 		url = aUrl;
+
+		baseUrl = null;
+		setUrl = new HashSet<String>();
+		urlList = null;
 	}
 
 	/**
@@ -80,9 +97,13 @@ public abstract class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	 * @param aUrl URL
 	 * @param aContent コンテンツ
 	 */
-	public SimpleHtmlParseEngine(final Class<?> aClass, final String aUrl, final Content aContent) {
+	protected SimpleHtmlParseEngine(final Class<?> aClass, final URL aUrl, final Content aContent) {
 		super(aClass, aContent);
 		url = aUrl;
+
+		baseUrl = null;
+		setUrl = new HashSet<String>();
+		urlList = null;
 	}
 
 	/**
@@ -92,9 +113,13 @@ public abstract class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	 * @param aContent コンテンツ
 	 * @param aCharset 文字コード
 	 */
-	public SimpleHtmlParseEngine(final String aUrl, final Content aContent, final Charset aCharset) {
+	public SimpleHtmlParseEngine(final URL aUrl, final Content aContent, final Charset aCharset) {
 		super(SimpleHtmlParseEngine.class, aContent, aCharset);
 		url = aUrl;
+
+		baseUrl = null;
+		setUrl = new HashSet<String>();
+		urlList = null;
 	}
 
 	/**
@@ -105,9 +130,13 @@ public abstract class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	 * @param aContent コンテンツ
 	 * @param aCharset 文字コード
 	 */
-	public SimpleHtmlParseEngine(final String aName, final String aUrl, final Content aContent, final Charset aCharset) {
+	protected SimpleHtmlParseEngine(final String aName, final URL aUrl, final Content aContent, final Charset aCharset) {
 		super(aName, aContent, aCharset);
 		url = aUrl;
+
+		baseUrl = null;
+		setUrl = new HashSet<String>();
+		urlList = null;
 	}
 
 	/**
@@ -118,14 +147,32 @@ public abstract class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	 * @param aContent コンテンツ
 	 * @param aCharset 文字コード
 	 */
-	public SimpleHtmlParseEngine(final Class<?> aClass, final String aUrl, final Content aContent, final Charset aCharset) {
+	protected SimpleHtmlParseEngine(final Class<?> aClass, final URL aUrl, final Content aContent, final Charset aCharset) {
 		super(aClass, aContent, aCharset);
 		url = aUrl;
+
+		baseUrl = null;
+		setUrl = new HashSet<String>();
+		urlList = null;
+	}
+
+	public List<String> getUrlList() {
+		return urlList;
 	}
 
 	@Override
-	protected final boolean doParseHtmlContent(final Content aContent) {
-		boolean result = false;
+	protected void doInitialize() {
+
+	}
+
+	@Override
+	protected void doRelease() {
+
+	}
+
+	@Override
+	protected final ParseEngineResult doParseHtmlContent(final Content aContent) {
+		ParseEngineResult result = new ParseEngineResult();
 
 		Charset charset = getCharset();
 		if (null == charset) {
@@ -168,7 +215,9 @@ public abstract class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 				HtmlParserCallback cb = new HtmlParserCallback(this, source);
 				pd.parse(reader, cb, true);
 
-				result = true;
+				after();
+
+				result.setResult(true);
 			} catch (IOException ex) {
 				fatal(ex);
 			} finally {
@@ -185,6 +234,28 @@ public abstract class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 		return result;
 	}
 
+	private void after() {
+		String base = url.toExternalForm();
+		if (StringUtility.isNotEmpty(baseUrl)) {
+			base = baseUrl;
+		}
+
+		Set<String> newUrls = new HashSet<String>();
+		for (String u : setUrl) {
+			try {
+				String u2 = URLUtility.get(base, u);
+				newUrls.add(u2);
+			} catch (MalformedURLException ex) {
+				ex.printStackTrace();
+			}
+		}
+
+		urlList = new ArrayList<String>();
+		for (String url : newUrls) {
+			urlList.add(url);
+		}
+	}
+
 	private void findTitle(final String aTitle) {
 		doFindTitle(aTitle);
 	}
@@ -198,8 +269,10 @@ public abstract class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	}
 
 	private void findAnchor(final String aHref, final List<String> aInnerTexts) {
+		setUrl.add(aHref);
+
 		try {
-			String u = URLUtility.get(url, aHref);
+			String u = URLUtility.get(url.toExternalForm(), aHref);
 			doFindAnchor(new URL(u), aInnerTexts);
 		} catch (MalformedURLException ex) {
 			fatal("Anchor href : " + aHref, ex);
@@ -207,8 +280,10 @@ public abstract class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	}
 
 	private void findImage(final String aSrc) {
+		setUrl.add(aSrc);
+
 		try {
-			String u = URLUtility.get(url, aSrc);
+			String u = URLUtility.get(url.toExternalForm(), aSrc);
 			doFindImage(new URL(u));
 		} catch (MalformedURLException ex) {
 			fatal("Image src : " + ex);
@@ -216,10 +291,14 @@ public abstract class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	}
 
 	private void findScript(final String aSrc, final String aInnerText) {
+		if (StringUtility.isNotEmpty(aSrc)) {
+			setUrl.add(aSrc);
+		}
+
 		try {
 			URL u = null;
 			if (StringUtility.isNotEmpty(aSrc)) {
-				String s = URLUtility.get(url, aSrc);
+				String s = URLUtility.get(url.toExternalForm(), aSrc);
 				u = new URL(s);
 			}
 			doFindScript(u, aInnerText);
@@ -229,8 +308,10 @@ public abstract class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	}
 
 	private void findLink(final String aHref) {
+		setUrl.add(aHref);
+
 		try {
-			String u = URLUtility.get(url, aHref);
+			String u = URLUtility.get(url.toExternalForm(), aHref);
 			doFindLink(new URL(u));
 		} catch (MalformedURLException ex) {
 			fatal("Link src : " + ex);
@@ -238,6 +319,8 @@ public abstract class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	}
 
 	private void findBase(final String aHref) {
+		baseUrl = aHref;
+
 		try {
 			doFindBase(new URL(aHref));
 		} catch (MalformedURLException ex) {
@@ -254,21 +337,27 @@ public abstract class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	 * 
 	 * @param aTitle タイトル
 	 */
-	protected abstract void doFindTitle(final String aTitle);
+	protected void doFindTitle(final String aTitle) {
+
+	}
 
 	/**
 	 * 説明が見つかった場合に呼び出される。
 	 * 
 	 * @param aDescription 説明
 	 */
-	protected abstract void doFindDescription(final String aDescription);
+	protected void doFindDescription(final String aDescription) {
+
+	}
 
 	/**
 	 * キーワードが見つかった場合に呼び出される。
 	 * 
 	 * @param aKeywords キーワード一覧
 	 */
-	protected abstract void doFindKeywords(final List<String> aKeywords);
+	protected void doFindKeywords(final List<String> aKeywords) {
+
+	}
 
 	/**
 	 * アンカーが見つかった場合に呼び出される。
@@ -276,14 +365,18 @@ public abstract class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	 * @param aUrl URL
 	 * @param aInnerTexts タグ内文字列群
 	 */
-	protected abstract void doFindAnchor(final URL aUrl, final List<String> aInnerTexts);
+	protected void doFindAnchor(final URL aUrl, final List<String> aInnerTexts) {
+
+	}
 
 	/**
 	 * イメージが見つかった場合に呼び出される。
 	 * 
 	 * @param aUrl URL
 	 */
-	protected abstract void doFindImage(final URL aUrl);
+	protected void doFindImage(final URL aUrl) {
+
+	}
 
 	/**
 	 * スクリプトが見つかった場合に呼び出される。
@@ -291,28 +384,36 @@ public abstract class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	 * @param aUrl Source url
 	 * @param aInnerText タグ内文字列
 	 */
-	protected abstract void doFindScript(final URL aUrl, final String aInnerText);
+	protected void doFindScript(final URL aUrl, final String aInnerText) {
+
+	}
 
 	/**
 	 * リンクが見つかった場合に呼び出される。
 	 * 
 	 * @param aUrl リンクソースURL
 	 */
-	protected abstract void doFindLink(final URL aUrl);
+	protected void doFindLink(final URL aUrl) {
+
+	}
 
 	/**
 	 * リンクが見つかった場合に呼び出される。
 	 * 
 	 * @param aUrl リンクソースURL
 	 */
-	protected abstract void doFindBase(final URL aUrl);
+	protected void doFindBase(final URL aUrl) {
+
+	}
 
 	/**
 	 * テキストが見つかった場合に呼び出される。
 	 * 
 	 * @param aText テキスト
 	 */
-	protected abstract void doFindText(final String aText);
+	protected void doFindText(final String aText) {
+
+	}
 
 	/**
 	 * コンテンツを一時読み込みし文字コードを取得する。

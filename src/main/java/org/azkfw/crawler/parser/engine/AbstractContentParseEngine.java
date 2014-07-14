@@ -73,7 +73,7 @@ public abstract class AbstractContentParseEngine extends AbstractParseEngine {
 	}
 
 	@Override
-	protected final boolean doParse() {
+	protected final ParseEngineResult doParse() {
 		return doParseContent(getContent());
 	}
 
@@ -85,5 +85,5 @@ public abstract class AbstractContentParseEngine extends AbstractParseEngine {
 	 * 
 	 * @return 解析結果
 	 */
-	protected abstract boolean doParseContent(final Content aContent);
+	protected abstract ParseEngineResult doParseContent(final Content aContent);
 }

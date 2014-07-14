@@ -17,16 +17,13 @@
  */
 package org.azkfw.crawler.downloader.engine;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -46,7 +43,7 @@ import org.azkfw.util.ObjectUtility;
  * @version 1.0.0 2014/07/09
  * @author Kawakicchi
  */
-public abstract class SimpleDownloadEngine extends AbstractDownloadEngine {
+public class SimpleDownloadEngine extends AbstractDownloadEngine {
 
 	/**
 	 * コンストラクタ
@@ -60,7 +57,7 @@ public abstract class SimpleDownloadEngine extends AbstractDownloadEngine {
 	 * 
 	 * @param aName 名前
 	 */
-	public SimpleDownloadEngine(final String aName) {
+	protected SimpleDownloadEngine(final String aName) {
 		super(aName);
 	}
 
@@ -69,8 +66,96 @@ public abstract class SimpleDownloadEngine extends AbstractDownloadEngine {
 	 * 
 	 * @param aClass クラス
 	 */
-	public SimpleDownloadEngine(final Class<?> aClass) {
+	protected SimpleDownloadEngine(final Class<?> aClass) {
 		super(aClass);
+	}
+
+	@Override
+	protected void doInitialize() {
+
+	}
+
+	@Override
+	protected void doRelease() {
+
+	}
+
+	@Override
+	protected final DownloadEngineResult doDownload(final URL aTargetUrl, final File aDestFile) {
+		DownloadEngineResult result = new DownloadEngineResult();
+
+		if (ObjectUtility.isNull(aTargetUrl)) {
+			throw new NullPointerException("TargetUrl");
+		}
+		if (ObjectUtility.isNull(aDestFile)) {
+			throw new NullPointerException("DestFile");
+		}
+
+		HttpClient httpClient = createClient();
+
+		HttpGet httpGet = null;
+		InputStream reader = null;
+		FileOutputStream writer = null;
+		try {
+			httpGet = new HttpGet(aTargetUrl.toExternalForm());
+
+			HttpResponse response = httpClient.execute(httpGet);
+
+			int statusCode = response.getStatusLine().getStatusCode();
+			result.setStatusCode(statusCode);
+
+			Header[] headers = response.getAllHeaders();
+			for (Header header : headers) {
+				result.addHeader(header);
+			}
+
+			if (200 == statusCode) {
+				HttpEntity httpEntity = response.getEntity();
+				reader = httpEntity.getContent();
+
+				writer = new FileOutputStream(aDestFile);
+				byte[] buffer = new byte[512];
+				int len;
+				long length = 0;
+				while (-1 != (len = reader.read(buffer, 0, 512))) {
+					if (0 == len) {
+						continue;
+					}
+					writer.write(buffer, 0, len);
+					length += len;
+				}
+				result.setLength(length);
+			}
+
+			result.setResult(true);
+
+		} catch (ClientProtocolException ex) {
+			fatal(ex);
+		} catch (IOException ex) {
+			fatal(ex);
+		} finally {
+			if (null != writer) {
+				try {
+					writer.flush();
+					writer.close();
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+			}
+			if (null != reader) {
+				try {
+					reader.close();
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+			}
+			if (null != httpGet) {
+				httpGet.abort();
+			}
+			// httpClient.getConnectionManager().shutdown();
+		}
+
+		return result;
 	}
 
 	/**
@@ -92,146 +177,14 @@ public abstract class SimpleDownloadEngine extends AbstractDownloadEngine {
 		List<Header> headers = new ArrayList<Header>();
 		headers.add(new BasicHeader("Accept-Charset", "utf-8"));
 		headers.add(new BasicHeader("Accept-Language", "ja, en;q=0.8"));
+		// chrom
+		//		headers.add(new BasicHeader("User-Agent",
+		//				"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.63 Safari/537.36"));
+		// IOS5
 		headers.add(new BasicHeader("User-Agent",
-				"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.63 Safari/537.36"));
+				"Mozilla/5.0 (iPhone; CPU iPhone OS 5_0_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Mobile/9A405 Safari/7534.48.3"));
 
 		HttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).setDefaultHeaders(headers).build();
 		return httpClient;
 	}
-
-	/**
-	 * ダウンロード対象URLを取得する。
-	 * 
-	 * @return URL
-	 */
-	protected abstract URL getDownloadURL();
-
-	/**
-	 * ダウンロード保存ファイルを取得する。
-	 * 
-	 * @return
-	 */
-	protected abstract File getDownloadFile();
-
-	@Override
-	protected final boolean doDownload() {
-		boolean result = false;
-		
-		URL url = getDownloadURL();
-		File file = getDownloadFile();
-		
-		if (ObjectUtility.isAllNotNull(url, file)) {
-
-			result = get(url, null, file);
-		}
-
-		return result;
-	}
-
-	private boolean get(final URL aUrl, final Map<String, String> aParams, final File aDestFile) {
-		boolean result = false;
-
-		// Create Parameter
-		StringBuilder builder = new StringBuilder(aUrl.toExternalForm());
-
-		if (null != aParams && !aParams.isEmpty()) {
-			int cnt = 0;
-			for (Map.Entry<String, String> entry : aParams.entrySet()) {
-				if (0 == cnt) {
-					builder.append("?");
-				} else {
-					builder.append("&");
-				}
-				builder.append(entry.getKey());
-				builder.append("=");
-				// TODO: URLEncoding
-				builder.append(entry.getValue());
-			}
-		}
-
-		HttpClient httpClient = createClient();
-
-		HttpGet httpGet = null;
-		InputStream is = null;
-		FileOutputStream fosData = null;
-		BufferedWriter bwInfo = null;
-
-		try {
-			String url = builder.toString();
-
-			httpGet = new HttpGet(url);
-			System.out.println(httpGet.getURI());
-
-			HttpResponse response = httpClient.execute(httpGet);
-
-			bwInfo = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(aDestFile.getAbsolutePath() + ".info"), "UTF-8"));
-
-			int statusCode = response.getStatusLine().getStatusCode();
-			// InfoFile Write StatusCode
-			bwInfo.write(String.format("%s : %d\n", "StatusCode", statusCode));
-			// InfoFile Write Header
-			Header[] headers = response.getAllHeaders();
-			for (Header header : headers) {
-				bwInfo.write(String.format("%s : %s\n", header.getName(), header.getValue()));
-			}
-
-			HttpEntity httpEntity = response.getEntity();
-			is = httpEntity.getContent();
-			fosData = new FileOutputStream(aDestFile);
-
-			byte[] buffer = new byte[512];
-			int len;
-			while (-1 != (len = is.read(buffer, 0, 512))) {
-				if (0 == len) {
-					continue;
-				}
-				fosData.write(buffer, 0, len);
-			}
-
-			result = true;
-
-		} catch (ClientProtocolException ex) {
-			ex.printStackTrace();
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		} finally {
-			if (null != bwInfo) {
-				try {
-					bwInfo.flush();
-					bwInfo.close();
-				} catch (IOException ex) {
-					ex.printStackTrace();
-				}
-			}
-			if (null != fosData) {
-				try {
-					fosData.flush();
-					fosData.close();
-				} catch (IOException ex) {
-					ex.printStackTrace();
-				}
-			}
-			if (null != is) {
-				try {
-					is.close();
-				} catch (IOException ex) {
-					ex.printStackTrace();
-				}
-			}
-			if (null != httpGet) {
-				httpGet.abort();
-			}
-			// httpClient.getConnectionManager().shutdown();
-		}
-
-		return result;
-	}
-
-	@SuppressWarnings("unused")
-	private boolean post(final String aUrl, final Map<String, String> aParams) {
-		boolean result = false;
-
-		return result;
-	}
-
 }

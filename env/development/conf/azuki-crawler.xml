@@ -37,27 +37,6 @@
 			</schedule>
 		</thread>
 		
-		<thread title="ダウンロードタスク" description="ダウンロード実施タスク" startup="false"
-			thread="1">
-			<task classname="org.azkfw.crawler.task.DownloaderCrawlerTask">
-				<parameter key="url" value="http://yahoo.co.jp" />
-				<parameter key="file" value="c:\temp\aaa.html" />
-			</task>
-			<schedule classname="org.azkfw.crawler.schedule.DatetimeSchedule">
-				<parameter key="pattern" value="*/10 * * * *" /> <!-- 10分毎 -->
-			</schedule>
-		</thread>
-
-		<thread title="HTML解析タスク" description="" startup="false">
-			<task classname="org.azkfw.crawler.task.ParserCrawlerTask">
-				<parameter key="file" value="C:\temp\aaa.html" />
-			</task>
-			<schedule classname="org.azkfw.crawler.schedule.DatetimeSchedule">
-				<parameter key="pattern" value="*/10 * * * *" /> <!-- 10分毎 -->
-			</schedule>
-		</thread>
-
-
 		<thread title="Title1" description="">
 			<task classname="org.azkfw.crawler.task.TestCrawlerTask">
 				<parameter key="count" value="10" />

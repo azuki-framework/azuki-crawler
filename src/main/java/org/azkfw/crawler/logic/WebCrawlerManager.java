@@ -71,13 +71,64 @@ public interface WebCrawlerManager extends Logic {
 	 */
 	public List<Map<String, Object>> getDownloadPages(final String aHostId, final int aPageSize) throws DataAccessServiceException, SQLException;
 
+	/**
+	 * コンテンツのダウンロードに成功
+	 * 
+	 * @param aContentId
+	 * @param aStatusCode
+	 * @param aLength
+	 * @param aType
+	 * @throws DataAccessServiceException
+	 * @throws SQLException
+	 */
 	public void downloadContent(final String aContentId, final int aStatusCode, final long aLength, final String aType)
 			throws DataAccessServiceException, SQLException;
 
+	/**
+	 * コンテンツのダウンロードに失敗
+	 * 
+	 * @param aContentId
+	 * @param aStatusCode
+	 * @throws DataAccessServiceException
+	 * @throws SQLException
+	 */
 	public void downloadContent(final String aContentId, final int aStatusCode) throws DataAccessServiceException, SQLException;
 
+	/**
+	 * コンテンツのダウンロードに失敗(例外)
+	 * 
+	 * @param aContentId
+	 * @throws DataAccessServiceException
+	 * @throws SQLException
+	 */
 	public void downloadErrorContent(final String aContentId) throws DataAccessServiceException, SQLException;
 
+	/**
+	 * コンテンツの解析を依頼する。
+	 * 
+	 * @param aContentId コンテンツID
+	 * @throws DataAccessServiceException
+	 * @throws SQLException
+	 */
 	public void requestContentParse(final String aContentId) throws DataAccessServiceException, SQLException;
 
+	/**
+	 * 解析するコンテンツ情報を取得する。
+	 * <p>
+	 * <ul>
+	 * <li>hostId</li>
+	 * <li>contentId</li>
+	 * <li>contentType</li>
+	 * </ul>
+	 * </p>
+	 * 
+	 * @return
+	 * @throws DataAccessServiceException
+	 * @throws SQLException
+	 */
+	public Map<String, Object> getParseContent() throws DataAccessServiceException, SQLException;
+
+	public void parseContent(final String aContentId) throws DataAccessServiceException, SQLException;
+
+	public void parseErrorContent(final String aContentId) throws DataAccessServiceException, SQLException;
 }

@@ -237,6 +237,7 @@ public abstract class AbstractCrawlerTask extends LoggingObject implements Crawl
 	 * @param aMessage メッセージ
 	 */
 	protected final void log(final String aMessage) {
+		@SuppressWarnings("unused")
 		String message = aMessage;
 	}
 
@@ -247,6 +248,7 @@ public abstract class AbstractCrawlerTask extends LoggingObject implements Crawl
 	 * @param objs メッセージ
 	 */
 	protected final void log(final String aMessage, final Object... objs) {
+		@SuppressWarnings("unused")
 		String message = String.format(aMessage, objs);
 	}
 }

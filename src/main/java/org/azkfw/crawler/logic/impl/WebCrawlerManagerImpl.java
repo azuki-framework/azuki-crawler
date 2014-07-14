@@ -186,4 +186,17 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 		commit();
 	}
 
+	public Map<String, Object> getParseContent() throws DataAccessServiceException, SQLException {
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		return result;
+	}
+
+	public void parseContent(final String aContentId) throws DataAccessServiceException, SQLException {
+
+	}
+
+	public void parseErrorContent(final String aContentId) throws DataAccessServiceException, SQLException {
+
+	}
 }

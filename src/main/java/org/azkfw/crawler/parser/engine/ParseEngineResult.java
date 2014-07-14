@@ -17,30 +17,26 @@
  */
 package org.azkfw.crawler.parser.engine;
 
-
 /**
- * このインターフェースは、解析エンジンを定義するインターフェースです。
+ * このクラスは、解析結果情報を保持するクラスです。
  * 
  * @since 1.0.0
- * @version 1.0.0 2014/05/08
+ * @version 1.0.0 2014/07/14
  * @author Kawakicchi
  */
-public interface ParseEngine {
+public class ParseEngineResult {
 
-	/**
-	 * 初期化処理を行う。
-	 */
-	public void initialize();
+	private boolean result;
 
-	/**
-	 * 解放処理を行う。
-	 */
-	public void release();
+	public ParseEngineResult() {
+		result = false;
+	}
 
-	/**
-	 * 解析処理を行う。
-	 * 
-	 * @return 解析結果
-	 */
-	public ParseEngineResult parse();
+	public void setResult(final boolean aResult) {
+		result = aResult;
+	}
+
+	public boolean isResult() {
+		return result;
+	}
 }

@@ -92,7 +92,7 @@ public abstract class AbstractHtmlParseEngine extends AbstractTextParseEngine {
 	}
 
 	@Override
-	protected final boolean doParseTextContent(final Content aContent) {
+	protected final ParseEngineResult doParseTextContent(final Content aContent) {
 		return doParseHtmlContent(aContent);
 	}
 
@@ -104,5 +104,5 @@ public abstract class AbstractHtmlParseEngine extends AbstractTextParseEngine {
 	 * 
 	 * @return 解析結果
 	 */
-	protected abstract boolean doParseHtmlContent(final Content aContent);
+	protected abstract ParseEngineResult doParseHtmlContent(final Content aContent);
 }

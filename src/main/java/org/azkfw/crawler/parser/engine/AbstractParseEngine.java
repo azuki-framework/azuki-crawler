@@ -64,7 +64,7 @@ public abstract class AbstractParseEngine extends LoggingObject implements Parse
 	}
 
 	@Override
-	public final boolean parse() {
+	public final ParseEngineResult parse() {
 		return doParse();
 	}
 
@@ -92,5 +92,5 @@ public abstract class AbstractParseEngine extends LoggingObject implements Parse
 	 * 
 	 * @return 解析結果
 	 */
-	protected abstract boolean doParse();
+	protected abstract ParseEngineResult doParse();
 }

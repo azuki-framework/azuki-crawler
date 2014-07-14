@@ -15,11 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.azkfw.crawler.downloader.engine;
+package org.azkfw.crawler.downloader;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import org.apache.http.Header;
+import org.azkfw.crawler.downloader.engine.DownloadEngine;
+import org.azkfw.crawler.downloader.engine.DownloadEngineResult;
+import org.azkfw.crawler.downloader.engine.SimpleDownloadEngine;
 
 /**
  * このクラスは、簡易的なダウンロードを行うダウンロードエンジンです。
@@ -28,7 +33,7 @@ import java.net.URL;
  * @version 1.0.0 2014/07/09
  * @author Kawakicchi
  */
-public class SampleDownloadEngine extends SimpleDownloadEngine {
+public class SampleDownloader {
 
 	/**
 	 * メイン関数
@@ -36,49 +41,31 @@ public class SampleDownloadEngine extends SimpleDownloadEngine {
 	 * @param args 引数
 	 */
 	public static void main(final String[] args) {
+		URL url = null;
+		File file = null;
 		try {
-			DownloadEngine engin = new SampleDownloadEngine(new URL("http://yahoo.co.jp"), new File("C:\\temp\\ddd.html"));
-
-			engin.initialize();
-			engin.download();
-			engin.release();
+			url = new URL("http://yahoo.co.jp");
+			file = new File("C:\\temp\\eee.html");
 		} catch (MalformedURLException ex) {
 			ex.printStackTrace();
+			return;
+		}
+
+		DownloadEngine engin = new SimpleDownloadEngine();
+
+		engin.initialize();
+		DownloadEngineResult result = engin.download(url, file);
+		engin.release();
+
+		System.out.println("Result : " + result.isResult());
+		if (result.isResult()) {
+			System.out.println("Status : " + result.getStatusCode());
+			System.out.println("Length : " + result.getLength());
+
+			for (Header header : result.getHeaders()) {
+				System.out.println("Header : " + header.getName() + " - " + header.getValue());
+			}
 		}
 	}
 
-	private URL url;
-	private File file;
-
-	/**
-	 * コンストラクタ
-	 * 
-	 * @param aUrl URL
-	 * @param aDestFile 保存ファイル
-	 */
-	public SampleDownloadEngine(final URL aUrl, final File aDestFile) {
-		super(SampleDownloadEngine.class);
-		url = aUrl;
-		file = aDestFile;
-	}
-
-	@Override
-	protected void doInitialize() {
-
-	}
-
-	@Override
-	protected void doRelease() {
-
-	}
-
-	@Override
-	protected URL getDownloadURL() {
-		return url;
-	}
-
-	@Override
-	protected File getDownloadFile() {
-		return file;
-	}
 }

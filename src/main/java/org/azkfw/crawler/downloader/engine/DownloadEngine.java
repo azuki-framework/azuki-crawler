@@ -17,6 +17,9 @@
  */
 package org.azkfw.crawler.downloader.engine;
 
+import java.io.File;
+import java.net.URL;
+
 /**
  * このインターフェースは、ダウンロードエンジンを定義するインターフェースです。
  * 
@@ -39,7 +42,9 @@ public interface DownloadEngine {
 	/**
 	 * ダウンロード処理を行う。
 	 * 
+	 * @param aTargetUrl URL
+	 * @param aDestFile File
 	 * @return ダウンロード結果
 	 */
-	public boolean download();
+	public DownloadEngineResult download(final URL aTargetUrl, final File aDestFile);
 }
