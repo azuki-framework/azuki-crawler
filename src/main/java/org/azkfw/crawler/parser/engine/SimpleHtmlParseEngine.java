@@ -385,7 +385,7 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	 * @param aInnerText タグ内文字列
 	 */
 	protected void doFindScript(final URL aUrl, final String aInnerText) {
-
+System.out.println(aInnerText);
 	}
 
 	/**
@@ -431,7 +431,9 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 			PreHtmlParserCallback cb = new PreHtmlParserCallback();
 			pd.parse(reader, cb, true);
 
-			charset = Charset.forName(cb.getCharset());
+			if (StringUtility.isNotEmpty(cb.getCharset())) {
+				charset = Charset.forName(cb.getCharset());
+			}
 		} catch (IOException ex) {
 			fatal(ex);
 		} finally {
@@ -668,6 +670,10 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 							}
 						}
 					}
+				}
+				String str = (String) attr.getAttribute("charset");
+				if (StringUtility.isNotEmpty(str)) {
+					charset = str;
 				}
 
 			}

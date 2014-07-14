@@ -39,11 +39,16 @@
 			-->
 		</thread>
 
-		<thread title="スタンドアロンクローラパーサタスク" description="" startup="false">
+		<thread title="スタンドアロンクローラパーサタスク" description="" startup="true">
 			<task classname="org.azkfw.crawler.task.StandAloneWebCrawleParserTask">
 			</task>
+			<!-- 
 			<schedule classname="org.azkfw.crawler.schedule.TimerSchedule">
 				<parameter key="interval" value="10s" />
+			</schedule>
+			-->
+			<schedule classname="org.azkfw.crawler.schedule.CountSchedule">
+				<parameter key="count" value="1" />
 			</schedule>
 		</thread>
 		<thread title="スタンドアロンクローラダウンローダタスク" description="" startup="true">

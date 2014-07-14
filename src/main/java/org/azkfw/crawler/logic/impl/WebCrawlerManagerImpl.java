@@ -189,6 +189,19 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 	public Map<String, Object> getParseContent() throws DataAccessServiceException, SQLException {
 		Map<String, Object> result = new HashMap<String, Object>();
 
+		DataAccessObject dao = null;
+		dao = getDao("WebCrawlerManagerS02");
+		List<Map<String, Object>> records = dao.query();
+		
+		if (ListUtility.isNotEmpty(records)) {
+			Map<String, Object> record = records.get(0);
+			result.put("hostId", record.get("hostId"));
+			result.put("hostProtocol", "http");
+			result.put("hostPort", 80);
+			result.put("hostName", record.get("hostName"));
+			result.put("contentId", record.get("contentId"));
+			result.put("contentAreas", record.get("contentAreas"));
+		}
 		return result;
 	}
 

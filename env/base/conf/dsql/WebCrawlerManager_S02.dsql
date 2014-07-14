@@ -1,0 +1,15 @@
+# WebCrawlerManagerS02
+
+            SELECT
+                B.content_id     AS content_id
+              , B.content_areas  AS content_areas
+              , C.host_id        AS host_id
+              , C.host_name      AS host_name
+            FROM
+                td_content_parse A
+                LEFT JOIN tm_content B ON A.content_id = B.content_id AND B.status = 3
+                LEFT JOIN tm_host    C ON B.host_id    = C.host_id
+            WHERE
+                A.status = 1
+            OFFSET 0 LIMIT 1
+        

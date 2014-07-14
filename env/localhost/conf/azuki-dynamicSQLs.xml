@@ -20,6 +20,7 @@
 		<dynamicSQL name="WebCrawlerManagerU01" file="../base/conf/dsql/WebCrawlerManager_U01.dsql" />
 		<dynamicSQL name="WebCrawlerManagerU02" file="../base/conf/dsql/WebCrawlerManager_U02.dsql" />
 		<dynamicSQL name="WebCrawlerManagerS01" file="../base/conf/dsql/WebCrawlerManager_S01.dsql" />
+		<dynamicSQL name="WebCrawlerManagerS02" file="../base/conf/dsql/WebCrawlerManager_S02.dsql" />
 		            
 	</dynamicSQLs>
 </azuki>

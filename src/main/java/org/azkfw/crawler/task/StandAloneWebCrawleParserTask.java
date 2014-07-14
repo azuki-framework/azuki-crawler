@@ -124,7 +124,16 @@ public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask
 						SimpleHtmlParseEngine e = (SimpleHtmlParseEngine) engine;
 						List<String> urls = e.getUrlList();
 						for (String u : urls) {
-							System.out.println("URL : " + u);
+							try {
+								URL bufUrl = new URL(u);
+								if (isDownloadContent(bufUrl)) {
+									System.out.println("URL : " + u);
+								} else {
+									System.out.println("URL - " + u);									
+								}
+							} catch (MalformedURLException ex) {
+
+							}
 						}
 					}
 
@@ -165,6 +174,10 @@ public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask
 	}
 
 	protected boolean isDownloadContent(final URL aUrl) {
+		String url = aUrl.toExternalForm();
+		
+		
+		
 		return true;
 	}
 
