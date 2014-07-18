@@ -178,11 +178,11 @@ public class SimpleDownloadEngine extends AbstractDownloadEngine {
 		headers.add(new BasicHeader("Accept-Charset", "utf-8"));
 		headers.add(new BasicHeader("Accept-Language", "ja, en;q=0.8"));
 		// chrom
-		//		headers.add(new BasicHeader("User-Agent",
-		//				"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.63 Safari/537.36"));
-		// IOS5
 		headers.add(new BasicHeader("User-Agent",
-				"Mozilla/5.0 (iPhone; CPU iPhone OS 5_0_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Mobile/9A405 Safari/7534.48.3"));
+				"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.63 Safari/537.36"));
+		// IOS5
+		//headers.add(new BasicHeader("User-Agent",
+		//		"Mozilla/5.0 (iPhone; CPU iPhone OS 5_0_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Mobile/9A405 Safari/7534.48.3"));
 
 		HttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).setDefaultHeaders(headers).build();
 		return httpClient;

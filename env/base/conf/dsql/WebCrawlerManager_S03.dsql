@@ -1,0 +1,16 @@
+# ------------------------------------------------------------------------------
+# WebCrawlerManagerS03
+#
+# ------------------------------------------------------------------------------
+
+                SELECT
+                    A.host_id        AS id
+                  , A.host_name      AS name
+                  , A.host_protocol  AS protocol
+                  , A.host_port      AS port
+                FROM
+                    tm_host A
+                WHERE
+${name}             A.host_name     = ?
+${protocol}     AND A.host_protocol = ?
+${port}         AND A.host_port     = ?

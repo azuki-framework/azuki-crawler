@@ -1,9 +1,13 @@
+# ------------------------------------------------------------------------------
 # WebCrawlerManagerU01
+#
+# ------------------------------------------------------------------------------
 
-            UPDATE
-                tm_host
-            SET
-${status}       status           = ?
-${date}       , last_access_date = ?
-            WHERE
-${id}           host_id = ?
+                UPDATE
+                    tm_host
+                SET
+${status}           status           = ?
+${date}           , update_date      = ?
+${accessDate}     , last_access_date = ?
+                WHERE
+${id}               host_id = ?

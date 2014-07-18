@@ -43,6 +43,13 @@ import org.azkfw.util.UUIDUtility;
  */
 public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements WebCrawlerManager {
 
+	/**
+	 * コンストラクタ
+	 */
+	public WebCrawlerManagerImpl() {
+		super(WebCrawlerManagerImpl.class);
+	}
+
 	@Override
 	protected void doInitialize() {
 
@@ -55,6 +62,8 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 
 	@Override
 	public Map<String, Object> lockHost() throws DataAccessServiceException, SQLException {
+		Timestamp date = new Timestamp((new Date()).getTime());
+
 		Map<String, Object> host = new HashMap<String, Object>();
 
 		DataAccessObject dao = null;
@@ -67,13 +76,14 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 			String hostId = MapUtility.getString(record, ("id"));
 
 			host.put("id", hostId);
-			host.put("protocol", "http");
 			host.put("name", record.get("name"));
-			host.put("port", 80);
+			host.put("protocol", record.get("protocol"));
+			host.put("port", record.get("port"));
 
 			Parameter params = new Parameter();
 			params.put("id", hostId);
 			params.put("status", 2);
+			params.put("date", date);
 
 			dao = getDao("WebCrawlerManagerU01", params);
 			dao.execute();
@@ -85,14 +95,14 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 	}
 
 	@Override
-	public void unlockHost(final String aHostId, final int aResultCode) throws DataAccessServiceException, SQLException {
-		// result code
+	public void unlockHost(final String aHostId, final int aStatus) throws DataAccessServiceException, SQLException {
 		Timestamp date = new Timestamp((new Date()).getTime());
 
 		Parameter params = new Parameter();
 		params.put("id", aHostId);
-		params.put("status", 1);
+		params.put("status", aStatus);
 		params.put("date", date);
+		params.put("accessDate", date);
 
 		DataAccessObject dao = null;
 		dao = getDao("WebCrawlerManagerU01", params);
@@ -192,7 +202,7 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 		DataAccessObject dao = null;
 		dao = getDao("WebCrawlerManagerS02");
 		List<Map<String, Object>> records = dao.query();
-		
+
 		if (ListUtility.isNotEmpty(records)) {
 			Map<String, Object> record = records.get(0);
 			result.put("hostId", record.get("hostId"));
@@ -203,6 +213,56 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 			result.put("contentAreas", record.get("contentAreas"));
 		}
 		return result;
+	}
+
+	public Map<String, Object> getHost(final String aName, final String aProtocol, final int aPort) throws DataAccessServiceException, SQLException {
+		Map<String, Object> host = new HashMap<String, Object>();
+
+		Parameter params = new Parameter();
+		params.put("name", aName);
+		params.put("protocol", aProtocol);
+		params.put("port", aPort);
+
+		DataAccessObject dao = null;
+		dao = getDao("WebCrawlerManagerS03", params);
+		List<Map<String, Object>> records = dao.query();
+
+		if (ListUtility.isNotEmpty(records)) {
+			Map<String, Object> record = records.get(0);
+
+			String hostId = MapUtility.getString(record, ("id"));
+
+			host.put("id", hostId);
+			host.put("name", record.get("name"));
+			host.put("protocol", record.get("protocol"));
+			host.put("port", record.get("port"));
+		}
+
+		return host;
+	}
+
+	public Map<String, Object> registHost(final String aName, final String aProtocol, final int aPort) throws DataAccessServiceException,
+			SQLException {
+		Timestamp date = new Timestamp((new Date()).getTime());
+
+		Map<String, Object> host = new HashMap<String, Object>();
+
+		String id = UUIDUtility.generateToShortString().toUpperCase();
+
+		Parameter params = new Parameter();
+		params.put("id", id);
+		params.put("name", aName);
+		params.put("protocol", aProtocol);
+		params.put("port", aPort);
+		params.put("date", date);
+
+		DataAccessObject dao = null;
+		dao = getDao("WebCrawlerManagerI02", params);
+		dao.execute();
+
+		host.put("id", id);
+
+		return host;
 	}
 
 	public void parseContent(final String aContentId) throws DataAccessServiceException, SQLException {

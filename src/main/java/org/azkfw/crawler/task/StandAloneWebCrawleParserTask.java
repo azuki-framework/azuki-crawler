@@ -21,6 +21,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -107,29 +108,57 @@ public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask
 				String contentAreas = MapUtility.getString(content, "contentAreas");
 
 				try {
-					URL url = URLUtility.toURL(hostProtocol, hostName, hostPort, contentAreas);
+					URL absoluteUrl = URLUtility.toURL(hostProtocol, hostName, hostPort, contentAreas);
 
 					File dir = new File(PathUtility.cat(baseDirectory.getAbsolutePath(), "data", hostId, contentId));
 					dir.mkdirs();
 
 					String filePath = PathUtility.cat(dir.getAbsolutePath(), "content.dat");
 
-					ParseEngine engine = getParseEngine(url, new FileContent(new File(filePath)));
+					ParseEngine engine = getParseEngine(absoluteUrl, new FileContent(new File(filePath)));
 					engine.initialize();
 					ParseEngineResult rslt = engine.parse(); // TODO: 解析の改修難易度
 					engine.release();
 
 					// TODO: 解析結果登録
 					if (engine instanceof SimpleHtmlParseEngine) {
+						Map<String, String> hostKeyIdMap = new HashMap<String, String>();
+
 						SimpleHtmlParseEngine e = (SimpleHtmlParseEngine) engine;
 						List<String> urls = e.getUrlList();
-						for (String u : urls) {
+						for (String url : urls) {
 							try {
-								URL bufUrl = new URL(u);
+								URL bufUrl = new URL(url);
 								if (isDownloadContent(bufUrl)) {
-									System.out.println("URL : " + u);
+									String protocol = bufUrl.getProtocol();
+									String name = bufUrl.getHost();
+									int port = (-1 != bufUrl.getPort()) ? bufUrl.getPort() : bufUrl.getDefaultPort();
+
+									String hostKey = String.format("%s://%s:%d", protocol, name, port);
+
+									String bufHostId = null;
+									if (hostKeyIdMap.containsKey(hostKey)) {
+										bufHostId = hostKeyIdMap.get(hostKey);
+										
+										System.out.println("Exist  host." + hostKey);
+									} else {
+										Map<String, Object> host = manager.getHost(name, protocol, port);
+										if (MapUtility.isNotEmpty(host)) {
+											bufHostId = MapUtility.getString(host, "id");
+											System.out.println("Get    host." + hostKey);
+										} else {
+											host = manager.registHost(name, protocol, port);
+											bufHostId = MapUtility.getString(host, "id");
+											System.out.println("Create host." + hostKey);
+										}
+										hostKeyIdMap.put(hostKey, bufHostId);
+									}
+
+									
+									
+									
 								} else {
-									System.out.println("URL - " + u);									
+
 								}
 							} catch (MalformedURLException ex) {
 
@@ -175,8 +204,10 @@ public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask
 
 	protected boolean isDownloadContent(final URL aUrl) {
 		String url = aUrl.toExternalForm();
-		
-		
+
+		if (-1 == url.indexOf("www.atmarkit.co.jp")) {
+			return false;
+		}
 		
 		return true;
 	}

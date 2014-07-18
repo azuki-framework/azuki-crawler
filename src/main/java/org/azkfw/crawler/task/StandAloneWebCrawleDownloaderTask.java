@@ -44,6 +44,7 @@ import org.azkfw.util.MapUtility;
 import org.azkfw.util.PathUtility;
 import org.azkfw.util.StringUtility;
 import org.azkfw.util.URLUtility;
+import org.azkfw.util.UUIDUtility;
 
 /**
  * このクラスは、スタントアロンでWebクロールを行うクローラタスククラスです。
@@ -78,6 +79,25 @@ public final class StandAloneWebCrawleDownloaderTask extends StandAloneWebCrawle
 
 	@Override
 	protected void doStartup() {
+		System.out.println(UUIDUtility.generateToShortString().toUpperCase());
+		System.out.println(UUIDUtility.generateToShortString().toUpperCase());
+		System.out.println(UUIDUtility.generateToShortString().toUpperCase());
+		System.out.println(UUIDUtility.generateToShortString().toUpperCase());
+		System.out.println(UUIDUtility.generateToShortString().toUpperCase());
+		
+		String u = "http://localhost:8080/aaa/bbb.do?id=001#top";
+		try {
+			URL url = new URL(u);
+			System.out.println(url.getProtocol());
+			System.out.println(url.getHost());
+			System.out.println(url.getPort());
+			System.out.println();
+			System.out.println();
+			System.out.println();
+			System.out.println();
+		}catch (MalformedURLException ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	@Override
@@ -105,100 +125,17 @@ public final class StandAloneWebCrawleDownloaderTask extends StandAloneWebCrawle
 			if (MapUtility.isNotEmpty(host)) {
 
 				String hostId = MapUtility.getString(host, "id");
-				String hostProtocol = MapUtility.getString(host, "protocol");
 				String hostName = MapUtility.getString(host, "name");
-				Integer hostPort = MapUtility.getInteger(host, "port");
+				String protocol = MapUtility.getString(host, "protocol");
+				Integer port = MapUtility.getInteger(host, "port");
 
-				List<Map<String, Object>> pages = manager.getDownloadPages(hostId, 5);
-				if (ListUtility.isNotEmpty(pages)) {
+				debug(String.format("Target host %s://%s:%d", protocol, hostName, port));
 
-					for (int i = 0; i < pages.size(); i++) {
-						Map<String, Object> page = pages.get(i);
+				int status = doExecute(hostId, hostName, protocol, port);
 
-						String contentId = MapUtility.getString(page, "id");
-						String contentAreas = MapUtility.getString(page, "areas");
-
-						try {
-							URL url = URLUtility.toURL(hostProtocol, hostName, hostPort, contentAreas);
-
-							info("Download url : " + url.toExternalForm());
-
-							File dir = new File(PathUtility.cat(baseDirectory.getAbsolutePath(), "data", hostId, contentId));
-							dir.mkdirs();
-
-							String filePath = PathUtility.cat(dir.getAbsolutePath(), "content.dat");
-
-							DownloadEngine engine = getDownloadEngine(url);
-							engine.initialize();
-							DownloadEngineResult rslt = engine.download(url, new File(filePath));
-							engine.release();
-
-							if (rslt.isResult()) {
-								int statusCode = rslt.getStatusCode();
-								info("Status code : " + statusCode);
-
-								String contentType = null;
-								for (Header header : rslt.getHeaders()) {
-									String name = header.getName().toLowerCase();
-									String value = header.getValue();
-
-									if (name.startsWith("content-type")) {
-										info("Content type : " + value);
-										contentType = value;
-									}
-								}
-
-								{ // write header
-									BufferedWriter writer = null;
-									try {
-										String headerFilePath = PathUtility.cat(dir.getAbsolutePath(), "header.txt");
-										writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(headerFilePath), "UTF-8"));
-										for (Header header : rslt.getHeaders()) {
-											String name = header.getName().toLowerCase();
-											String value = header.getValue();
-											writer.write(String.format("%s:%s\n", name, value));
-										}
-									} catch (IOException ex) {
-									} finally {
-										if (null != writer) {
-											try {
-												writer.close();
-											} catch (IOException ex) {
-
-											}
-										}
-									}
-								}
-
-								if (200 == statusCode) {
-									long length = rslt.getLength();
-									info("Length : " + length);
-
-									manager.downloadContent(contentId, statusCode, length, contentType);
-
-									if (isParseContent(url, contentType)) {
-										manager.requestContentParse(contentId);
-									}
-								} else {
-									// Error
-									manager.downloadContent(contentId, statusCode);
-								}
-
-							} else {
-								// not found host
-								manager.downloadErrorContent(contentId);
-							}
-
-						} catch (MalformedURLException ex) {
-							// Error
-						}
-					}
-
-				} else {
-					debug("Not found download content.");
-				}
-
-				manager.unlockHost(hostId, 0);
+				manager.unlockHost(hostId, status);
+			} else {
+				debug("Not found download target host.");
 			}
 
 			result.setResult(true);
@@ -221,6 +158,112 @@ public final class StandAloneWebCrawleDownloaderTask extends StandAloneWebCrawle
 		}
 
 		return result;
+	}
+
+	private int doExecute(final String aHostId, final String aHostName, final String aProtocol, final Integer aPort) throws BusinessServiceException {
+		int status = -1;
+
+		WebCrawlerManager manager = (WebCrawlerManager) getLogic("WebCrawlerManager");
+
+		try {
+
+			List<Map<String, Object>> pages = manager.getDownloadPages(aHostId, 5);
+			if (ListUtility.isNotEmpty(pages)) {
+
+				for (int i = 0; i < pages.size(); i++) {
+					Map<String, Object> page = pages.get(i);
+
+					String contentId = MapUtility.getString(page, "id");
+					String contentAreas = MapUtility.getString(page, "areas");
+
+					try {
+						URL url = URLUtility.toURL(aProtocol, aHostName, aPort, contentAreas);
+
+						debug("Download url : " + url.toExternalForm());
+
+						File dir = new File(PathUtility.cat(baseDirectory.getAbsolutePath(), "data", aHostId, contentId));
+						dir.mkdirs();
+
+						String filePath = PathUtility.cat(dir.getAbsolutePath(), "content.dat");
+
+						DownloadEngine engine = getDownloadEngine(url);
+						engine.initialize();
+						DownloadEngineResult rslt = engine.download(url, new File(filePath));
+						engine.release();
+
+						if (rslt.isResult()) {
+							int statusCode = rslt.getStatusCode();
+							debug("Status code : " + statusCode);
+
+							String contentType = null;
+							for (Header header : rslt.getHeaders()) {
+								String name = header.getName().toLowerCase();
+								String value = header.getValue();
+
+								if (name.startsWith("content-type")) {
+									debug("Content type : " + value);
+									contentType = value;
+								}
+							}
+
+							{ // write header
+								BufferedWriter writer = null;
+								try {
+									String headerFilePath = PathUtility.cat(dir.getAbsolutePath(), "header.txt");
+									writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(headerFilePath), "UTF-8"));
+									for (Header header : rslt.getHeaders()) {
+										String name = header.getName().toLowerCase();
+										String value = header.getValue();
+										writer.write(String.format("%s:%s\n", name, value));
+									}
+								} catch (IOException ex) {
+								} finally {
+									if (null != writer) {
+										try {
+											writer.close();
+										} catch (IOException ex) {
+
+										}
+									}
+								}
+							}
+
+							if (200 == statusCode) {
+								long length = rslt.getLength();
+								debug("Length : " + length);
+
+								manager.downloadContent(contentId, statusCode, length, contentType);
+
+								if (isParseContent(url, contentType)) {
+									manager.requestContentParse(contentId);
+								}
+							} else {
+								// Error
+								manager.downloadContent(contentId, statusCode);
+							}
+
+						} else {
+							// not found host
+							manager.downloadErrorContent(contentId);
+						}
+
+					} catch (MalformedURLException ex) {
+						// Error
+					}
+				}
+
+			} else {
+				debug("Not found download content.");
+			}
+
+			status = 1;
+		} catch (SQLException ex) {
+			fatal(ex);
+		} catch (DataAccessServiceException ex) {
+			fatal(ex);
+		}
+
+		return status;
 	}
 
 	protected boolean isParseContent(final URL aURL, final String aContentType) {

@@ -36,14 +36,16 @@ public interface WebCrawlerManager extends Logic {
 	/**
 	 * 対象ホストを取得する。
 	 * <p>
+	 * ホスト情報は下記の項目を保持する。
 	 * <ul>
 	 * <li>id - ホストID</li>
 	 * <li>name - ホスト名</li>
+	 * <li>protocol - プロトコル名</li>
 	 * <li>port - ポート番号</li>
 	 * </ul>
 	 * </p>
 	 * 
-	 * @return ホスト情報
+	 * @return ホスト情報、対象ホストが見つからない場合、空のマップを返す。
 	 */
 	public Map<String, Object> lockHost() throws DataAccessServiceException, SQLException;
 
@@ -51,14 +53,15 @@ public interface WebCrawlerManager extends Logic {
 	 * 対象ホストを解放する。
 	 * 
 	 * @param aHostId ホストID
-	 * @param aResultCode 結果コード
+	 * @param aStatus ステータス
 	 */
-	public void unlockHost(final String aHostId, final int aResultCode) throws DataAccessServiceException, SQLException;
+	public void unlockHost(final String aHostId, final int aStatus) throws DataAccessServiceException, SQLException;
 
 	/**
 	 * 対象ホストからダウンロードページの一覧を取得する。
 	 * 
 	 * <p>
+	 * ページ情報一覧を下記の項目のマップのリストを返す。
 	 * <ul>
 	 * <li>id - ページID</li>
 	 * <li>areas - エイリアス</li>
@@ -67,7 +70,7 @@ public interface WebCrawlerManager extends Logic {
 	 * 
 	 * @param aHostId ホストID
 	 * @param aPageSize ページ数
-	 * @return　ページ情報
+	 * @return　ページ情報一覧、対象のページがない場合、空のリストを返す。
 	 */
 	public List<Map<String, Object>> getDownloadPages(final String aHostId, final int aPageSize) throws DataAccessServiceException, SQLException;
 
@@ -128,6 +131,10 @@ public interface WebCrawlerManager extends Logic {
 	 */
 	public Map<String, Object> getParseContent() throws DataAccessServiceException, SQLException;
 
+	public Map<String, Object> getHost(final String aName, final String aProtocol, final int aPort)throws DataAccessServiceException, SQLException;
+
+	public Map<String, Object> registHost(final String aName, final String aProtocol, final int aPort)throws DataAccessServiceException, SQLException;
+	
 	public void parseContent(final String aContentId) throws DataAccessServiceException, SQLException;
 
 	public void parseErrorContent(final String aContentId) throws DataAccessServiceException, SQLException;

@@ -46,8 +46,10 @@ public final class SampleHtmlParser {
 		Content content = null;
 		URL url = null;
 		try {
-			content = new FileContent(new File("C:\\html\\6\\6.html"));
-			url = new URL("http://tabelog.com/osaka/A2704/A270402/27041365");
+			//content = new FileContent(new File("C:\\html\\6\\6.html"));
+			//url = new URL("http://tabelog.com/osaka/A2704/A270402/27041365");
+			content = new FileContent(new File("C:\\temp\\aaa.html"));
+			url = new URL("http://yahoo.co.jp");
 		} catch (MalformedURLException ex) {
 
 		}

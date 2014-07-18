@@ -385,7 +385,7 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	 * @param aInnerText タグ内文字列
 	 */
 	protected void doFindScript(final URL aUrl, final String aInnerText) {
-System.out.println(aInnerText);
+
 	}
 
 	/**
