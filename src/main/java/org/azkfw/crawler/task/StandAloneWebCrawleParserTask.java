@@ -27,6 +27,8 @@ import java.util.Map;
 
 import org.azkfw.business.BusinessServiceException;
 import org.azkfw.business.dao.DataAccessServiceException;
+import org.azkfw.business.property.Property;
+import org.azkfw.business.property.PropertyFile;
 import org.azkfw.crawler.CrawlerServiceException;
 import org.azkfw.crawler.content.Content;
 import org.azkfw.crawler.content.FileContent;
@@ -35,8 +37,6 @@ import org.azkfw.crawler.logic.WebCrawlerManager;
 import org.azkfw.crawler.parser.engine.ParseEngine;
 import org.azkfw.crawler.parser.engine.ParseEngineResult;
 import org.azkfw.crawler.parser.engine.SimpleHtmlParseEngine;
-import org.azkfw.persistence.proterty.Property;
-import org.azkfw.persistence.proterty.PropertyFile;
 import org.azkfw.util.MapUtility;
 import org.azkfw.util.PathUtility;
 import org.azkfw.util.URLUtility;

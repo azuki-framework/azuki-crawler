@@ -19,8 +19,8 @@ package org.azkfw.crawler.schedule;
 
 import org.azkfw.crawler.lang.CrawlerSetupException;
 import org.azkfw.lang.LoggingObject;
-import org.azkfw.persistence.parameter.Parameter;
-import org.azkfw.persistence.parameter.ParameterSupport;
+import org.azkfw.parameter.Parameter;
+import org.azkfw.parameter.ParameterSupport;
 
 /**
  * このクラスは、クローラのスケジュール機能を実装するための基底クラスです。

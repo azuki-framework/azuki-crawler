@@ -17,7 +17,7 @@
  */
 package org.azkfw.crawler.schedule;
 
-import org.azkfw.persistence.parameter.Parameter;
+import org.azkfw.parameter.Parameter;
 import org.azkfw.util.StringUtility;
 
 /**

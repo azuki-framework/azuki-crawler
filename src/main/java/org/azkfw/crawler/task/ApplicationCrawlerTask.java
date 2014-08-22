@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.azkfw.crawler.lang.CrawlerSetupException;
-import org.azkfw.persistence.parameter.Parameter;
+import org.azkfw.parameter.Parameter;
 
 /**
  * このクラスは、外部アプリケーションの実行を行うクローラタスククラスです。

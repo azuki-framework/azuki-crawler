@@ -21,7 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.azkfw.crawler.matcher.DateTimeMatcher;
-import org.azkfw.persistence.parameter.Parameter;
+import org.azkfw.parameter.Parameter;
 
 /**
  * このクラスは、指定時間に実行を行うスケジュールクラスです。

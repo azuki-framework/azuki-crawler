@@ -24,11 +24,11 @@ import java.util.Map;
 import org.azkfw.business.BusinessServiceException;
 import org.azkfw.business.logic.Logic;
 import org.azkfw.business.logic.LogicManager;
+import org.azkfw.business.property.Property;
+import org.azkfw.business.property.PropertyManager;
+import org.azkfw.business.property.PropertySupport;
 import org.azkfw.context.ContextSupport;
 import org.azkfw.persistence.database.DatabaseConnectionSupport;
-import org.azkfw.persistence.proterty.Property;
-import org.azkfw.persistence.proterty.PropertyManager;
-import org.azkfw.persistence.proterty.PropertySupport;
 import org.azkfw.util.StringUtility;
 
 /**

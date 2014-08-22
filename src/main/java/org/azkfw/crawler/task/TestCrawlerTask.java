@@ -19,7 +19,7 @@ package org.azkfw.crawler.task;
 
 import org.azkfw.crawler.CrawlerServiceException;
 import org.azkfw.crawler.lang.CrawlerSetupException;
-import org.azkfw.persistence.store.Store;
+import org.azkfw.store.Store;
 
 /**
  * このクラスは、テストを行うクローラタスククラスです。

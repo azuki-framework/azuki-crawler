@@ -22,8 +22,8 @@ import org.azkfw.crawler.lang.CrawlerSetupException;
 import org.azkfw.crawler.performance.Performance;
 import org.azkfw.crawler.task.support.CrawlerTaskControlSupport;
 import org.azkfw.lang.LoggingObject;
-import org.azkfw.persistence.parameter.Parameter;
-import org.azkfw.persistence.parameter.ParameterSupport;
+import org.azkfw.parameter.Parameter;
+import org.azkfw.parameter.ParameterSupport;
 
 /**
  * このクラスは、クローラタスク機能の実装を行うための基底クラスです。

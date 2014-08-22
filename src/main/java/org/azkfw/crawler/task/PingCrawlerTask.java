@@ -24,7 +24,7 @@ import java.net.UnknownHostException;
 
 import org.azkfw.crawler.CrawlerServiceException;
 import org.azkfw.crawler.lang.CrawlerSetupException;
-import org.azkfw.persistence.parameter.Parameter;
+import org.azkfw.parameter.Parameter;
 
 /**
  * このクラスは、指定のホストへPingを行うクローラタスククラスです。

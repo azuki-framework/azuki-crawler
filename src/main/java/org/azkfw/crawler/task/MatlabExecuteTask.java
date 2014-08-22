@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.azkfw.crawler.lang.CrawlerSetupException;
-import org.azkfw.persistence.parameter.Parameter;
+import org.azkfw.parameter.Parameter;
 import org.azkfw.util.PathUtility;
 import org.azkfw.util.StringUtility;
 

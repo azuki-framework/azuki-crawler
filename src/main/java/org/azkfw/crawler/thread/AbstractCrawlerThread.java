@@ -28,6 +28,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
+import org.azkfw.business.property.Property;
+import org.azkfw.business.property.PropertyFile;
+import org.azkfw.business.property.PropertyManager;
+import org.azkfw.business.property.PropertySupport;
 import org.azkfw.context.Context;
 import org.azkfw.context.ContextSupport;
 import org.azkfw.crawler.CrawlerServiceException;
@@ -40,14 +44,10 @@ import org.azkfw.crawler.task.CrawlerTask;
 import org.azkfw.crawler.task.CrawlerTaskResult;
 import org.azkfw.crawler.task.support.CrawlerTaskControlSupport;
 import org.azkfw.lang.LoggingObject;
-import org.azkfw.persistence.parameter.Parameter;
-import org.azkfw.persistence.parameter.ParameterSupport;
-import org.azkfw.persistence.proterty.Property;
-import org.azkfw.persistence.proterty.PropertyFile;
-import org.azkfw.persistence.proterty.PropertyManager;
-import org.azkfw.persistence.proterty.PropertySupport;
+import org.azkfw.parameter.Parameter;
+import org.azkfw.parameter.ParameterSupport;
 import org.azkfw.persistence.session.SessionSupport;
-import org.azkfw.persistence.store.Store;
+import org.azkfw.store.Store;
 import org.azkfw.util.StringUtility;
 
 /**

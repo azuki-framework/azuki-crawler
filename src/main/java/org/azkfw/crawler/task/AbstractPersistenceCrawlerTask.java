@@ -17,12 +17,12 @@
  */
 package org.azkfw.crawler.task;
 
+import org.azkfw.business.property.Property;
+import org.azkfw.business.property.PropertySupport;
 import org.azkfw.context.Context;
 import org.azkfw.context.ContextSupport;
-import org.azkfw.persistence.proterty.Property;
-import org.azkfw.persistence.proterty.PropertySupport;
 import org.azkfw.persistence.session.SessionSupport;
-import org.azkfw.persistence.store.Store;
+import org.azkfw.store.Store;
 
 /**
  * このクラスは、永続化層の機能を実装したクローラタスククラスです。
@@ -36,8 +36,7 @@ public abstract class AbstractPersistenceCrawlerTask extends AbstractCrawlerTask
 	/**
 	 * Session store
 	 * <p>
-	 * セッション情報はスレッド起動時のみ有効
-	 * TODO: これは永続化層の機能ではない
+	 * セッション情報はスレッド起動時のみ有効 TODO: これは永続化層の機能ではない
 	 * </p>
 	 */
 	private Store<String, Object> session;

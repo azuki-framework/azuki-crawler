@@ -20,7 +20,7 @@ package org.azkfw.crawler.store;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.azkfw.persistence.store.AbstractStore;
+import org.azkfw.store.AbstractStore;
 
 /**
  * このクラスは、クローラセッション用のストアクラスです。
