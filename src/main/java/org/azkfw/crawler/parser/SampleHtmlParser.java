@@ -20,7 +20,6 @@ package org.azkfw.crawler.parser;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 
 import org.azkfw.crawler.content.Content;
 import org.azkfw.crawler.content.FileContent;
@@ -65,8 +64,7 @@ public final class SampleHtmlParser {
 
 			if (engine instanceof SimpleHtmlParseEngine) {
 				SimpleHtmlParseEngine e = (SimpleHtmlParseEngine) engine;
-				List<String> urls = e.getUrlList();
-				for (String u : urls) {
+				for (String u : e.getUrls().keyset()) {
 					System.out.println("URL : " + u);
 				}
 			}

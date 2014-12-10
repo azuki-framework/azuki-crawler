@@ -91,7 +91,7 @@ class CrawlerController extends LoggingObject {
 			}
 
 		} catch (HttpHostConnectException ex) {
-			info("Already stoped crawler.");
+			//info("Already stoped crawler.");
 			result = true;
 		} catch (ClientProtocolException ex) {
 			fatal(ex);
@@ -143,8 +143,7 @@ class CrawlerController extends LoggingObject {
 		HttpGet httpGet = null;
 		BufferedReader reader = null;
 		try {
-			info("Command " + aCommand + " " + parameter.toString());
-			info("Request " + url);
+			debug(String.format("Command %s %s [%s]", aCommand, parameter.toString(), url));
 
 			httpGet = new HttpGet(url);
 			HttpResponse response = httpClient.execute(httpGet);
@@ -159,7 +158,6 @@ class CrawlerController extends LoggingObject {
 
 			if (200 == statusCode) {
 				result = true;
-				info("Return " + html);
 			} else {
 				error("Error Code.[" + statusCode + "]");
 				error(html.toString());

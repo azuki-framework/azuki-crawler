@@ -20,10 +20,17 @@ package org.azkfw.crawler.task;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.azkfw.business.BusinessServiceException;
 import org.azkfw.business.dao.DataAccessServiceException;
@@ -37,8 +44,10 @@ import org.azkfw.crawler.logic.WebCrawlerManager;
 import org.azkfw.crawler.parser.engine.ParseEngine;
 import org.azkfw.crawler.parser.engine.ParseEngineResult;
 import org.azkfw.crawler.parser.engine.SimpleHtmlParseEngine;
+import org.azkfw.crawler.parser.engine.SimpleHtmlParseEngine.Counter;
 import org.azkfw.util.MapUtility;
 import org.azkfw.util.PathUtility;
+import org.azkfw.util.StringUtility;
 import org.azkfw.util.URLUtility;
 
 /**
@@ -50,6 +59,33 @@ import org.azkfw.util.URLUtility;
  */
 @PropertyFile("conf/StandAloneWebCrawleParser.properties")
 public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask {
+
+	public static void main(final String[] args) {
+		try {
+			URL url = null;
+			url = new URL("http://localhost/aaaa/index.do?aaa=bbb&cc=cc#bottom");
+			System.out.println(String.format("protocol  : %s", url.getProtocol())); // http
+			System.out.println(String.format("host      : %s", url.getHost())); // localhost
+			System.out.println(String.format("port      : %d", url.getPort())); // -1
+			System.out.println(String.format("port(def) : %d", url.getDefaultPort())); // 80
+			System.out.println(String.format("file      : %s", url.getFile())); // /aaa/index.do?aaa=bbb&cc=cc
+			System.out.println(String.format("query     : %s", url.getQuery())); // aaa=bbb&cc=cc
+			System.out.println(String.format("path      : %s", url.getPath())); // /aaa/index.do
+			System.out.println(String.format("ref       : %s", url.getRef())); // bottom
+
+			url = new URL("http://localhost");
+			System.out.println(String.format("protocol  : %s", url.getProtocol())); // http
+			System.out.println(String.format("host      : %s", url.getHost())); // localhost
+			System.out.println(String.format("port      : %d", url.getPort())); // -1
+			System.out.println(String.format("port(def) : %d", url.getDefaultPort())); // 80
+			System.out.println(String.format("file      : %s", url.getFile())); //
+			System.out.println(String.format("query     : %s", url.getQuery())); // null
+			System.out.println(String.format("path      : %s", url.getPath())); // 
+			System.out.println(String.format("ref       : %s", url.getRef())); // null
+		} catch (MalformedURLException ex) {
+			ex.printStackTrace();
+		}
+	}
 
 	/** base directory */
 	private File baseDirectory;
@@ -90,6 +126,8 @@ public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask
 
 	}
 
+	private static final Pattern PTN_GET_CHARSET = Pattern.compile("charset\\s*=\\s*([^;]+);*");
+
 	@Override
 	protected CrawlerTaskResult doExecute() throws CrawlerServiceException {
 		CrawlerTaskResult result = new CrawlerTaskResult();
@@ -100,12 +138,22 @@ public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask
 			Map<String, Object> content = manager.getParseContent();
 			if (MapUtility.isNotEmpty(content)) {
 
+				String contentParseId = MapUtility.getString(content, "contentParseId");
 				String hostId = MapUtility.getString(content, "hostId");
 				String hostProtocol = MapUtility.getString(content, "hostProtocol");
 				String hostName = MapUtility.getString(content, "hostName");
 				Integer hostPort = MapUtility.getInteger(content, "hostPort");
 				String contentId = MapUtility.getString(content, "contentId");
 				String contentAreas = MapUtility.getString(content, "contentAreas");
+				String contentType = MapUtility.getString(content, "contentType");
+
+				String charset = null;
+				if (StringUtility.isNotEmpty(contentType)) {
+					Matcher m = PTN_GET_CHARSET.matcher(contentType);
+					if (m.find()) {
+						charset = m.group(1);
+					}
+				}
 
 				try {
 					URL absoluteUrl = URLUtility.toURL(hostProtocol, hostName, hostPort, contentAreas);
@@ -115,7 +163,14 @@ public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask
 
 					String filePath = PathUtility.cat(dir.getAbsolutePath(), "content.dat");
 
+					// 解析
 					ParseEngine engine = getParseEngine(absoluteUrl, new FileContent(new File(filePath)));
+					if (engine instanceof SimpleHtmlParseEngine) {
+						SimpleHtmlParseEngine e = (SimpleHtmlParseEngine) engine;
+						if (StringUtility.isNotEmpty(charset)) {
+							e.setCharset(Charset.forName(charset));
+						}
+					}
 					engine.initialize();
 					ParseEngineResult rslt = engine.parse(); // TODO: 解析の改修難易度
 					engine.release();
@@ -125,51 +180,67 @@ public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask
 						Map<String, String> hostKeyIdMap = new HashMap<String, String>();
 
 						SimpleHtmlParseEngine e = (SimpleHtmlParseEngine) engine;
-						List<String> urls = e.getUrlList();
-						for (String url : urls) {
+
+						Counter urls = e.getAnchors();
+						Map<String, Set<String>> hostUrls = new HashMap<String, Set<String>>();
+						for (String url : urls.keyset()) {
 							try {
 								URL bufUrl = new URL(url);
 								if (isDownloadContent(bufUrl)) {
+
 									String protocol = bufUrl.getProtocol();
 									String name = bufUrl.getHost();
 									int port = (-1 != bufUrl.getPort()) ? bufUrl.getPort() : bufUrl.getDefaultPort();
 
-									String hostKey = String.format("%s://%s:%d", protocol, name, port);
-
-									String bufHostId = null;
+									// ホスト情報登録
+									String hostKey = getHostKey(bufUrl);
 									if (hostKeyIdMap.containsKey(hostKey)) {
-										bufHostId = hostKeyIdMap.get(hostKey);
-										
-										System.out.println("Exist  host." + hostKey);
+										String bufHostId = hostKeyIdMap.get(hostKey);
+
+										hostUrls.get(bufHostId).add(url);
 									} else {
+										String bufHostId = null;
+
 										Map<String, Object> host = manager.getHost(name, protocol, port);
 										if (MapUtility.isNotEmpty(host)) {
 											bufHostId = MapUtility.getString(host, "id");
-											System.out.println("Get    host." + hostKey);
 										} else {
 											host = manager.registHost(name, protocol, port);
 											bufHostId = MapUtility.getString(host, "id");
-											System.out.println("Create host." + hostKey);
+
+											info(String.format("New host.[%s]", hostKey));
 										}
 										hostKeyIdMap.put(hostKey, bufHostId);
+
+										Set<String> bufUrls = new HashSet<String>();
+										bufUrls.add(url);
+										hostUrls.put(bufHostId, bufUrls);
 									}
-
-									
-									
-									
 								} else {
-
+									// ダウンロード対象じゃない
 								}
 							} catch (MalformedURLException ex) {
-
+								ex.printStackTrace();
 							}
+						}
+
+						// ホストごとのURL
+						Date date = new Date();
+						for (String bufHostId : hostUrls.keySet()) {
+							Set<String> bufUrls = hostUrls.get(bufHostId);
+							List<URL> urlList = new ArrayList<URL>();
+							for (String url : bufUrls) {
+								//URLDecoder.decode(url, charset);
+								urlList.add(new URL(url));
+							}
+							manager.registContents(bufHostId, urlList, date);
 						}
 					}
 
 					if (rslt.isResult()) {
-						manager.parseContent(contentId);
+						manager.parseContent(contentParseId);
 					} else {
-						manager.parseErrorContent(contentId);
+						manager.parseErrorContent(contentParseId);
 					}
 
 				} catch (MalformedURLException ex) {
@@ -202,13 +273,25 @@ public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask
 		return result;
 	}
 
+	private String getHostKey(final URL aUrl) {
+		String protocol = aUrl.getProtocol();
+		String name = aUrl.getHost();
+		int port = (-1 != aUrl.getPort()) ? aUrl.getPort() : aUrl.getDefaultPort();
+		return getHostKey(protocol, name, port);
+	}
+
+	private String getHostKey(final String aProtocol, final String aName, final int aPort) {
+		String hostKey = String.format("%s://%s:%d", aProtocol, aName, aPort);
+		return hostKey;
+	}
+
 	protected boolean isDownloadContent(final URL aUrl) {
 		String url = aUrl.toExternalForm();
 
-		if (-1 == url.indexOf("www.atmarkit.co.jp")) {
+		if (!url.startsWith("http://tabelog.com")) {
 			return false;
 		}
-		
+
 		return true;
 	}
 

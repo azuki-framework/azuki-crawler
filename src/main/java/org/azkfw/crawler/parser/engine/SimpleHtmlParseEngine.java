@@ -26,8 +26,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.text.MutableAttributeSet;
@@ -49,15 +50,21 @@ import org.azkfw.util.URLUtility;
  */
 public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 
-	/** URL */
+	/** URL - 解析対象URL */
 	private URL url;
 
 	/** */
-	private Set<String> setUrl;
+	private List<String> anchorList;
+	private List<String> imageList;
+	private List<String> scriptList;
+	private List<String> linkList;
 
+	/** */
 	private String baseUrl;
 
-	private List<String> urlList;
+	private Counter urlCounter;
+	private Counter anchorCounter;
+	private Counter imageCounter;
 
 	/**
 	 * コンストラクタ
@@ -70,8 +77,14 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 		url = aUrl;
 
 		baseUrl = null;
-		setUrl = new HashSet<String>();
-		urlList = null;
+		anchorList = new ArrayList<String>();
+		imageList = new ArrayList<String>();
+		scriptList = new ArrayList<String>();
+		linkList = new ArrayList<String>();
+
+		urlCounter = new Counter();
+		anchorCounter = new Counter();
+		imageCounter = new Counter();
 	}
 
 	/**
@@ -86,8 +99,14 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 		url = aUrl;
 
 		baseUrl = null;
-		setUrl = new HashSet<String>();
-		urlList = null;
+		anchorList = new ArrayList<String>();
+		imageList = new ArrayList<String>();
+		scriptList = new ArrayList<String>();
+		linkList = new ArrayList<String>();
+
+		urlCounter = new Counter();
+		anchorCounter = new Counter();
+		imageCounter = new Counter();
 	}
 
 	/**
@@ -102,8 +121,14 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 		url = aUrl;
 
 		baseUrl = null;
-		setUrl = new HashSet<String>();
-		urlList = null;
+		anchorList = new ArrayList<String>();
+		imageList = new ArrayList<String>();
+		scriptList = new ArrayList<String>();
+		linkList = new ArrayList<String>();
+
+		urlCounter = new Counter();
+		anchorCounter = new Counter();
+		imageCounter = new Counter();
 	}
 
 	/**
@@ -118,8 +143,14 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 		url = aUrl;
 
 		baseUrl = null;
-		setUrl = new HashSet<String>();
-		urlList = null;
+		anchorList = new ArrayList<String>();
+		imageList = new ArrayList<String>();
+		scriptList = new ArrayList<String>();
+		linkList = new ArrayList<String>();
+
+		urlCounter = new Counter();
+		anchorCounter = new Counter();
+		imageCounter = new Counter();
 	}
 
 	/**
@@ -135,8 +166,14 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 		url = aUrl;
 
 		baseUrl = null;
-		setUrl = new HashSet<String>();
-		urlList = null;
+		anchorList = new ArrayList<String>();
+		imageList = new ArrayList<String>();
+		scriptList = new ArrayList<String>();
+		linkList = new ArrayList<String>();
+
+		urlCounter = new Counter();
+		anchorCounter = new Counter();
+		imageCounter = new Counter();
 	}
 
 	/**
@@ -152,12 +189,26 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 		url = aUrl;
 
 		baseUrl = null;
-		setUrl = new HashSet<String>();
-		urlList = null;
+		anchorList = new ArrayList<String>();
+		imageList = new ArrayList<String>();
+		scriptList = new ArrayList<String>();
+		linkList = new ArrayList<String>();
+
+		urlCounter = new Counter();
+		anchorCounter = new Counter();
+		imageCounter = new Counter();
 	}
 
-	public List<String> getUrlList() {
-		return urlList;
+	public Counter getUrls() {
+		return urlCounter;
+	}
+
+	public Counter getAnchors() {
+		return anchorCounter;
+	}
+
+	public Counter getImages() {
+		return imageCounter;
 	}
 
 	@Override
@@ -176,37 +227,12 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 
 		Charset charset = getCharset();
 		if (null == charset) {
+			// charsetが不明な場合HTMLから取得
 			charset = getCharset(aContent);
 		}
 
 		if (null != charset) {
-			String source = null;
-			{
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				InputStream is = null;
-				try {
-					is = aContent.getInputStream();
-					byte[] buf = new byte[1024];
-					int readSize;
-					while (-1 != (readSize = is.read(buf, 0, 1024))) {
-						if (0 == readSize)
-							continue;
-						baos.write(buf, 0, readSize);
-					}
-
-					source = new String(baos.toByteArray(), charset);
-				} catch (IOException ex) {
-					fatal(ex);
-				} finally {
-					if (null != is) {
-						try {
-							is.close();
-						} catch (IOException ex) {
-							fatal(ex);
-						}
-					}
-				}
-			}
+			String source = getSource(aContent, charset);
 
 			BufferedReader reader = null;
 			try {
@@ -215,7 +241,7 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 				HtmlParserCallback cb = new HtmlParserCallback(this, source);
 				pd.parse(reader, cb, true);
 
-				after();
+				doAfter();
 
 				result.setResult(true);
 			} catch (IOException ex) {
@@ -234,185 +260,172 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 		return result;
 	}
 
-	private void after() {
+	private String decorate(final String aUrl) throws MalformedURLException{
+		URL url = new URL(aUrl);
+		
+		String str = url.toExternalForm();
+		String ref = url.getRef();
+		if (null != ref) {
+			str = str.substring(0, str.length() - (ref.length()+1));
+		}
+		if (StringUtility.isEmpty(url.getFile())) {
+			str += "/";
+		}
+		return str;
+	}
+	
+	private void doAfter() {
 		String base = url.toExternalForm();
 		if (StringUtility.isNotEmpty(baseUrl)) {
 			base = baseUrl;
 		}
 
-		Set<String> newUrls = new HashSet<String>();
-		for (String u : setUrl) {
+		for (String url : anchorList) {
 			try {
-				String u2 = URLUtility.get(base, u);
-				newUrls.add(u2);
+				String buf = decorate(URLUtility.get(base, url));
+
+				urlCounter.countup(buf);
+				anchorCounter.countup(buf);
+			} catch (MalformedURLException ex) {
+				ex.printStackTrace();
+			}
+		}
+		for (String url : imageList) {
+			try {
+				String buf = decorate(URLUtility.get(base, url));
+
+				urlCounter.countup(buf);
+				imageCounter.countup(buf);
+			} catch (MalformedURLException ex) {
+				ex.printStackTrace();
+			}
+		}
+		for (String url : scriptList) {
+			try {
+				String buf = decorate(URLUtility.get(base, url));
+
+				urlCounter.countup(buf);
+			} catch (MalformedURLException ex) {
+				ex.printStackTrace();
+			}
+		}
+		for (String url : linkList) {
+			try {
+				String buf = decorate(URLUtility.get(base, url));
+
+				urlCounter.countup(buf);
 			} catch (MalformedURLException ex) {
 				ex.printStackTrace();
 			}
 		}
 
-		urlList = new ArrayList<String>();
-		for (String url : newUrls) {
-			urlList.add(url);
+	}
+
+	/**
+	 * タイトルを設定する。
+	 * <p>
+	 * ParserCallbackから呼び出される
+	 * </p>
+	 * 
+	 * @param aTitle
+	 */
+	private void setTitle(final String aTitle) {
+	}
+
+	/**
+	 * 説明文を設定する。
+	 * <p>
+	 * ParserCallbackから呼び出される
+	 * </p>
+	 * 
+	 * @param aDescription
+	 */
+	private void setDescription(final String aDescription) {
+	}
+
+	/**
+	 * <p>
+	 * ParserCallbackから呼び出される
+	 * </p>
+	 * 
+	 * @param aKeywords
+	 */
+	private void setKeywords(final List<String> aKeywords) {
+	}
+
+	/**
+	 * <p>
+	 * ParserCallbackから呼び出される
+	 * </p>
+	 * 
+	 * @param aKeywords
+	 */
+	private void addAnchor(final String aHref, final List<String> aInnerTexts) {
+		if (StringUtility.isNotEmpty(aHref)) {
+			anchorList.add(aHref);
 		}
 	}
 
-	private void findTitle(final String aTitle) {
-		doFindTitle(aTitle);
-	}
-
-	private void findDescription(final String aDescription) {
-		doFindDescription(aDescription);
-	}
-
-	private void findKeywords(final List<String> aKeywords) {
-		doFindKeywords(aKeywords);
-	}
-
-	private void findAnchor(final String aHref, final List<String> aInnerTexts) {
-		setUrl.add(aHref);
-
-		try {
-			String u = URLUtility.get(url.toExternalForm(), aHref);
-			doFindAnchor(new URL(u), aInnerTexts);
-		} catch (MalformedURLException ex) {
-			fatal("Anchor href : " + aHref, ex);
-		}
-	}
-
-	private void findImage(final String aSrc) {
-		setUrl.add(aSrc);
-
-		try {
-			String u = URLUtility.get(url.toExternalForm(), aSrc);
-			doFindImage(new URL(u));
-		} catch (MalformedURLException ex) {
-			fatal("Image src : " + ex);
-		}
-	}
-
-	private void findScript(final String aSrc, final String aInnerText) {
+	/**
+	 * <p>
+	 * ParserCallbackから呼び出される
+	 * </p>
+	 * 
+	 * @param aSrc
+	 * @param aAlt
+	 */
+	private void addImage(final String aSrc, final String aAlt) {
 		if (StringUtility.isNotEmpty(aSrc)) {
-			setUrl.add(aSrc);
-		}
-
-		try {
-			URL u = null;
-			if (StringUtility.isNotEmpty(aSrc)) {
-				String s = URLUtility.get(url.toExternalForm(), aSrc);
-				u = new URL(s);
-			}
-			doFindScript(u, aInnerText);
-		} catch (MalformedURLException ex) {
-			fatal("Script src : " + ex);
+			imageList.add(aSrc);
 		}
 	}
 
-	private void findLink(final String aHref) {
-		setUrl.add(aHref);
-
-		try {
-			String u = URLUtility.get(url.toExternalForm(), aHref);
-			doFindLink(new URL(u));
-		} catch (MalformedURLException ex) {
-			fatal("Link src : " + ex);
+	/**
+	 * <p>
+	 * ParserCallbackから呼び出される
+	 * </p>
+	 * 
+	 * @param aSrc
+	 * @param aInnerText
+	 */
+	private void addScript(final String aSrc, final String aInnerText) {
+		if (StringUtility.isNotEmpty(aSrc)) {
+			scriptList.add(aSrc);
 		}
 	}
 
-	private void findBase(final String aHref) {
+	/**
+	 * <p>
+	 * ParserCallbackから呼び出される
+	 * </p>
+	 * 
+	 * @param aHref
+	 */
+	private void addLink(final String aHref) {
+		if (StringUtility.isNotEmpty(aHref)) {
+			linkList.add(aHref);
+		}
+	}
+
+	/**
+	 * <p>
+	 * ParserCallbackから呼び出される
+	 * </p>
+	 * 
+	 * @param aHref
+	 */
+	private void setBase(final String aHref) {
 		baseUrl = aHref;
-
-		try {
-			doFindBase(new URL(aHref));
-		} catch (MalformedURLException ex) {
-			fatal("Base href : " + ex);
-		}
-	}
-
-	private void findText(final String aText) {
-		doFindText(aText);
 	}
 
 	/**
-	 * タイトルが見つかった場合に呼び出される。
+	 * <p>
+	 * ParserCallbackから呼び出される
+	 * </p>
 	 * 
-	 * @param aTitle タイトル
+	 * @param aText
 	 */
-	protected void doFindTitle(final String aTitle) {
-
-	}
-
-	/**
-	 * 説明が見つかった場合に呼び出される。
-	 * 
-	 * @param aDescription 説明
-	 */
-	protected void doFindDescription(final String aDescription) {
-
-	}
-
-	/**
-	 * キーワードが見つかった場合に呼び出される。
-	 * 
-	 * @param aKeywords キーワード一覧
-	 */
-	protected void doFindKeywords(final List<String> aKeywords) {
-
-	}
-
-	/**
-	 * アンカーが見つかった場合に呼び出される。
-	 * 
-	 * @param aUrl URL
-	 * @param aInnerTexts タグ内文字列群
-	 */
-	protected void doFindAnchor(final URL aUrl, final List<String> aInnerTexts) {
-
-	}
-
-	/**
-	 * イメージが見つかった場合に呼び出される。
-	 * 
-	 * @param aUrl URL
-	 */
-	protected void doFindImage(final URL aUrl) {
-
-	}
-
-	/**
-	 * スクリプトが見つかった場合に呼び出される。
-	 * 
-	 * @param aUrl Source url
-	 * @param aInnerText タグ内文字列
-	 */
-	protected void doFindScript(final URL aUrl, final String aInnerText) {
-
-	}
-
-	/**
-	 * リンクが見つかった場合に呼び出される。
-	 * 
-	 * @param aUrl リンクソースURL
-	 */
-	protected void doFindLink(final URL aUrl) {
-
-	}
-
-	/**
-	 * リンクが見つかった場合に呼び出される。
-	 * 
-	 * @param aUrl リンクソースURL
-	 */
-	protected void doFindBase(final URL aUrl) {
-
-	}
-
-	/**
-	 * テキストが見つかった場合に呼び出される。
-	 * 
-	 * @param aText テキスト
-	 */
-	protected void doFindText(final String aText) {
-
+	private void addText(final String aText) {
 	}
 
 	/**
@@ -447,6 +460,68 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 		}
 
 		return charset;
+	}
+
+	private String getSource(final Content aContent, final Charset aCharset) {
+		String source = null;
+
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		InputStream is = null;
+		try {
+			is = aContent.getInputStream();
+			byte[] buf = new byte[1024];
+			int readSize;
+			while (-1 != (readSize = is.read(buf, 0, 1024))) {
+				if (0 == readSize)
+					continue;
+				baos.write(buf, 0, readSize);
+			}
+
+			source = new String(baos.toByteArray(), aCharset);
+		} catch (IOException ex) {
+			fatal(ex);
+		} finally {
+			if (null != is) {
+				try {
+					is.close();
+				} catch (IOException ex) {
+					fatal(ex);
+				}
+			}
+		}
+
+		return source;
+	}
+
+	public static class Counter {
+
+		private Map<String, Integer> counter;
+
+		public Counter() {
+			counter = new HashMap<String, Integer>();
+		}
+
+		public Set<String> keyset() {
+			return counter.keySet();
+		}
+
+		public int countup(final String key) {
+			int count = 0;
+			if (counter.containsKey(key)) {
+				count = counter.get(key);
+			}
+			count++;
+			counter.put(key, count);
+			return count;
+		}
+
+		public int getCount(final String key) {
+			int count = 0;
+			if (counter.containsKey(key)) {
+				count = counter.get(key);
+			}
+			return count;
+		}
 	}
 
 	/**
@@ -497,19 +572,18 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 			anchorInnerTexts = new ArrayList<String>();
 		}
 
-		@SuppressWarnings("unused")
 		@Override
 		public void handleSimpleTag(final Tag tag, final MutableAttributeSet attr, final int pos) {
 			if (tag.equals(HTML.Tag.IMG)) {
 				String src = (String) attr.getAttribute(HTML.Attribute.SRC);
 				String alt = (String) attr.getAttribute(HTML.Attribute.ALT);
 				if (StringUtility.isNotEmpty(src)) {
-					engin.findImage(src);
+					engin.addImage(src, alt);
 				}
 			} else if (tag.equals(HTML.Tag.LINK)) {
 				String href = (String) attr.getAttribute(HTML.Attribute.HREF);
 				if (StringUtility.isNotEmpty(href)) {
-					engin.findLink(href);
+					engin.addLink(href);
 				}
 			} else if (tag.equals(HTML.Tag.META)) {
 				String name = (String) attr.getAttribute(HTML.Attribute.NAME);
@@ -518,7 +592,7 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 					if ("description".equals(name)) {
 						String content = (String) attr.getAttribute(HTML.Attribute.CONTENT);
 						if (StringUtility.isNotEmpty(content)) {
-							engin.findDescription(content);
+							engin.setDescription(content);
 						}
 					} else if ("keywords".equals(name)) {
 						String content = (String) attr.getAttribute(HTML.Attribute.CONTENT);
@@ -528,14 +602,14 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 							for (String s : split) {
 								keywords.add(s);
 							}
-							engin.findKeywords(keywords);
+							engin.setKeywords(keywords);
 						}
 					}
 				}
 			} else if (tag.equals(HTML.Tag.BASE)) {
 				String href = (String) attr.getAttribute(HTML.Attribute.HREF);
 				if (StringUtility.isNotEmpty(href)) {
-					engin.findBase(href);
+					engin.setBase(href);
 				}
 			}
 			super.handleSimpleTag(tag, attr, pos);
@@ -574,7 +648,7 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 				if (anchorFlag) {
 					anchorFlag = false;
 					if (StringUtility.isNotEmpty(anchorHref)) {
-						engin.findAnchor(anchorHref, anchorInnerTexts);
+						engin.addAnchor(anchorHref, anchorInnerTexts);
 					}
 				}
 			} else if (tag.equals(HTML.Tag.SCRIPT)) {
@@ -588,17 +662,17 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 
 					} else if (-1 == nextScript) {
 						String str = source.substring(scriptEndPos, endScript);
-						engin.findScript(scriptSrc, str);
+						engin.addScript(scriptSrc, str);
 					} else if (nextScript > endScript) {
 						String str = source.substring(scriptEndPos, endScript);
-						engin.findScript(scriptSrc, str);
+						engin.addScript(scriptSrc, str);
 					}
 				}
 			} else if (tag.equals(HTML.Tag.TITLE)) {
 				if (titleFlag) {
 					titleFlag = false;
 					if (StringUtility.isNotEmpty(title)) {
-						engin.findTitle(title);
+						engin.setTitle(title);
 					}
 				}
 			}
@@ -620,7 +694,7 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 			} else {
 				String text = new String(data);
 				if (StringUtility.isNotEmpty(text)) {
-					engin.findText(text);
+					engin.addText(text);
 				}
 			}
 			super.handleText(data, pos);
@@ -675,7 +749,6 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 				if (StringUtility.isNotEmpty(str)) {
 					charset = str;
 				}
-
 			}
 			super.handleSimpleTag(tag, attr, pos);
 		}

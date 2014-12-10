@@ -105,7 +105,7 @@ public abstract class AbstractTextParseEngine extends AbstractContentParseEngine
 	 * 
 	 * @param aCharset 文字コード
 	 */
-	protected final void setCharset(final Charset aCharset) {
+	public final void setCharset(final Charset aCharset) {
 		charset = aCharset;
 	}
 
@@ -114,7 +114,7 @@ public abstract class AbstractTextParseEngine extends AbstractContentParseEngine
 	 * 
 	 * @return 文字コード
 	 */
-	protected final Charset getCharset() {
+	public final Charset getCharset() {
 		return charset;
 	}
 

@@ -1,0 +1,32 @@
+# ------------------------------------------------------------------------------
+# WebCrawlerManagerI03
+#
+# ------------------------------------------------------------------------------
+
+                INSERT INTO
+                    tm_content
+                (
+                    content_id
+                  , content_areas
+                  , content_type
+                  , content_length
+                  , status
+                  , result_code
+                  , host_id
+                  , create_date
+                  , update_date
+                  , delete_date
+                )
+                VALUES
+                (
+${id}               ?
+${areas}          , ?
+${type}           , ?
+                  , -1
+                  , 1
+                  , -1
+${hostId}         , ?
+${date}           , ?
+${date}           , ?
+                  , NULL
+                )

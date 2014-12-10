@@ -4,12 +4,14 @@
 # ------------------------------------------------------------------------------
 
                 SELECT
-                    B.content_id     AS content_id
-                  , B.content_areas  AS content_areas
-                  , C.host_id        AS host_id
-                  , C.host_name      AS host_name
-                  , C.host_protocol  AS host_protocol
-                  , C.host_port      AS host_port
+                    A.content_parse_id AS content_parse_id
+                  , B.content_id       AS content_id
+                  , B.content_areas    AS content_areas
+                  , B.content_type     AS content_type
+                  , C.host_id          AS host_id
+                  , C.host_name        AS host_name
+                  , C.host_protocol    AS host_protocol
+                  , C.host_port        AS host_port
                 FROM
                     td_content_parse A
                     LEFT JOIN tm_content B ON A.content_id = B.content_id AND B.status = 3

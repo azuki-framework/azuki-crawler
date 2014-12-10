@@ -17,7 +17,9 @@
  */
 package org.azkfw.crawler.logic;
 
+import java.net.URL;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -131,11 +133,14 @@ public interface WebCrawlerManager extends Logic {
 	 */
 	public Map<String, Object> getParseContent() throws DataAccessServiceException, SQLException;
 
-	public Map<String, Object> getHost(final String aName, final String aProtocol, final int aPort)throws DataAccessServiceException, SQLException;
+	public Map<String, Object> getHost(final String aName, final String aProtocol, final int aPort) throws DataAccessServiceException, SQLException;
 
-	public Map<String, Object> registHost(final String aName, final String aProtocol, final int aPort)throws DataAccessServiceException, SQLException;
-	
-	public void parseContent(final String aContentId) throws DataAccessServiceException, SQLException;
+	public Map<String, Object> registHost(final String aName, final String aProtocol, final int aPort) throws DataAccessServiceException,
+			SQLException;
 
-	public void parseErrorContent(final String aContentId) throws DataAccessServiceException, SQLException;
+	public void registContents(final String aHostId, final List<URL> aUrls, final Date aDate) throws DataAccessServiceException, SQLException;
+
+	public void parseContent(final String aContentParseId) throws DataAccessServiceException, SQLException;
+
+	public void parseErrorContent(final String aContentParseId) throws DataAccessServiceException, SQLException;
 }

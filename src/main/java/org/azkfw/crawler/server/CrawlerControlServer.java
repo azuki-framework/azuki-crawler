@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.azkfw.crawler.control;
+package org.azkfw.crawler.server;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -94,15 +94,13 @@ public class CrawlerControlServer extends LoggingObject implements HttpHandler {
 			if (!"127.0.0.1".equals(clientName) && !"localhost".equals(clientName)) {
 				exchange.sendResponseHeaders(404, NOT_FOUND.length);
 				out.write(NOT_FOUND);
-				out.flush();
+				
 			} else if ("/active".equals(areas)) {
 				String html = "Crawler server active.";
 				byte[] buf = html.getBytes(config.getCharset());
 
 				exchange.sendResponseHeaders(200, buf.length);
 				out.write(buf);
-				out.flush();
-
 			} else if ("/stop".equals(areas)) {
 				server.requestStop();
 
@@ -111,14 +109,12 @@ public class CrawlerControlServer extends LoggingObject implements HttpHandler {
 
 				exchange.sendResponseHeaders(200, buf.length);
 				out.write(buf);
-				out.flush();
-
 			} else {
 				exchange.sendResponseHeaders(404, NOT_FOUND.length);
 				out.write(NOT_FOUND);
-				out.flush();
-
 			}
+			
+			out.flush();
 		} catch (Exception ex) {
 			fatal(ex);
 

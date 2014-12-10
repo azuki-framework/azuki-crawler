@@ -44,7 +44,6 @@ import org.azkfw.util.MapUtility;
 import org.azkfw.util.PathUtility;
 import org.azkfw.util.StringUtility;
 import org.azkfw.util.URLUtility;
-import org.azkfw.util.UUIDUtility;
 
 /**
  * このクラスは、スタントアロンでWebクロールを行うクローラタスククラスです。
@@ -79,25 +78,6 @@ public final class StandAloneWebCrawleDownloaderTask extends StandAloneWebCrawle
 
 	@Override
 	protected void doStartup() {
-		System.out.println(UUIDUtility.generateToShortString().toUpperCase());
-		System.out.println(UUIDUtility.generateToShortString().toUpperCase());
-		System.out.println(UUIDUtility.generateToShortString().toUpperCase());
-		System.out.println(UUIDUtility.generateToShortString().toUpperCase());
-		System.out.println(UUIDUtility.generateToShortString().toUpperCase());
-		
-		String u = "http://localhost:8080/aaa/bbb.do?id=001#top";
-		try {
-			URL url = new URL(u);
-			System.out.println(url.getProtocol());
-			System.out.println(url.getHost());
-			System.out.println(url.getPort());
-			System.out.println();
-			System.out.println();
-			System.out.println();
-			System.out.println();
-		}catch (MalformedURLException ex) {
-			ex.printStackTrace();
-		}
 	}
 
 	@Override

@@ -11,4 +11,4 @@ ${type}           , content_type     = ?
 ${length}         , content_length   = ?
 ${code}           , result_code      = ?
                 WHERE
-${id}               content_id = ?
+${id}               content_id       = ?

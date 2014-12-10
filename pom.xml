@@ -56,6 +56,11 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.azkfw</groupId>
+			<artifactId>azuki-base</artifactId>
+			<version>1.4.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.azkfw</groupId>
 			<artifactId>azuki-business</artifactId>
 			<version>1.4.0-SNAPSHOT</version>
 		</dependency>

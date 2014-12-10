@@ -15,6 +15,7 @@
 <crawler>
 
 	<controller contextpath="/ctl" port="9090" charset="UTF-8" />
+	
 	<manager contextpath="/" port="8080" basedir="../base/webapps/manager"
 		charset="UTF-8" />
 
@@ -51,7 +52,7 @@
 				<parameter key="count" value="1" />
 			</schedule>
 		</thread>
-		<thread title="スタンドアロンクローラダウンローダタスク" description="" startup="true">
+		<thread title="スタンドアロンクローラダウンローダタスク" description="" startup="false">
 			<task classname="org.azkfw.crawler.task.StandAloneWebCrawleDownloaderTask">
 			</task>
 			<!-- 

@@ -1,14 +1,12 @@
 # ------------------------------------------------------------------------------
-# WebCrawlerManagerS01
+# WebCrawlerManagerS04
 #
 # ------------------------------------------------------------------------------
 
                 SELECT
-                    A.content_id     AS id
-                  , A.content_areas  AS areas
+                    count(*) AS cnt
                 FROM
                     tm_content A
                 WHERE
-                    A.status   = 1
-${hostId}       AND A.host_id  = ?
-                OFFSET 0 LIMIT 5
+${areas}            A.content_areas  = ?
+${hostId}       AND A.host_id        = ?

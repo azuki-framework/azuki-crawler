@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.azkfw.crawler.manager;
+package org.azkfw.crawler.server;
 
 import java.io.File;
 import java.io.FileInputStream;
