@@ -15,38 +15,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.azkfw.crawler.access;
+package org.azkfw.crawler.engine;
 
-import java.net.InetSocketAddress;
-
-import org.azkfw.lang.LoggingObject;
+import java.net.URL;
 
 /**
- * このクラスは、マネージャーへのアクセス制限を行うクラスです。
+ * このインターフェースは、クローラエンジン機能を定義したインターフェースです。
  * 
  * @since 1.0.0
- * @version 1.0.0 2014/05/13
- * @author Kawakicchi
+ * @version 1.0.0 2014/12/11
+ * @author kawakicchi
  */
-public class AccessControl extends LoggingObject {
+public interface CrawlerEngine {
 
-	public AccessControl() {
-		super(AccessControl.class);
-	}
+	/**
+	 * ダウンロード対象のコンテンツか判断する。
+	 * 
+	 * @param url コンテンツURL
+	 * @return 判断結果。ダウンロード対象の場合、<code>true</code>を返す。
+	 */
+	public boolean isDownloadContent(final URL url);
 
-	public boolean authentication(final InetSocketAddress aAddress, final String aAreas) {
-		boolean auth = true;
-
-		String address = aAddress.getHostString();
-
-		String message = null;
-		if (auth) {
-			message = String.format("A %s %s", address, aAreas);
-		} else {
-			message = String.format("D %s %s", address, aAreas);
-			info(message);
-		}
-		return auth;
-	}
-
+	/**
+	 * 解析対象のコンテンツか判断する。
+	 * 
+	 * @param url コンテンツURL
+	 * @param contentType コンテンツタイプ
+	 * @return 判断結果。解析対象の場合、<code>true</code>を返す。
+	 */
+	public boolean isParseContent(final URL url, final String contentType);
 }

@@ -15,38 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.azkfw.crawler.access;
-
-import java.net.InetSocketAddress;
-
-import org.azkfw.lang.LoggingObject;
+package org.azkfw.crawler.engine;
 
 /**
- * このクラスは、マネージャーへのアクセス制限を行うクラスです。
+ * このインターフェースは、クローラエンジン機能を管理する機能を定義するインターフェースです。
  * 
  * @since 1.0.0
- * @version 1.0.0 2014/05/13
- * @author Kawakicchi
+ * @version 1.0.0 2014/12/11
+ * @author kawakicchi
  */
-public class AccessControl extends LoggingObject {
-
-	public AccessControl() {
-		super(AccessControl.class);
-	}
-
-	public boolean authentication(final InetSocketAddress aAddress, final String aAreas) {
-		boolean auth = true;
-
-		String address = aAddress.getHostString();
-
-		String message = null;
-		if (auth) {
-			message = String.format("A %s %s", address, aAreas);
-		} else {
-			message = String.format("D %s %s", address, aAreas);
-			info(message);
-		}
-		return auth;
-	}
+public interface CrawlerEngineController extends CrawlerEngine {
 
 }

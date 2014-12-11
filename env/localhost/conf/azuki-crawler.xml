@@ -22,25 +22,7 @@
     <logger config="conf/log4j.xml" />
 
 	<threads>
-		<thread title="テストタスク" description="" startup="false">
-			<task classname="org.azkfw.crawler.task.TestCrawlerTask">
-			</task>
-			<!-- 
-			<schedule classname="org.azkfw.crawler.schedule.CountSchedule">
-				<parameter key="count" value="1" />
-			</schedule>
-			-->
-			<schedule classname="org.azkfw.crawler.schedule.TimerSchedule">
-				<parameter key="interval" value="1s" />
-			</schedule>
-			<!-- 
-			<schedule classname="org.azkfw.crawler.schedule.DatetimeSchedule">
-				<parameter key="pattern" value="8-10 * * * *" />
-			</schedule>
-			-->
-		</thread>
-
-		<thread title="スタンドアロンクローラパーサタスク" description="" startup="true">
+		<thread title="スタンドアロンクローラパーサタスク" description="" startup="false">
 			<task classname="org.azkfw.crawler.task.StandAloneWebCrawleParserTask">
 			</task>
 			<!-- 
@@ -65,6 +47,24 @@
 			</schedule>
 		</thread>
 		
+		
+		<thread title="テストタスク" description="" startup="false">
+			<task classname="org.azkfw.crawler.task.TestCrawlerTask">
+			</task>
+			<!-- 
+			<schedule classname="org.azkfw.crawler.schedule.CountSchedule">
+				<parameter key="count" value="1" />
+			</schedule>
+			-->
+			<schedule classname="org.azkfw.crawler.schedule.TimerSchedule">
+				<parameter key="interval" value="1s" />
+			</schedule>
+			<!-- 
+			<schedule classname="org.azkfw.crawler.schedule.DatetimeSchedule">
+				<parameter key="pattern" value="8-10 * * * *" />
+			</schedule>
+			-->
+		</thread>
 		<thread title="Pingタスク" description="" startup="false">
 			<task classname="org.azkfw.crawler.task.PingCrawlerTask">
 				<parameter key="host" value="192.168.85.10" />

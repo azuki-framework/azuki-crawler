@@ -37,12 +37,13 @@ import org.azkfw.crawler.CrawlerServiceException;
 import org.azkfw.crawler.downloader.engine.DownloadEngine;
 import org.azkfw.crawler.downloader.engine.DownloadEngineResult;
 import org.azkfw.crawler.downloader.engine.SimpleDownloadEngine;
+import org.azkfw.crawler.engine.CrawlerEngineController;
+import org.azkfw.crawler.engine.CrawlerEngineControllerFactory;
 import org.azkfw.crawler.lang.CrawlerSetupException;
 import org.azkfw.crawler.logic.WebCrawlerManager;
 import org.azkfw.util.ListUtility;
 import org.azkfw.util.MapUtility;
 import org.azkfw.util.PathUtility;
-import org.azkfw.util.StringUtility;
 import org.azkfw.util.URLUtility;
 
 /**
@@ -57,6 +58,9 @@ public final class StandAloneWebCrawleDownloaderTask extends StandAloneWebCrawle
 
 	/** base directory */
 	private File baseDirectory;
+
+	/** Crawler engine controller */
+	private CrawlerEngineController crawlerEngineController;
 
 	/**
 	 * コンストラクタ
@@ -74,6 +78,8 @@ public final class StandAloneWebCrawleDownloaderTask extends StandAloneWebCrawle
 		baseDirectory.mkdirs();
 
 		info("Base Directory : " + baseDirectory.getAbsolutePath());
+
+		crawlerEngineController = CrawlerEngineControllerFactory.getDefaultController();
 	}
 
 	@Override
@@ -247,12 +253,8 @@ public final class StandAloneWebCrawleDownloaderTask extends StandAloneWebCrawle
 	}
 
 	protected boolean isParseContent(final URL aURL, final String aContentType) {
-		if (StringUtility.isNotEmpty(aContentType)) {
-			if (-1 != aContentType.toLowerCase().indexOf("html")) {
-				return true;
-			}
-		}
-		return false;
+		boolean result = crawlerEngineController.isParseContent(aURL, aContentType);
+		return result;
 	}
 
 	protected DownloadEngine getDownloadEngine(final URL aUrl) {

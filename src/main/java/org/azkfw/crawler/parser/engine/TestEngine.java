@@ -45,18 +45,6 @@ public class TestEngine {
 	public static void main(final String[] args) {
 		TestEngine test = new TestEngine();
 		test.test();
-		
-		// http://tabelog.com/
-		// http://tabelog.com/hokkaido/
-		// http://tabelog.com/hokkaido/A0101/
-		// http://tabelog.com/hokkaido/A0101/A010201/
-		
-		// リスト
-		// http://tabelog.com/hokkaido/A0101/A010201/R5103/rstLst/
-		// http://tabelog.com/hokkaido/A0101/A010201/R5103/rstLst/2/
-		
-		// お店
-		// http://tabelog.com/hokkaido/A0101/A010201/1010964/
 	}
 
 	public void test() {

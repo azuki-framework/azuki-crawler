@@ -39,6 +39,8 @@ import org.azkfw.business.property.PropertyFile;
 import org.azkfw.crawler.CrawlerServiceException;
 import org.azkfw.crawler.content.Content;
 import org.azkfw.crawler.content.FileContent;
+import org.azkfw.crawler.engine.CrawlerEngineController;
+import org.azkfw.crawler.engine.CrawlerEngineControllerFactory;
 import org.azkfw.crawler.lang.CrawlerSetupException;
 import org.azkfw.crawler.logic.WebCrawlerManager;
 import org.azkfw.crawler.parser.engine.ParseEngine;
@@ -87,8 +89,14 @@ public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask
 		}
 	}
 
+	/** 文字コード取得パターン */
+	private static final Pattern PTN_GET_CHARSET = Pattern.compile("charset\\s*=\\s*([^;]+);*");
+
 	/** base directory */
 	private File baseDirectory;
+
+	/** Crawler engine controller */
+	private CrawlerEngineController crawlerEngineController;
 
 	/**
 	 * コンストラクタ
@@ -106,6 +114,8 @@ public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask
 		baseDirectory.mkdirs();
 
 		info("Base Directory : " + baseDirectory.getAbsolutePath());
+
+		crawlerEngineController = CrawlerEngineControllerFactory.getDefaultController();
 	}
 
 	@Override
@@ -125,8 +135,6 @@ public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask
 	protected void doRelease() {
 
 	}
-
-	private static final Pattern PTN_GET_CHARSET = Pattern.compile("charset\\s*=\\s*([^;]+);*");
 
 	@Override
 	protected CrawlerTaskResult doExecute() throws CrawlerServiceException {
@@ -183,10 +191,13 @@ public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask
 
 						Counter urls = e.getAnchors();
 						Map<String, Set<String>> hostUrls = new HashMap<String, Set<String>>();
+
 						for (String url : urls.keyset()) {
 							try {
 								URL bufUrl = new URL(url);
+
 								if (isDownloadContent(bufUrl)) {
+									// ダウンロード対象か判断
 
 									String protocol = bufUrl.getProtocol();
 									String name = bufUrl.getHost();
@@ -216,6 +227,7 @@ public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask
 										bufUrls.add(url);
 										hostUrls.put(bufHostId, bufUrls);
 									}
+
 								} else {
 									// ダウンロード対象じゃない
 								}
@@ -286,13 +298,8 @@ public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask
 	}
 
 	protected boolean isDownloadContent(final URL aUrl) {
-		String url = aUrl.toExternalForm();
-
-		if (!url.startsWith("http://tabelog.com")) {
-			return false;
-		}
-
-		return true;
+		boolean result = crawlerEngineController.isDownloadContent(aUrl);
+		return result;
 	}
 
 	protected ParseEngine getParseEngine(final URL aUrl, final Content aContent) {
