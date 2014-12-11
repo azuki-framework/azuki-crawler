@@ -147,6 +147,7 @@ public final class Crawler {
 		CommandLinePurser cl = new CommandLinePurser();
 		cl.setOption(OPT_BASE_DIRECTORY, DEFAULT_BASE_DIRECTORY);
 		cl.setOption(OPT_CONFIG_FILE, DEFAULT_CONFIG_FILE);
+		cl.setOption(OPT_PLUGIN_FILE, DEFAULT_PLUGIN_FILE);
 		cl.purse(args);
 
 		String baseDir = cl.getOption(OPT_BASE_DIRECTORY);

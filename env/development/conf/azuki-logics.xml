@@ -13,6 +13,7 @@
   limitations under the License. See accompanying LICENSE file.
 -->
 <azuki>
-	<logics> 
+	<logics>
+		<logic name="WebCrawlerManager" logic="org.azkfw.crawler.logic.impl.WebCrawlerManagerImpl" interface="org.azkfw.crawler.logic.WebCrawlerManager" />
 	</logics>
 </azuki>

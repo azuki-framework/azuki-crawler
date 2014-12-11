@@ -14,9 +14,17 @@
 -->
 <azuki>
 	<plugins>
+		<plugin name="DatabasePlugin"
+		        plugin="org.azkfw.persistence.database.DatabasePlugin"
+		        config="conf/database.properties"
+		        />
 		<plugin name="LogicPlugin"
 		        plugin="org.azkfw.business.logic.LogicPlugin"
 		        config="conf/azuki-logics.xml"
+		        />
+		<plugin name="DynamicSQLPlugin"
+		        plugin="org.azkfw.business.dsql.DynamicSQLPlugin"
+		        config="conf/azuki-dynamicSQLs.xml"
 		        />
 	</plugins>
 </azuki>

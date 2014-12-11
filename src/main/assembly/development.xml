@@ -28,11 +28,11 @@
 
 	<fileSets>
 		<fileSet>
-			<directory>/env/development</directory>
+			<directory>env/development</directory>
 			<outputDirectory>/</outputDirectory>
 		</fileSet>
 		<fileSet>
-			<directory>/env/base</directory>
+			<directory>env/base</directory>
 			<outputDirectory>/</outputDirectory>
 		</fileSet>
 	</fileSets>

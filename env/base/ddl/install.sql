@@ -1,24 +1,21 @@
-
 -- Role: crawler
 
--- DROP ROLE "crawler";
+-- DROP ROLE crawler;
 
-CREATE ROLE "crawler" LOGIN
-  ENCRYPTED PASSWORD 'md55d9c68c6c50ed3d02a2fcf54f63993b6'
+CREATE ROLE crawler LOGIN
+  ENCRYPTED PASSWORD 'md5207774cee4f587be92b25aac56d6bead'
   NOSUPERUSER INHERIT NOCREATEDB NOCREATEROLE NOREPLICATION;
 
-
-  
 -- Database: db_crawler
 
 -- DROP DATABASE db_crawler;
 
 CREATE DATABASE db_crawler
-  WITH OWNER = "crawler"
+  WITH OWNER = crawler
        ENCODING = 'UTF8'
        TABLESPACE = pg_default
-       LC_COLLATE = 'C'
-       LC_CTYPE = 'C'
+       LC_COLLATE = 'Japanese_Japan.932'
+       LC_CTYPE = 'Japanese_Japan.932'
        CONNECTION LIMIT = -1;
 
        
@@ -46,8 +43,7 @@ WITH (
 ALTER TABLE tm_host
   OWNER TO crawler;
 
-
- 
+  
 -- Table: tm_content
 
 -- DROP TABLE tm_content;
@@ -72,9 +68,6 @@ WITH (
 ALTER TABLE tm_content
   OWNER TO crawler;
 
-
-
-  
   
 -- Table: td_content_parse
 
@@ -91,4 +84,4 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE td_content_parse
-  OWNER TO "crawler";
+  OWNER TO crawler;

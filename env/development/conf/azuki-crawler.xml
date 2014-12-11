@@ -21,61 +21,18 @@
     <logger config="conf/log4j.xml" />
 
 	<threads>
-		<thread title="コマンドタスク" description="コマンド実行タスク" startup="true"
-			thread="1">
-			<task classname="org.azkfw.crawler.task.ApplicationCrawlerTask">
-				<parameter key="application" value="C:\temp\test.bat" />
-				<parameter key="currentDir" value="C:\temp\log" />
-				<parameter key="parameter1" value="aaa" />
-				<parameter key="parameter2" value="bbb" />
-				<parameter key="parameter3" value="ccc" />
-				<parameter key="parameter4" value="" />
-				<parameter key="parameter5" value="ddd" />
+		<thread title="スタンドアロンクローラパーサタスク" description="" startup="false">
+			<task classname="org.azkfw.crawler.task.StandAloneWebCrawleParserTask">
 			</task>
-			<schedule classname="org.azkfw.crawler.schedule.CountSchedule">
-				<parameter key="count" value="1" />
-			</schedule>
-		</thread>
-		
-		<thread title="Title1" description="">
-			<task classname="org.azkfw.crawler.task.TestCrawlerTask">
-				<parameter key="count" value="10" />
-			</task>
-			<schedule classname="org.azkfw.crawler.schedule.CountSchedule">
-				<parameter key="count" value="1" />
-			</schedule>
-		</thread>
-		<thread title="Title2" description="b">
-			<task classname="org.azkfw.crawler.task.TestCrawlerTask" />
-			<schedule classname="org.azkfw.crawler.schedule.CountSchedule">
-				<parameter key="count" value="10" />
-			</schedule>
-		</thread>
-		<thread title="Title3" description="">
-			<task classname="org.azkfw.crawler.task.TestCrawlerTask" />
 			<schedule classname="org.azkfw.crawler.schedule.TimerSchedule">
-				<parameter key="interval" value="300000" /> <!-- 5分間隔 -->
+				<parameter key="interval" value="1s" />
 			</schedule>
 		</thread>
-		<thread title="Title4" description="" startup="false">
-			<task classname="org.azkfw.crawler.task.TestCrawlerTask" />
-			<schedule classname="org.azkfw.crawler.schedule.DatetimeSchedule">
-				<parameter key="pattern" value="* * * * *" /> <!-- 毎分 -->
-			</schedule>
-		</thread>
-		<thread title="Title5" description="" startup="false">
-			<task classname="org.azkfw.crawler.task.TestCrawlerTask" />
-			<schedule classname="org.azkfw.crawler.schedule.DatetimeSchedule">
-				<parameter key="pattern" value="*/10 * * * *" /> <!-- 10分間隔 -->
-			</schedule>
-		</thread>
-
-		<thread title="Test" description="" startup="false">
-			<task classname="org.azkfw.crawler.task.TestCrawlerTask">
-				<parameter file="conf/TestTask.properties" />
+		<thread title="スタンドアロンクローラダウンローダタスク" description="" startup="false">
+			<task classname="org.azkfw.crawler.task.StandAloneWebCrawleDownloaderTask">
 			</task>
-			<schedule classname="org.azkfw.crawler.schedule.CountSchedule">
-				<parameter key="count" value="1" />
+			<schedule classname="org.azkfw.crawler.schedule.TimerSchedule">
+				<parameter key="interval" value="10s" />
 			</schedule>
 		</thread>
 	</threads>
