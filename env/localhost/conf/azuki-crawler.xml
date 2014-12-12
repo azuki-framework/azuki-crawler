@@ -48,7 +48,7 @@
 		</thread>
 		
 		
-		<thread title="テストタスク" description="" startup="false">
+		<thread title="テストタスク" description="" startup="true">
 			<task classname="org.azkfw.crawler.task.TestCrawlerTask">
 			</task>
 			<!-- 

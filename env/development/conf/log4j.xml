@@ -87,48 +87,37 @@
 	</appender>
 	
 	<appender name="stdout" class="org.apache.log4j.ConsoleAppender">
-		<param name="threshold" value="debug" />
+		<param name="threshold" value="ERROR" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d{HH:mm:ss.SSS} [%5p] %c{1} - %m%n" />
 		</layout>
 	</appender>
 
-	<category name="org.azkfw.crawler">
-		<priority value="ERROR" />
-		<appender-ref ref="crawler_error_log" />
-	</category>
-	<category name="org.azkfw.crawler.thread">
-		<priority value="INFO" />
+	<logger name="org.azkfw.crawler.thread">
 		<appender-ref ref="crawler_thread_log" />
-	</category>
-	<category name="org.azkfw.crawler.task">
-		<priority value="INFO" />
+	</logger>
+	<logger name="org.azkfw.crawler.task">
 		<appender-ref ref="crawler_task_log" />
-	</category>
-	<category name="org.azkfw.crawler.CrawlerServer">
-		<priority value="INFO" />
+	</logger>
+	<logger name="org.azkfw.crawler.CrawlerServer">
 		<appender-ref ref="crawler_server_log" />
-	</category>
-	<category name="org.azkfw.crawler.CrawlerController">
-		<priority value="INFO" />
+	</logger>
+	<logger name="org.azkfw.crawler.CrawlerController">
 		<appender-ref ref="crawler_controller_log" />
-	</category>
-	<category name="org.azkfw.crawler.performance.Performance">
-		<priority value="INFO" />
+	</logger>
+	<logger name="org.azkfw.crawler.performance.Performance">
 		<appender-ref ref="crawler_performance_log" />
-	</category>
-	<category name="org.azkfw.crawler.access">
-		<priority value="INFO" />
+	</logger>
+	<logger name="org.azkfw.crawler.access">
 		<appender-ref ref="crawler_access_log" />
-	</category>
+	</logger>
 	
-	<category name="org.azkfw.crawler">
-		<priority value="debug" />
+	<logger name="org.azkfw.crawler">
 		<appender-ref ref="stdout" />
-	</category>
+		<appender-ref ref="crawler_error_log" />
+	</logger>
 
 	<root>
-		<!-- <level value="debug" /> <appender-ref ref="STDOUT" /> -->
 	</root>
 
 </log4j:configuration>

@@ -17,11 +17,12 @@
  */
 package org.azkfw.crawler;
 
-import org.apache.log4j.xml.DOMConfigurator;
 import org.azkfw.business.cui.CommandLinePurser;
 import org.azkfw.context.Context;
 import org.azkfw.crawler.config.CrawlerConfig;
 import org.azkfw.crawler.context.CrawlerContext;
+import org.azkfw.log.Log4jLoggerFactory;
+import org.azkfw.log.LoggerFactory;
 
 /**
  * このクラスは、クローラを動作させるためのメインクラスです。
@@ -136,7 +137,8 @@ public final class Crawler {
 		Context context = new CrawlerContext(baseDir);
 
 		CrawlerConfig config = CrawlerConfig.parse(context.getAbstractPath(configFile));
-		DOMConfigurator.configure(context.getAbstractPath(config.getLogger().getConfig()));
+		LoggerFactory.load(Log4jLoggerFactory.class.getName(), config.getLogger().getConfig(), context);
+		//DOMConfigurator.configure(context.getAbstractPath(config.getLogger().getConfig()));
 
 		CrawlerServer server = null;
 		server = new CrawlerServer(context, config, pluginFile);
@@ -156,7 +158,8 @@ public final class Crawler {
 		Context context = new CrawlerContext(baseDir);
 
 		CrawlerConfig config = CrawlerConfig.parse(context.getAbstractPath(configFile));
-		DOMConfigurator.configure(context.getAbstractPath(config.getLogger().getConfig()));
+		LoggerFactory.load(Log4jLoggerFactory.class.getName(), config.getLogger().getConfig(), context);
+		//DOMConfigurator.configure(context.getAbstractPath(config.getLogger().getConfig()));
 
 		CrawlerController controller = new CrawlerController(context, config.getController());
 		controller.stop();
@@ -176,7 +179,8 @@ public final class Crawler {
 		Context context = new CrawlerContext(baseDir);
 
 		CrawlerConfig config = CrawlerConfig.parse(context.getAbstractPath(configFile));
-		DOMConfigurator.configure(context.getAbstractPath(config.getLogger().getConfig()));
+		LoggerFactory.load(Log4jLoggerFactory.class.getName(), config.getLogger().getConfig(), context);
+		//DOMConfigurator.configure(context.getAbstractPath(config.getLogger().getConfig()));
 
 		CrawlerController controller = new CrawlerController(context, config.getController());
 		boolean result = controller.stop();
