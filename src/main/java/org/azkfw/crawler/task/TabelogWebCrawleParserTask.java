@@ -54,41 +54,14 @@ import org.azkfw.util.StringUtility;
 import org.azkfw.util.URLUtility;
 
 /**
- * このクラスは、スタントアロンでWebクロールを行うクローラタスククラスです。
+ * このクラスは、食べログWebクロールを行うクローラタスククラスです。
  * 
  * @since 1.0.0
  * @version 1.0.0 2014/07/10
  * @author Kawakicchi
  */
-@PropertyFile("conf/StandAloneWebCrawleParser.properties")
-public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask {
-
-	public static void main(final String[] args) {
-		try {
-			URL url = null;
-			url = new URL("http://localhost/aaaa/index.do?aaa=bbb&cc=cc#bottom");
-			System.out.println(String.format("protocol  : %s", url.getProtocol())); // http
-			System.out.println(String.format("host      : %s", url.getHost())); // localhost
-			System.out.println(String.format("port      : %d", url.getPort())); // -1
-			System.out.println(String.format("port(def) : %d", url.getDefaultPort())); // 80
-			System.out.println(String.format("file      : %s", url.getFile())); // /aaa/index.do?aaa=bbb&cc=cc
-			System.out.println(String.format("query     : %s", url.getQuery())); // aaa=bbb&cc=cc
-			System.out.println(String.format("path      : %s", url.getPath())); // /aaa/index.do
-			System.out.println(String.format("ref       : %s", url.getRef())); // bottom
-
-			url = new URL("http://localhost");
-			System.out.println(String.format("protocol  : %s", url.getProtocol())); // http
-			System.out.println(String.format("host      : %s", url.getHost())); // localhost
-			System.out.println(String.format("port      : %d", url.getPort())); // -1
-			System.out.println(String.format("port(def) : %d", url.getDefaultPort())); // 80
-			System.out.println(String.format("file      : %s", url.getFile())); //
-			System.out.println(String.format("query     : %s", url.getQuery())); // null
-			System.out.println(String.format("path      : %s", url.getPath())); // 
-			System.out.println(String.format("ref       : %s", url.getRef())); // null
-		} catch (MalformedURLException ex) {
-			ex.printStackTrace();
-		}
-	}
+@PropertyFile("conf/TabelogWebCrawleParser.properties")
+public final class TabelogWebCrawleParserTask extends StandAloneWebCrawleTask {
 
 	/** 文字コード取得パターン */
 	private static final Pattern PTN_GET_CHARSET = Pattern.compile("charset\\s*=\\s*([^;]+);*");
@@ -102,8 +75,8 @@ public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask
 	/**
 	 * コンストラクタ
 	 */
-	public StandAloneWebCrawleParserTask() {
-		super(StandAloneWebCrawleParserTask.class);
+	public TabelogWebCrawleParserTask() {
+		super(TabelogWebCrawleParserTask.class);
 	}
 
 	@Override
@@ -173,7 +146,7 @@ public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask
 					String filePath = PathUtility.cat(dir.getAbsolutePath(), "content.dat");
 
 					// 解析
-					ParseEngine engine = getParseEngine(absoluteUrl, contentType, new FileContent(new File(filePath)));
+					ParseEngine engine = getParseEngine(absoluteUrl, new FileContent(new File(filePath)));
 					if (engine instanceof AbstractHtmlParseEngine) {
 						AbstractHtmlParseEngine e = (AbstractHtmlParseEngine) engine;
 						if (StringUtility.isNotEmpty(charset)) {
@@ -303,7 +276,7 @@ public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask
 		return result;
 	}
 
-	protected ParseEngine getParseEngine(final URL aUrl, final String aContentType, final Content aContent) {
-		return crawlerEngineController.getParseEngine(aUrl, aContentType, aContent);
+	protected ParseEngine getParseEngine(final URL aUrl, final Content aContent) {
+		return new SimpleHtmlParseEngine(aUrl, aContent);
 	}
 }

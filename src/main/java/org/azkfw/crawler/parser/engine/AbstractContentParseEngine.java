@@ -17,6 +17,10 @@
  */
 package org.azkfw.crawler.parser.engine;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import org.azkfw.crawler.content.Content;
 
 /**
@@ -86,4 +90,38 @@ public abstract class AbstractContentParseEngine extends AbstractParseEngine {
 	 * @return 解析結果
 	 */
 	protected abstract ParseEngineResult doParseContent(final Content aContent);
+
+	/**
+	 * ストリームを解放します。
+	 * 
+	 * @param streams ストリーム
+	 */
+	protected final void release(final InputStream... streams) {
+		for (InputStream stream : streams) {
+			if (null != stream) {
+				try {
+					stream.close();
+				} catch (IOException ex) {
+					warn(ex);
+				}
+			}
+		}
+	}
+
+	/**
+	 * ストリームを解放します。
+	 * 
+	 * @param streams ストリーム
+	 */
+	protected final void release(final OutputStream... streams) {
+		for (OutputStream stream : streams) {
+			if (null != stream) {
+				try {
+					stream.close();
+				} catch (IOException ex) {
+					warn(ex);
+				}
+			}
+		}
+	}
 }

@@ -36,7 +36,6 @@ import org.azkfw.business.property.PropertyFile;
 import org.azkfw.crawler.CrawlerServiceException;
 import org.azkfw.crawler.downloader.engine.DownloadEngine;
 import org.azkfw.crawler.downloader.engine.DownloadEngineResult;
-import org.azkfw.crawler.downloader.engine.SimpleDownloadEngine;
 import org.azkfw.crawler.engine.CrawlerEngineController;
 import org.azkfw.crawler.engine.CrawlerEngineControllerFactory;
 import org.azkfw.crawler.lang.CrawlerSetupException;
@@ -257,8 +256,7 @@ public final class StandAloneWebCrawleDownloaderTask extends StandAloneWebCrawle
 		return result;
 	}
 
-	protected DownloadEngine getDownloadEngine(final URL aUrl) {
-		return new SimpleDownloadEngine();
+	protected DownloadEngine getDownloadEngine(final URL url) {
+		return crawlerEngineController.getDownloadEngine(url);
 	}
-
 }

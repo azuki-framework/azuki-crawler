@@ -18,9 +18,7 @@
 package org.azkfw.crawler.parser.engine;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -52,16 +50,14 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 
 	/** URL - 解析対象URL */
 	private URL url;
-
+	/** */
+	private String baseUrl;
 	/** */
 	private List<String> anchorList;
 	private List<String> imageList;
 	private List<String> scriptList;
 	private List<String> linkList;
-
 	/** */
-	private String baseUrl;
-
 	private Counter urlCounter;
 	private Counter anchorCounter;
 	private Counter imageCounter;
@@ -74,61 +70,7 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	 */
 	public SimpleHtmlParseEngine(final URL aUrl, final Content aContent) {
 		super(SimpleHtmlParseEngine.class, aContent);
-		url = aUrl;
-
-		baseUrl = null;
-		anchorList = new ArrayList<String>();
-		imageList = new ArrayList<String>();
-		scriptList = new ArrayList<String>();
-		linkList = new ArrayList<String>();
-
-		urlCounter = new Counter();
-		anchorCounter = new Counter();
-		imageCounter = new Counter();
-	}
-
-	/**
-	 * コンストラクタ
-	 * 
-	 * @param aName 名前
-	 * @param aUrl URL
-	 * @param aContent コンテンツ
-	 */
-	protected SimpleHtmlParseEngine(final String aName, final URL aUrl, final Content aContent) {
-		super(aName, aContent);
-		url = aUrl;
-
-		baseUrl = null;
-		anchorList = new ArrayList<String>();
-		imageList = new ArrayList<String>();
-		scriptList = new ArrayList<String>();
-		linkList = new ArrayList<String>();
-
-		urlCounter = new Counter();
-		anchorCounter = new Counter();
-		imageCounter = new Counter();
-	}
-
-	/**
-	 * コンストラクタ
-	 * 
-	 * @param aClass クラス
-	 * @param aUrl URL
-	 * @param aContent コンテンツ
-	 */
-	protected SimpleHtmlParseEngine(final Class<?> aClass, final URL aUrl, final Content aContent) {
-		super(aClass, aContent);
-		url = aUrl;
-
-		baseUrl = null;
-		anchorList = new ArrayList<String>();
-		imageList = new ArrayList<String>();
-		scriptList = new ArrayList<String>();
-		linkList = new ArrayList<String>();
-
-		urlCounter = new Counter();
-		anchorCounter = new Counter();
-		imageCounter = new Counter();
+		init(aUrl);
 	}
 
 	/**
@@ -140,17 +82,31 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	 */
 	public SimpleHtmlParseEngine(final URL aUrl, final Content aContent, final Charset aCharset) {
 		super(SimpleHtmlParseEngine.class, aContent, aCharset);
-		url = aUrl;
+		init(aUrl);
+	}
 
-		baseUrl = null;
-		anchorList = new ArrayList<String>();
-		imageList = new ArrayList<String>();
-		scriptList = new ArrayList<String>();
-		linkList = new ArrayList<String>();
+	/**
+	 * コンストラクタ
+	 * 
+	 * @param aName 名前
+	 * @param aUrl URL
+	 * @param aContent コンテンツ
+	 */
+	protected SimpleHtmlParseEngine(final String aName, final URL aUrl, final Content aContent) {
+		super(aName, aContent);
+		init(aUrl);
+	}
 
-		urlCounter = new Counter();
-		anchorCounter = new Counter();
-		imageCounter = new Counter();
+	/**
+	 * コンストラクタ
+	 * 
+	 * @param aClass クラス
+	 * @param aUrl URL
+	 * @param aContent コンテンツ
+	 */
+	protected SimpleHtmlParseEngine(final Class<?> aClass, final URL aUrl, final Content aContent) {
+		super(aClass, aContent);
+		init(aUrl);
 	}
 
 	/**
@@ -163,17 +119,7 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	 */
 	protected SimpleHtmlParseEngine(final String aName, final URL aUrl, final Content aContent, final Charset aCharset) {
 		super(aName, aContent, aCharset);
-		url = aUrl;
-
-		baseUrl = null;
-		anchorList = new ArrayList<String>();
-		imageList = new ArrayList<String>();
-		scriptList = new ArrayList<String>();
-		linkList = new ArrayList<String>();
-
-		urlCounter = new Counter();
-		anchorCounter = new Counter();
-		imageCounter = new Counter();
+		init(aUrl);
 	}
 
 	/**
@@ -186,6 +132,10 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	 */
 	protected SimpleHtmlParseEngine(final Class<?> aClass, final URL aUrl, final Content aContent, final Charset aCharset) {
 		super(aClass, aContent, aCharset);
+		init(aUrl);
+	}
+
+	private void init(final URL aUrl) {
 		url = aUrl;
 
 		baseUrl = null;
@@ -199,15 +149,15 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 		imageCounter = new Counter();
 	}
 
-	public Counter getUrls() {
+	public final Counter getUrls() {
 		return urlCounter;
 	}
 
-	public Counter getAnchors() {
+	public final Counter getAnchors() {
 		return anchorCounter;
 	}
 
-	public Counter getImages() {
+	public final Counter getImages() {
 		return imageCounter;
 	}
 
@@ -232,92 +182,37 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 		}
 
 		if (null != charset) {
-			String source = getSource(aContent, charset);
+			String html = getSource(aContent, charset);
+
+			doBefore(html);
 
 			BufferedReader reader = null;
 			try {
 				reader = new BufferedReader(new InputStreamReader(aContent.getInputStream(), charset));
 				ParserDelegator pd = new ParserDelegator();
-				HtmlParserCallback cb = new HtmlParserCallback(this, source);
+				HtmlParserCallback cb = new HtmlParserCallback(this, html);
 				pd.parse(reader, cb, true);
-
-				doAfter();
-
-				result.setResult(true);
 			} catch (IOException ex) {
 				fatal(ex);
 			} finally {
-				if (null != reader) {
-					try {
-						reader.close();
-					} catch (IOException ex) {
-						ex.printStackTrace();
-					}
-				}
+				release(reader);
 			}
+
+			doAfter(html);
+
+			replaseURL();
+
+			result.setResult(true);
 		}
 
 		return result;
 	}
 
-	private String decorate(final String aUrl) throws MalformedURLException{
-		URL url = new URL(aUrl);
-		
-		String str = url.toExternalForm();
-		String ref = url.getRef();
-		if (null != ref) {
-			str = str.substring(0, str.length() - (ref.length()+1));
-		}
-		if (StringUtility.isEmpty(url.getFile())) {
-			str += "/";
-		}
-		return str;
+	protected void doBefore(final String html) {
+
 	}
-	
-	private void doAfter() {
-		String base = url.toExternalForm();
-		if (StringUtility.isNotEmpty(baseUrl)) {
-			base = baseUrl;
-		}
 
-		for (String url : anchorList) {
-			try {
-				String buf = decorate(URLUtility.get(base, url));
-
-				urlCounter.countup(buf);
-				anchorCounter.countup(buf);
-			} catch (MalformedURLException ex) {
-				ex.printStackTrace();
-			}
-		}
-		for (String url : imageList) {
-			try {
-				String buf = decorate(URLUtility.get(base, url));
-
-				urlCounter.countup(buf);
-				imageCounter.countup(buf);
-			} catch (MalformedURLException ex) {
-				ex.printStackTrace();
-			}
-		}
-		for (String url : scriptList) {
-			try {
-				String buf = decorate(URLUtility.get(base, url));
-
-				urlCounter.countup(buf);
-			} catch (MalformedURLException ex) {
-				ex.printStackTrace();
-			}
-		}
-		for (String url : linkList) {
-			try {
-				String buf = decorate(URLUtility.get(base, url));
-
-				urlCounter.countup(buf);
-			} catch (MalformedURLException ex) {
-				ex.printStackTrace();
-			}
-		}
+	protected void doAfter(final String html) {
 
 	}
 
@@ -329,7 +224,7 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	 * 
 	 * @param aTitle
 	 */
-	private void setTitle(final String aTitle) {
+	protected final void setTitle(final String aTitle) {
 	}
 
 	/**
@@ -340,7 +235,7 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	 * 
 	 * @param aDescription
 	 */
-	private void setDescription(final String aDescription) {
+	protected final void setDescription(final String aDescription) {
 	}
 
 	/**
@@ -350,7 +245,7 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	 * 
 	 * @param aKeywords
 	 */
-	private void setKeywords(final List<String> aKeywords) {
+	protected final void setKeywords(final List<String> aKeywords) {
 	}
 
 	/**
@@ -360,7 +255,7 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	 * 
 	 * @param aKeywords
 	 */
-	private void addAnchor(final String aHref, final List<String> aInnerTexts) {
+	protected final void addAnchor(final String aHref, final List<String> aInnerTexts) {
 		if (StringUtility.isNotEmpty(aHref)) {
 			anchorList.add(aHref);
 		}
@@ -374,7 +269,7 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	 * @param aSrc
 	 * @param aAlt
 	 */
-	private void addImage(final String aSrc, final String aAlt) {
+	protected final void addImage(final String aSrc, final String aAlt) {
 		if (StringUtility.isNotEmpty(aSrc)) {
 			imageList.add(aSrc);
 		}
@@ -388,7 +283,7 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	 * @param aSrc
 	 * @param aInnerText
 	 */
-	private void addScript(final String aSrc, final String aInnerText) {
+	protected final void addScript(final String aSrc, final String aInnerText) {
 		if (StringUtility.isNotEmpty(aSrc)) {
 			scriptList.add(aSrc);
 		}
@@ -401,7 +296,7 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	 * 
 	 * @param aHref
 	 */
-	private void addLink(final String aHref) {
+	protected final void addLink(final String aHref) {
 		if (StringUtility.isNotEmpty(aHref)) {
 			linkList.add(aHref);
 		}
@@ -414,7 +309,7 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	 * 
 	 * @param aHref
 	 */
-	private void setBase(final String aHref) {
+	protected final void setBase(final String aHref) {
 		baseUrl = aHref;
 	}
 
@@ -425,7 +320,7 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 	 * 
 	 * @param aText
 	 */
-	private void addText(final String aText) {
+	protected final void addText(final String aText) {
 	}
 
 	/**
@@ -462,35 +357,59 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 		return charset;
 	}
 
-	private String getSource(final Content aContent, final Charset aCharset) {
-		String source = null;
-
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		InputStream is = null;
-		try {
-			is = aContent.getInputStream();
-			byte[] buf = new byte[1024];
-			int readSize;
-			while (-1 != (readSize = is.read(buf, 0, 1024))) {
-				if (0 == readSize)
-					continue;
-				baos.write(buf, 0, readSize);
-			}
-
-			source = new String(baos.toByteArray(), aCharset);
-		} catch (IOException ex) {
-			fatal(ex);
-		} finally {
-			if (null != is) {
-				try {
-					is.close();
-				} catch (IOException ex) {
-					fatal(ex);
-				}
-			}
+	private void replaseURL() {
+		String base = url.toExternalForm();
+		if (StringUtility.isNotEmpty(baseUrl)) {
+			base = baseUrl;
 		}
 
-		return source;
+		for (String url : anchorList) {
+			try {
+				String buf = decorate(URLUtility.get(base, url));
+				urlCounter.countup(buf);
+				anchorCounter.countup(buf);
+			} catch (MalformedURLException ex) {
+				ex.printStackTrace();
+			}
+		}
+		for (String url : imageList) {
+			try {
+				String buf = decorate(URLUtility.get(base, url));
+				urlCounter.countup(buf);
+				imageCounter.countup(buf);
+			} catch (MalformedURLException ex) {
+				ex.printStackTrace();
+			}
+		}
+		for (String url : scriptList) {
+			try {
+				String buf = decorate(URLUtility.get(base, url));
+				urlCounter.countup(buf);
+			} catch (MalformedURLException ex) {
+				ex.printStackTrace();
+			}
+		}
+		for (String url : linkList) {
+			try {
+				String buf = decorate(URLUtility.get(base, url));
+				urlCounter.countup(buf);
+			} catch (MalformedURLException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
+	private String decorate(final String aUrl) throws MalformedURLException {
+		URL url = new URL(aUrl);
+		String str = url.toExternalForm();
+		String ref = url.getRef();
+		if (null != ref) {
+			str = str.substring(0, str.length() - (ref.length() + 1));
+		}
+		if (StringUtility.isEmpty(url.getFile())) {
+			str += "/";
+		}
+		return str;
 	}
 
 	public static class Counter {

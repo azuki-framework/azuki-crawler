@@ -21,7 +21,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.azkfw.crawler.content.Content;
+import org.azkfw.crawler.downloader.engine.DownloadEngine;
+import org.azkfw.crawler.downloader.engine.SimpleDownloadEngine;
 import org.azkfw.crawler.engine.tabelog.TabelogCrawlerEngine;
+import org.azkfw.crawler.parser.engine.ParseEngine;
+import org.azkfw.crawler.parser.engine.SimpleHtmlParseEngine;
 
 /**
  * このクラスは、クローラエンジンのコントローラ機能を実装したクラスです。
@@ -52,6 +57,19 @@ public class DefaultCrawlerEngineController implements CrawlerEngineController {
 	}
 
 	@Override
+	public DownloadEngine getDownloadEngine(final URL url) {
+		for (CrawlerEngine engine : engines) {
+			if (engine.isDownloadContent(url)) {
+				DownloadEngine de = engine.getDownloadEngine(url);
+				if (null != de) {
+					return de;
+				}
+			}
+		}
+		return new SimpleDownloadEngine();
+	}
+
+	@Override
 	public boolean isParseContent(final URL url, final String contentType) {
 		for (CrawlerEngine engine : engines) {
 			if (engine.isParseContent(url, contentType)) {
@@ -61,4 +79,15 @@ public class DefaultCrawlerEngineController implements CrawlerEngineController {
 		return false;
 	}
 
+	public ParseEngine getParseEngine(final URL aUrl, final String aContentType, final Content aContent) {
+		for (CrawlerEngine engine : engines) {
+			if (engine.isParseContent(aUrl, aContentType)) {
+				ParseEngine pe = engine.getParseEngine(aUrl, aContentType, aContent);
+				if (null != pe) {
+					return pe;
+				}
+			}
+		}
+		return new SimpleHtmlParseEngine(aUrl, aContent);
+	}
 }

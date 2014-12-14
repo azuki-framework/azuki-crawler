@@ -20,7 +20,10 @@ package org.azkfw.crawler.engine.tabelog;
 import java.net.URL;
 import java.util.regex.Pattern;
 
+import org.azkfw.crawler.content.Content;
+import org.azkfw.crawler.downloader.engine.DownloadEngine;
 import org.azkfw.crawler.engine.AbstractCrawlerEngine;
+import org.azkfw.crawler.parser.engine.ParseEngine;
 import org.azkfw.util.StringUtility;
 
 /**
@@ -55,6 +58,12 @@ public final class TabelogCrawlerEngine extends AbstractCrawlerEngine {
 	}
 
 	@Override
+	public DownloadEngine getDownloadEngine(final URL url) {
+		// デフォルトのダウンロードエンジンを使用する。
+		return null;
+	}
+
+	@Override
 	public boolean isParseContent(final URL url, final String contentType) {
 		if (StringUtility.isEmpty(contentType)) {
 			return false;
@@ -74,6 +83,12 @@ public final class TabelogCrawlerEngine extends AbstractCrawlerEngine {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public ParseEngine getParseEngine(final URL url, final String aContentType, final Content content) {
+		// デフォルトのダウンロードエンジンを使用する。
+		return null;
 	}
 
 }

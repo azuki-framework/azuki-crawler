@@ -19,6 +19,10 @@ package org.azkfw.crawler.engine;
 
 import java.net.URL;
 
+import org.azkfw.crawler.content.Content;
+import org.azkfw.crawler.downloader.engine.DownloadEngine;
+import org.azkfw.crawler.parser.engine.ParseEngine;
+
 /**
  * このインターフェースは、クローラエンジン機能を定義したインターフェースです。
  * 
@@ -36,6 +40,8 @@ public interface CrawlerEngine {
 	 */
 	public boolean isDownloadContent(final URL url);
 
+	public DownloadEngine getDownloadEngine(final URL url);
+
 	/**
 	 * 解析対象のコンテンツか判断する。
 	 * 
@@ -44,4 +50,6 @@ public interface CrawlerEngine {
 	 * @return 判断結果。解析対象の場合、<code>true</code>を返す。
 	 */
 	public boolean isParseContent(final URL url, final String contentType);
+	
+	public ParseEngine getParseEngine(final URL aUrl, final String contentType, final Content aContent);
 }

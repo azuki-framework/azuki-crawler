@@ -45,29 +45,21 @@ import org.azkfw.util.ObjectUtility;
  */
 public class SimpleDownloadEngine extends AbstractDownloadEngine {
 
+	private HttpClient httpClient;
+
 	/**
 	 * コンストラクタ
 	 */
 	public SimpleDownloadEngine() {
 		super(SimpleDownloadEngine.class);
+
+		httpClient = defaultClient();
 	}
 
-	/**
-	 * コンストラクタ
-	 * 
-	 * @param aName 名前
-	 */
-	protected SimpleDownloadEngine(final String aName) {
-		super(aName);
-	}
+	public SimpleDownloadEngine(final HttpClient aHttpClient) {
+		super(SimpleDownloadEngine.class);
 
-	/**
-	 * コンストラクタ
-	 * 
-	 * @param aClass クラス
-	 */
-	protected SimpleDownloadEngine(final Class<?> aClass) {
-		super(aClass);
+		httpClient = aHttpClient;
 	}
 
 	@Override
@@ -90,8 +82,6 @@ public class SimpleDownloadEngine extends AbstractDownloadEngine {
 		if (ObjectUtility.isNull(aDestFile)) {
 			throw new NullPointerException("DestFile");
 		}
-
-		HttpClient httpClient = createClient();
 
 		HttpGet httpGet = null;
 		InputStream reader = null;
@@ -166,7 +156,7 @@ public class SimpleDownloadEngine extends AbstractDownloadEngine {
 	 * 
 	 * @return HTTPクライアント情報
 	 */
-	protected HttpClient createClient() {
+	private HttpClient defaultClient() {
 		// Ver old
 		//HttpClient httpClient = new DefaultHttpClient();
 		// Ver 4.3
@@ -180,10 +170,6 @@ public class SimpleDownloadEngine extends AbstractDownloadEngine {
 		// chrom
 		headers.add(new BasicHeader("User-Agent",
 				"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.63 Safari/537.36"));
-		// IOS5
-		//headers.add(new BasicHeader("User-Agent",
-		//		"Mozilla/5.0 (iPhone; CPU iPhone OS 5_0_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Mobile/9A405 Safari/7534.48.3"));
-
 		HttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).setDefaultHeaders(headers).build();
 		return httpClient;
 	}

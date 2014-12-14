@@ -48,7 +48,9 @@ public class TestEngine {
 	}
 
 	public void test() {
-		String file = "C:\\crawler\\data\\8FB37FD148584C38B211CCED0C3F81EA\\0c958dca213945f19ce536a78d8f4981\\content.dat";
+		//String file = "C:\\crawler\\data\\8FB37FD148584C38B211CCED0C3F81EA\\0c958dca213945f19ce536a78d8f4981\\content.dat";
+		String file = "/Users/Kawakicchi/content.dat";
+		
 		Charset charset = Charset.forName("UTF-8");
 
 		String html = getSource(file, charset);

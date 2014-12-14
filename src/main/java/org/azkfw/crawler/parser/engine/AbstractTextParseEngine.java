@@ -17,6 +17,10 @@
  */
 package org.azkfw.crawler.parser.engine;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.nio.charset.Charset;
 
 import org.azkfw.crawler.content.Content;
@@ -132,4 +136,49 @@ public abstract class AbstractTextParseEngine extends AbstractContentParseEngine
 	 * @return 解析結果
 	 */
 	protected abstract ParseEngineResult doParseTextContent(final Content aContent);
+
+	protected final String getSource(final Content aContent, final Charset aCharset) {
+		String source = null;
+
+		ByteArrayOutputStream os = null;
+		InputStream is = null;
+		try {
+			os = new ByteArrayOutputStream();
+			is = aContent.getInputStream();
+
+			int readSize;
+			byte[] buf = new byte[1024];
+			while (-1 != (readSize = is.read(buf, 0, 1024))) {
+				if (0 == readSize)
+					continue;
+				os.write(buf, 0, readSize);
+			}
+
+			source = new String(os.toByteArray(), aCharset);
+
+		} catch (IOException ex) {
+			fatal(ex);
+		} finally {
+			release(is);
+			release(os);
+		}
+		return source;
+	}
+
+	/**
+	 * リーダを解放します。
+	 * 
+	 * @param readers リーダ
+	 */
+	protected final void release(final Reader... readers) {
+		for (Reader reader : readers) {
+			if (null != reader) {
+				try {
+					reader.close();
+				} catch (IOException ex) {
+					warn(ex);
+				}
+			}
+		}
+	}
 }
