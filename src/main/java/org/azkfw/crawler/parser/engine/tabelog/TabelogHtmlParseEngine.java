@@ -38,6 +38,8 @@ import org.azkfw.crawler.parser.engine.SimpleHtmlParseEngine;
 import org.azkfw.util.StringUtility;
 
 /**
+ * このクラスは、食べログ詳細ページを解析するエンジンクラスです。
+ * 
  * @since 1.0.0
  * @version 1.0.0 2014/12/13
  * @author Kawakicchi
@@ -146,8 +148,32 @@ public class TabelogHtmlParseEngine extends AbstractHtmlParseEngine {
 		return null;
 	}
 
+	private void setShopName(final String aName) {
+
+	}
+
+	private void setShopTel(final String aTel) {
+
+	}
+
+	private void setShopRating(final String aRating) {
+
+	}
+
+	private void setShopLocation(final double aLatitude, final double aLongitude) {
+
+	}
+
+	private void setShopPrice(final String aPrice) {
+
+	}
+
+	private void addShopCategory(final String aCategory) {
+
+	}
+
 	/**
-	 * このクラスは、解析をするためのコールバッククラスです。
+	 * このクラスは、食べログの詳細ページを解析するためのコールバッククラスです。
 	 * 
 	 * @since 1.0.0
 	 * @version 1.0.0 2014/12/10
@@ -155,7 +181,10 @@ public class TabelogHtmlParseEngine extends AbstractHtmlParseEngine {
 	 */
 	private static final class TabelogHtmlParserCallback extends ParserCallback {
 
-		private TabelogHtmlParseEngine engin;
+		/** 緯度、経度取得パターン */
+		private static final Pattern PTN_GET_LATLON = Pattern.compile("center=([0-9\\.]+),([0-9\\.]+)");
+
+		private TabelogHtmlParseEngine engine;
 		private String source;
 
 		private boolean nameFlag;
@@ -171,11 +200,9 @@ public class TabelogHtmlParseEngine extends AbstractHtmlParseEngine {
 		 * @param aSource HTML文字列
 		 */
 		public TabelogHtmlParserCallback(final TabelogHtmlParseEngine aEngin, final String aSource) {
-			engin = aEngin;
+			engine = aEngin;
 			source = aSource;
 		}
-
-		private static final Pattern PTN_GET_LATLON = Pattern.compile("center=([0-9\\.]+),([0-9\\.]+)");
 
 		@Override
 		public void handleSimpleTag(final Tag tag, final MutableAttributeSet attr, final int pos) {
@@ -187,7 +214,7 @@ public class TabelogHtmlParseEngine extends AbstractHtmlParseEngine {
 						if (m.find()) {
 							String lat = m.group(1);
 							String lon = m.group(2);
-							System.out.println(String.format("Location : %s, %s", lat, lon));
+							engine.setShopLocation(Double.parseDouble(lat), Double.parseDouble(lon));
 						}
 					}
 				}
@@ -261,15 +288,15 @@ public class TabelogHtmlParseEngine extends AbstractHtmlParseEngine {
 		@Override
 		public void handleText(final char[] data, final int pos) {
 			if (nameFlag) {
-				System.out.println("Name : " + new String(data));
+				engine.setShopName(new String(data));
 			} else if (priceFlag) {
-				System.out.println("Price : " + new String(data));
+				engine.setShopPrice(new String(data));
 			} else if (ratingFlag) {
-				System.out.println("Rating : " + new String(data));
+				engine.setShopRating(new String(data));
 			} else if (telFlag) {
-				System.out.println("Tel : " + new String(data));
+				engine.setShopTel(new String(data));
 			} else if (categoryFlag) {
-				System.out.println("Category : " + new String(data));
+				engine.addShopCategory(new String(data));
 			}
 			super.handleText(data, pos);
 		}
