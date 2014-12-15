@@ -38,6 +38,11 @@ public class CrawlerEngineControllerFactory {
 
 	}
 
+	/**
+	 * デフォルトのクローラエンジンコントローラを取得する。
+	 * 
+	 * @return クローラエンジンコントローラ
+	 */
 	public static final CrawlerEngineController getDefaultController() {
 		return DEFAULT_CONTROLLER;
 	}

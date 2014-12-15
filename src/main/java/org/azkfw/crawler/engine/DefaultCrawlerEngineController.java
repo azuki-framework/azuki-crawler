@@ -37,8 +37,12 @@ import org.azkfw.crawler.parser.engine.SimpleHtmlParseEngine;
  */
 public class DefaultCrawlerEngineController implements CrawlerEngineController {
 
+	/** クローラエンジンリスト */
 	private List<CrawlerEngine> engines;
 
+	/**
+	 * コンストラクタ
+	 */
 	public DefaultCrawlerEngineController() {
 		engines = new ArrayList<CrawlerEngine>();
 
@@ -79,6 +83,7 @@ public class DefaultCrawlerEngineController implements CrawlerEngineController {
 		return false;
 	}
 
+	@Override
 	public ParseEngine getParseEngine(final URL aUrl, final String aContentType, final Content aContent) {
 		for (CrawlerEngine engine : engines) {
 			if (engine.isParseContent(aUrl, aContentType)) {

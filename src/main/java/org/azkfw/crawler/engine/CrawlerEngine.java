@@ -40,6 +40,12 @@ public interface CrawlerEngine {
 	 */
 	public boolean isDownloadContent(final URL url);
 
+	/**
+	 * ダウンロードエンジンを取得する。
+	 * 
+	 * @param url コンテンツURL
+	 * @return ダウンロードエンジン。
+	 */
 	public DownloadEngine getDownloadEngine(final URL url);
 
 	/**
@@ -50,6 +56,14 @@ public interface CrawlerEngine {
 	 * @return 判断結果。解析対象の場合、<code>true</code>を返す。
 	 */
 	public boolean isParseContent(final URL url, final String contentType);
-	
+
+	/**
+	 * 解析エンジンを取得する。
+	 * 
+	 * @param aUrl コンテンツURL
+	 * @param contentType コンテンツタイプ
+	 * @param aContent コンテンツ
+	 * @return 解析エンジン
+	 */
 	public ParseEngine getParseEngine(final URL aUrl, final String contentType, final Content aContent);
 }
