@@ -9,6 +9,9 @@
 # Maven temporary
 /target
 
+# log directory
+/logs
+
 # Package Files #
 *.jar
 *.war
