@@ -167,7 +167,9 @@ public interface CrawlerThread {
 		 */
 		error(9, "エラー");
 
+		/** 状態 */
 		private int status;
+		/** 状態名 */
 		private String name;
 
 		private Status(final int aStatus, final String aName) {
@@ -175,10 +177,20 @@ public interface CrawlerThread {
 			name = aName;
 		}
 
+		/**
+		 * ステータスを取得する。
+		 * 
+		 * @return ステータス
+		 */
 		public int getStatus() {
 			return status;
 		}
 
+		/**
+		 * ステータス名を取得する。
+		 * 
+		 * @return ステータス名
+		 */
 		public String getName() {
 			return name;
 		}

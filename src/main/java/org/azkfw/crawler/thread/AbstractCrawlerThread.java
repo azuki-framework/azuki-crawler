@@ -59,24 +59,37 @@ import org.azkfw.util.StringUtility;
  */
 public abstract class AbstractCrawlerThread extends LoggingObject implements CrawlerThread, Runnable {
 
+	/** コンテキスト */
 	private Context context;
-
+	/** クローラスレッドコンフィグ */
 	private CrawlerThreadConfig config;
 
+	/** スレッドID */
 	private String id;
-
+	/** スレッドステータス */
 	private Status status;
 
+	/** スレッド開始日時 */
 	private Date threadStartDate;
+	/** スレッド停止日時 */
 	private Date threadStopDate;
 
+	/** 停止要求フラグ */
 	private boolean stopRequest;
 
+	/** タスク情報 */
 	private CrawlerTask task;
+	/** スケジュール情報 */
 	private CrawlerSchedule schedule;
-
+	/** ログ情報 */
 	private List<CrawlerTaskLog> logs;
 
+	/**
+	 * コンストラクタ
+	 * 
+	 * @param aContext コンテキスト
+	 * @param aConfig コンフィグ
+	 */
 	public AbstractCrawlerThread(final Context aContext, final CrawlerThreadConfig aConfig) {
 		super(CrawlerThread.class);
 		context = aContext;
@@ -205,7 +218,7 @@ public abstract class AbstractCrawlerThread extends LoggingObject implements Cra
 
 	@Override
 	public void run() {
-		info("Thread start.");
+		debug("Thread start.");
 
 		threadStartDate = new Date();
 		threadStopDate = null;
@@ -241,7 +254,7 @@ public abstract class AbstractCrawlerThread extends LoggingObject implements Cra
 					log.setStartDate(new Date());
 					logs.add(log);
 
-					info("Run task start.");
+					debug("Run task start.");
 					status = Status.running;
 					CrawlerTaskResult result = null;
 					try {
@@ -256,7 +269,7 @@ public abstract class AbstractCrawlerThread extends LoggingObject implements Cra
 
 						log.setStopDate(new Date());
 					}
-					info("Run task stop.");
+					debug("Run task stop.");
 
 					if (null == result) {
 						warn("Crawler task result = null.");
@@ -288,7 +301,7 @@ public abstract class AbstractCrawlerThread extends LoggingObject implements Cra
 
 		threadStopDate = new Date();
 
-		info("Thread stop.");
+		debug("Thread stop.");
 	}
 
 	private void setupCrawlerTask() throws CrawlerSetupException {

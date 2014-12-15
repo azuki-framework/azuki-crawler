@@ -28,25 +28,50 @@ import java.util.Date;
  */
 public class CrawlerTaskLog {
 
+	/** 開始日時 */
 	private Date startDate;
+	/** 停止日時 */
 	private Date stopDate;
 
+	/**
+	 * コンストラクタ
+	 */
 	public CrawlerTaskLog() {
 
 	}
 
+	/**
+	 * 開始日時を設定する。
+	 * 
+	 * @param aDate 日時
+	 */
 	public void setStartDate(final Date aDate) {
 		startDate = aDate;
 	}
 
+	/**
+	 * 開始日時を取得する。
+	 * 
+	 * @return 開始日時
+	 */
 	public Date getStartDate() {
 		return startDate;
 	}
 
+	/**
+	 * 停止日時を設定する。
+	 * 
+	 * @param aDate 日時
+	 */
 	public void setStopDate(final Date aDate) {
 		stopDate = aDate;
 	}
 
+	/**
+	 * 停止日時を取得する。
+	 * 
+	 * @return 日時
+	 */
 	public Date getStopDate() {
 		return stopDate;
 	}
