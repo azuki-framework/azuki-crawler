@@ -25,14 +25,14 @@
 			<task classname="org.azkfw.crawler.task.StandAloneWebCrawleDownloaderTask">
 			</task>
 			<schedule classname="org.azkfw.crawler.schedule.TimerSchedule">
-				<parameter key="interval" value="10s" />
+				<parameter key="interval" value="60s" />
 			</schedule>
 		</thread>
 		<thread title="HTML解析タスク" description="" startup="false">
 			<task classname="org.azkfw.crawler.task.StandAloneWebCrawleParserTask">
 			</task>
 			<schedule classname="org.azkfw.crawler.schedule.TimerSchedule">
-				<parameter key="interval" value="1s" />
+				<parameter key="interval" value="5s" />
 			</schedule>
 		</thread>
 		<thread title="食べログ解析タスク" description="" startup="false">
