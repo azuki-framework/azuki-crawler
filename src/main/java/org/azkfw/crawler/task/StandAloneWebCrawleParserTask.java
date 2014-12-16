@@ -148,7 +148,7 @@ public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask
 			if (MapUtility.isNotEmpty(content)) {
 
 				String contentParseId = MapUtility.getString(content, "contentParseId");
-				String hostId = MapUtility.getString(content, "hostId");
+				// String hostId = MapUtility.getString(content, "hostId");
 				String hostProtocol = MapUtility.getString(content, "hostProtocol");
 				String hostName = MapUtility.getString(content, "hostName");
 				Integer hostPort = MapUtility.getInteger(content, "hostPort");
@@ -245,7 +245,7 @@ public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask
 								//URLDecoder.decode(url, charset);
 								urlList.add(new URL(url));
 							}
-							manager.registContents(bufHostId, urlList, date);
+							manager.registContents(bufHostId, urlList, contentId, date);
 						}
 					}
 

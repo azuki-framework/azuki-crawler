@@ -46,6 +46,7 @@ import org.azkfw.crawler.logic.WebCrawlerManager;
 import org.azkfw.util.ListUtility;
 import org.azkfw.util.MapUtility;
 import org.azkfw.util.PathUtility;
+import org.azkfw.util.StringUtility;
 import org.azkfw.util.URLUtility;
 
 /**
@@ -166,6 +167,19 @@ public final class StandAloneWebCrawleDownloaderTask extends StandAloneWebCrawle
 					String contentId = MapUtility.getString(page, "id");
 					String contentAreas = MapUtility.getString(page, "areas");
 
+					URL refererUrl = null;
+					try {
+						String refererHostProtocol = MapUtility.getString(page, "refererHostProtocol");
+						String refererHostName = MapUtility.getString(page, "refererHostName");
+						Integer refererHostPort = MapUtility.getInteger(page, "refererHostPort");
+						String refererContentAreas = MapUtility.getString(page, "refererContentAreas");
+						if (StringUtility.isNotEmpty(refererHostName)) {
+							refererUrl = URLUtility.toURL(refererHostProtocol, refererHostName, refererHostPort, refererContentAreas);
+						}
+					} catch (MalformedURLException ex) {
+
+					}
+
 					try {
 						URL url = URLUtility.toURL(aProtocol, aHostName, aPort, contentAreas);
 
@@ -181,6 +195,7 @@ public final class StandAloneWebCrawleDownloaderTask extends StandAloneWebCrawle
 						DownloadEngineCondition condition = new DownloadEngineCondition();
 						condition.setContentURL(url);
 						condition.setDestFile(new File(filePath));
+						condition.setRefererURL(refererUrl);
 
 						DownloadEngine engine = getDownloadEngine(url);
 						engine.initialize();
@@ -253,6 +268,7 @@ public final class StandAloneWebCrawleDownloaderTask extends StandAloneWebCrawle
 			}
 
 			status = 1;
+
 		} catch (SQLException ex) {
 			fatal(ex);
 		} catch (DataAccessServiceException ex) {

@@ -130,6 +130,11 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 				page.put("id", record.get("id"));
 				page.put("areas", record.get("areas"));
 
+				page.put("refererHostName", record.get("refererHostName"));
+				page.put("refererHostProtocol", record.get("refererHostProtocol"));
+				page.put("refererHostPort", record.get("refererHostPort"));
+				page.put("refererContentAreas", record.get("refererContentAreas"));
+
 				params = new Parameter();
 				params.put("id", record.get("id"));
 				params.put("status", 2);
@@ -288,7 +293,8 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 		return host;
 	}
 
-	public void registContents(final String aHostId, final List<URL> aUrls, final Date aDate) throws DataAccessServiceException, SQLException {
+	public void registContents(final String aHostId, final List<URL> aUrls, final String aRefererContentId, final Date aDate)
+			throws DataAccessServiceException, SQLException {
 		Timestamp date = new Timestamp((new Date()).getTime());
 
 		Parameter params = new Parameter();
@@ -311,6 +317,7 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 				params.put("areas", areas);
 				params.put("type", "");
 				params.put("hostId", aHostId);
+				params.put("refererContentId", aRefererContentId);
 				params.put("date", date);
 
 				dao = getDao("WebCrawlerManagerI03", params);

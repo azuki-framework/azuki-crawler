@@ -56,8 +56,33 @@ public class SimpleDownloadEngine extends AbstractDownloadEngine {
 		httpClient = defaultClient();
 	}
 
+	/**
+	 * コンストラクタ
+	 * 
+	 * @param aHttpClient HTTPクライアント
+	 */
 	public SimpleDownloadEngine(final HttpClient aHttpClient) {
 		super(SimpleDownloadEngine.class);
+
+		httpClient = aHttpClient;
+	}
+
+	/**
+	 * コンストラクタ
+	 */
+	protected SimpleDownloadEngine(final Class<?> aClass) {
+		super(aClass);
+
+		httpClient = defaultClient();
+	}
+
+	/**
+	 * コンストラクタ
+	 * 
+	 * @param aHttpClient HTTPクライアント
+	 */
+	protected SimpleDownloadEngine(final Class<?> aClass, final HttpClient aHttpClient) {
+		super(aClass);
 
 		httpClient = aHttpClient;
 	}
@@ -90,7 +115,7 @@ public class SimpleDownloadEngine extends AbstractDownloadEngine {
 		InputStream reader = null;
 		FileOutputStream writer = null;
 		try {
-			doBefore(condition);
+			doBefore(httpClient, condition);
 
 			httpGet = new HttpGet(targetUrl.toExternalForm());
 
@@ -122,7 +147,7 @@ public class SimpleDownloadEngine extends AbstractDownloadEngine {
 				result.setLength(length);
 			}
 
-			doAfter(condition);
+			doAfter(httpClient, condition);
 
 			result.setResult(true);
 
@@ -155,11 +180,11 @@ public class SimpleDownloadEngine extends AbstractDownloadEngine {
 		return result;
 	}
 
-	protected void doBefore(final DownloadEngineCondition condition) {
+	protected void doBefore(final HttpClient httpClient, final DownloadEngineCondition condition) throws ClientProtocolException, IOException {
 
 	}
 
-	protected void doAfter(final DownloadEngineCondition condition) {
+	protected void doAfter(final HttpClient httpClient, final DownloadEngineCondition condition) throws ClientProtocolException, IOException {
 
 	}
 

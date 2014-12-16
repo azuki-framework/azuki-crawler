@@ -218,7 +218,7 @@ public final class TabelogWebCrawleParserTask extends StandAloneWebCrawleTask {
 								//URLDecoder.decode(url, charset);
 								urlList.add(new URL(url));
 							}
-							manager.registContents(bufHostId, urlList, date);
+							manager.registContents(bufHostId, urlList, contentId, date);
 						}
 					}
 
