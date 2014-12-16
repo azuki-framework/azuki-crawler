@@ -16,10 +16,10 @@
 
 	<controller contextpath="/ctl" port="9090" charset="UTF-8" />
 	
-	<manager contextpath="/" port="8080" basedir="../base/webapps/manager"
+	<manager contextpath="/" port="8080" basedir="../../base/webapps/manager"
 		charset="UTF-8" />
 
-    <logger config="conf/log4j.xml" />
+    <logger config="../conf/log4j.xml" />
 
 	<threads>
 		<thread title="ダウンローダータスク" description="" startup="false">

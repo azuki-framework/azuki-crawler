@@ -154,6 +154,7 @@ public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask
 				Integer hostPort = MapUtility.getInteger(content, "hostPort");
 				String contentId = MapUtility.getString(content, "contentId");
 				String contentAreas = MapUtility.getString(content, "contentAreas");
+				String contentPath = MapUtility.getString(content, "contentPath");
 				String contentType = MapUtility.getString(content, "contentType");
 
 				String charset = null;
@@ -167,9 +168,7 @@ public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask
 				try {
 					URL absoluteUrl = URLUtility.toURL(hostProtocol, hostName, hostPort, contentAreas);
 
-					File dir = new File(PathUtility.cat(baseDirectory.getAbsolutePath(), "data", hostId, contentId));
-					dir.mkdirs();
-
+					File dir = new File(PathUtility.cat(baseDirectory.getAbsolutePath(), "data", contentPath));
 					String filePath = PathUtility.cat(dir.getAbsolutePath(), "content.dat");
 
 					// 解析

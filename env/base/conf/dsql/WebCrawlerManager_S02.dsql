@@ -7,6 +7,7 @@
                     A.content_parse_id AS content_parse_id
                   , B.content_id       AS content_id
                   , B.content_areas    AS content_areas
+                  , B.content_path     AS content_path
                   , B.content_type     AS content_type
                   , C.host_id          AS host_id
                   , C.host_name        AS host_name

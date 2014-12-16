@@ -52,6 +52,7 @@ CREATE TABLE tm_content
 (
   content_id character(32) NOT NULL,
   content_areas text,
+  content_path text,
   content_type text,
   content_length bigint NOT NULL DEFAULT (-1),
   status integer NOT NULL DEFAULT 0,

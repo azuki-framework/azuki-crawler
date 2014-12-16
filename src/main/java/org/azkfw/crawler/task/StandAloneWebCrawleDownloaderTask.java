@@ -25,6 +25,8 @@ import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -151,6 +153,8 @@ public final class StandAloneWebCrawleDownloaderTask extends StandAloneWebCrawle
 		WebCrawlerManager manager = (WebCrawlerManager) getLogic("WebCrawlerManager");
 
 		try {
+			Calendar cln = Calendar.getInstance();
+			cln.setTime(new Date());
 
 			List<Map<String, Object>> pages = manager.getDownloadPages(aHostId, 5);
 			if (ListUtility.isNotEmpty(pages)) {
@@ -166,7 +170,9 @@ public final class StandAloneWebCrawleDownloaderTask extends StandAloneWebCrawle
 
 						debug("Download url : " + url.toExternalForm());
 
-						File dir = new File(PathUtility.cat(baseDirectory.getAbsolutePath(), "data", aHostId, contentId));
+						String contentPath = String.format("/%04d/%02d/%02d/%s", cln.get(Calendar.YEAR), cln.get(Calendar.MONTH) + 1,
+								cln.get(Calendar.DAY_OF_MONTH), contentId);
+						File dir = new File(PathUtility.cat(baseDirectory.getAbsolutePath(), "data", contentPath));
 						dir.mkdirs();
 
 						String filePath = PathUtility.cat(dir.getAbsolutePath(), "content.dat");
@@ -217,7 +223,7 @@ public final class StandAloneWebCrawleDownloaderTask extends StandAloneWebCrawle
 								long length = rslt.getLength();
 								debug("Length : " + length);
 
-								manager.downloadContent(contentId, statusCode, length, contentType);
+								manager.downloadContent(contentId, contentPath, statusCode, length, contentType);
 
 								if (isParseContent(url, contentType)) {
 									manager.requestContentParse(contentId);

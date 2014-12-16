@@ -145,10 +145,11 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 	}
 
 	@Override
-	public void downloadContent(final String aContentId, final int aStatusCode, final long aLength, final String aType)
+	public void downloadContent(final String aContentId, final String aPath, final int aStatusCode, final long aLength, final String aType)
 			throws DataAccessServiceException, SQLException {
 		Parameter params = new Parameter();
 		params.put("id", aContentId);
+		params.put("path", aPath);
 		params.put("status", 3);
 		params.put("type", aType);
 		params.put("length", Long.valueOf(aLength));
@@ -219,6 +220,7 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 			result.put("hostName", record.get("hostName"));
 			result.put("contentId", record.get("contentId"));
 			result.put("contentAreas", record.get("contentAreas"));
+			result.put("contentPath", record.get("contentPath"));
 			result.put("contentType", record.get("contentType"));
 
 			Parameter params = new Parameter();

@@ -15,17 +15,17 @@
 <azuki>
 
 	<dynamicSQLs>
-		<dynamicSQL name="WebCrawlerManagerL01" file="../base/conf/dsql/WebCrawlerManager_L01.dsql" />
-		<dynamicSQL name="WebCrawlerManagerI01" file="../base/conf/dsql/WebCrawlerManager_I01.dsql" />
-		<dynamicSQL name="WebCrawlerManagerI02" file="../base/conf/dsql/WebCrawlerManager_I02.dsql" />
-		<dynamicSQL name="WebCrawlerManagerI03" file="../base/conf/dsql/WebCrawlerManager_I03.dsql" />
-		<dynamicSQL name="WebCrawlerManagerU01" file="../base/conf/dsql/WebCrawlerManager_U01.dsql" />
-		<dynamicSQL name="WebCrawlerManagerU02" file="../base/conf/dsql/WebCrawlerManager_U02.dsql" />
-		<dynamicSQL name="WebCrawlerManagerU03" file="../base/conf/dsql/WebCrawlerManager_U03.dsql" />
-		<dynamicSQL name="WebCrawlerManagerS01" file="../base/conf/dsql/WebCrawlerManager_S01.dsql" />
-		<dynamicSQL name="WebCrawlerManagerS02" file="../base/conf/dsql/WebCrawlerManager_S02.dsql" />
-		<dynamicSQL name="WebCrawlerManagerS03" file="../base/conf/dsql/WebCrawlerManager_S03.dsql" />
-		<dynamicSQL name="WebCrawlerManagerS04" file="../base/conf/dsql/WebCrawlerManager_S04.dsql" />
+		<dynamicSQL name="WebCrawlerManagerL01" file="../../base/conf/dsql/WebCrawlerManager_L01.dsql" />
+		<dynamicSQL name="WebCrawlerManagerI01" file="../../base/conf/dsql/WebCrawlerManager_I01.dsql" />
+		<dynamicSQL name="WebCrawlerManagerI02" file="../../base/conf/dsql/WebCrawlerManager_I02.dsql" />
+		<dynamicSQL name="WebCrawlerManagerI03" file="../../base/conf/dsql/WebCrawlerManager_I03.dsql" />
+		<dynamicSQL name="WebCrawlerManagerU01" file="../../base/conf/dsql/WebCrawlerManager_U01.dsql" />
+		<dynamicSQL name="WebCrawlerManagerU02" file="../../base/conf/dsql/WebCrawlerManager_U02.dsql" />
+		<dynamicSQL name="WebCrawlerManagerU03" file="../../base/conf/dsql/WebCrawlerManager_U03.dsql" />
+		<dynamicSQL name="WebCrawlerManagerS01" file="../../base/conf/dsql/WebCrawlerManager_S01.dsql" />
+		<dynamicSQL name="WebCrawlerManagerS02" file="../../base/conf/dsql/WebCrawlerManager_S02.dsql" />
+		<dynamicSQL name="WebCrawlerManagerS03" file="../../base/conf/dsql/WebCrawlerManager_S03.dsql" />
+		<dynamicSQL name="WebCrawlerManagerS04" file="../../base/conf/dsql/WebCrawlerManager_S04.dsql" />
 		            
 	</dynamicSQLs>
 </azuki>

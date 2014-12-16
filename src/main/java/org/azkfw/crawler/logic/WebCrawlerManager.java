@@ -86,7 +86,7 @@ public interface WebCrawlerManager extends Logic {
 	 * @throws DataAccessServiceException
 	 * @throws SQLException
 	 */
-	public void downloadContent(final String aContentId, final int aStatusCode, final long aLength, final String aType)
+	public void downloadContent(final String aContentId,final String aPath, final int aStatusCode, final long aLength, final String aType)
 			throws DataAccessServiceException, SQLException;
 
 	/**
