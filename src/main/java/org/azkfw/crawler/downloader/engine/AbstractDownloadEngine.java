@@ -17,9 +17,6 @@
  */
 package org.azkfw.crawler.downloader.engine;
 
-import java.io.File;
-import java.net.URL;
-
 import org.azkfw.lang.LoggingObject;
 
 /**
@@ -67,8 +64,8 @@ public abstract class AbstractDownloadEngine extends LoggingObject implements Do
 	}
 
 	@Override
-	public final DownloadEngineResult download(final URL aTargetUrl, final File aDestFile) {
-		return doDownload(aTargetUrl, aDestFile);
+	public final DownloadEngineResult download(final DownloadEngineCondition condition) {
+		return doDownload(condition);
 	}
 
 	/**
@@ -93,9 +90,8 @@ public abstract class AbstractDownloadEngine extends LoggingObject implements Do
 	 * このメソッドをオーバーライドしダウンロード処理を記述する。
 	 * </p>
 	 * 
-	 * @param aTargetUrl URL
-	 * @param aDestFile File
+	 * @param condition ダウンロード条件
 	 * @return ダウンロード結果
 	 */
-	protected abstract DownloadEngineResult doDownload(final URL aTargetUrl, final File aDestFile);
+	protected abstract DownloadEngineResult doDownload(final DownloadEngineCondition condition);
 }

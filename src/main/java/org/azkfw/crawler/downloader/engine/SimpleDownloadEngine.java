@@ -73,13 +73,16 @@ public class SimpleDownloadEngine extends AbstractDownloadEngine {
 	}
 
 	@Override
-	protected final DownloadEngineResult doDownload(final URL aTargetUrl, final File aDestFile) {
+	protected final DownloadEngineResult doDownload(final DownloadEngineCondition condition) {
 		DownloadEngineResult result = new DownloadEngineResult();
 
-		if (ObjectUtility.isNull(aTargetUrl)) {
+		URL targetUrl = condition.getContentURL();
+		File destFile = condition.getDestFile();
+
+		if (ObjectUtility.isNull(targetUrl)) {
 			throw new NullPointerException("TargetUrl");
 		}
-		if (ObjectUtility.isNull(aDestFile)) {
+		if (ObjectUtility.isNull(destFile)) {
 			throw new NullPointerException("DestFile");
 		}
 
@@ -87,7 +90,9 @@ public class SimpleDownloadEngine extends AbstractDownloadEngine {
 		InputStream reader = null;
 		FileOutputStream writer = null;
 		try {
-			httpGet = new HttpGet(aTargetUrl.toExternalForm());
+			doBefore(condition);
+
+			httpGet = new HttpGet(targetUrl.toExternalForm());
 
 			HttpResponse response = httpClient.execute(httpGet);
 
@@ -103,7 +108,7 @@ public class SimpleDownloadEngine extends AbstractDownloadEngine {
 				HttpEntity httpEntity = response.getEntity();
 				reader = httpEntity.getContent();
 
-				writer = new FileOutputStream(aDestFile);
+				writer = new FileOutputStream(destFile);
 				byte[] buffer = new byte[512];
 				int len;
 				long length = 0;
@@ -116,6 +121,8 @@ public class SimpleDownloadEngine extends AbstractDownloadEngine {
 				}
 				result.setLength(length);
 			}
+
+			doAfter(condition);
 
 			result.setResult(true);
 
@@ -146,6 +153,14 @@ public class SimpleDownloadEngine extends AbstractDownloadEngine {
 		}
 
 		return result;
+	}
+
+	protected void doBefore(final DownloadEngineCondition condition) {
+
+	}
+
+	protected void doAfter(final DownloadEngineCondition condition) {
+
 	}
 
 	/**

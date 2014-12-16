@@ -23,6 +23,7 @@ import java.net.URL;
 
 import org.apache.http.Header;
 import org.azkfw.crawler.downloader.engine.DownloadEngine;
+import org.azkfw.crawler.downloader.engine.DownloadEngineCondition;
 import org.azkfw.crawler.downloader.engine.DownloadEngineResult;
 import org.azkfw.crawler.downloader.engine.SimpleDownloadEngine;
 
@@ -53,8 +54,12 @@ public class SampleDownloader {
 
 		DownloadEngine engin = new SimpleDownloadEngine();
 
+		DownloadEngineCondition condition = new DownloadEngineCondition();
+		condition.setContentURL(url);
+		condition.setDestFile(file);
+
 		engin.initialize();
-		DownloadEngineResult result = engin.download(url, file);
+		DownloadEngineResult result = engin.download(condition);
 		engin.release();
 
 		System.out.println("Result : " + result.isResult());

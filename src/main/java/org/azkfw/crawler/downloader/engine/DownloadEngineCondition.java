@@ -17,31 +17,43 @@
  */
 package org.azkfw.crawler.downloader.engine;
 
+import java.io.File;
+import java.net.URL;
 
 /**
- * このインターフェースは、ダウンロードエンジンを定義するインターフェースです。
+ * このクラスは、ダウンロード条件情報を保持するクラスです。
  * 
  * @since 1.0.0
- * @version 1.0.0 2014/07/09
+ * @version 1.0.0 2014/12/16
  * @author Kawakicchi
  */
-public interface DownloadEngine {
+public class DownloadEngineCondition {
 
-	/**
-	 * 初期化処理を行う。
-	 */
-	public void initialize();
+	private URL contentUrl;
+	private File destFile;
+	private URL refererUrl;
 
-	/**
-	 * 解放処理を行う。
-	 */
-	public void release();
+	public void setContentURL(final URL url) {
+		contentUrl = url;
+	}
 
-	/**
-	 * ダウンロード処理を行う。
-	 * 
-	 * @param condition ダウンロード条件
-	 * @return ダウンロード結果
-	 */
-	public DownloadEngineResult download(final DownloadEngineCondition condition);
+	public URL getContentURL() {
+		return contentUrl;
+	}
+
+	public void setDestFile(final File file) {
+		destFile = file;
+	}
+
+	public File getDestFile() {
+		return destFile;
+	}
+
+	public void setRefererURL(final URL url) {
+		refererUrl = url;
+	}
+
+	public URL getRefererURL() {
+		return refererUrl;
+	}
 }

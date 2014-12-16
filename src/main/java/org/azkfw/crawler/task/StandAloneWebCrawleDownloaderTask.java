@@ -37,6 +37,7 @@ import org.azkfw.business.property.Property;
 import org.azkfw.business.property.PropertyFile;
 import org.azkfw.crawler.CrawlerServiceException;
 import org.azkfw.crawler.downloader.engine.DownloadEngine;
+import org.azkfw.crawler.downloader.engine.DownloadEngineCondition;
 import org.azkfw.crawler.downloader.engine.DownloadEngineResult;
 import org.azkfw.crawler.engine.CrawlerEngineController;
 import org.azkfw.crawler.engine.CrawlerEngineControllerFactory;
@@ -177,9 +178,13 @@ public final class StandAloneWebCrawleDownloaderTask extends StandAloneWebCrawle
 
 						String filePath = PathUtility.cat(dir.getAbsolutePath(), "content.dat");
 
+						DownloadEngineCondition condition = new DownloadEngineCondition();
+						condition.setContentURL(url);
+						condition.setDestFile(new File(filePath));
+
 						DownloadEngine engine = getDownloadEngine(url);
 						engine.initialize();
-						DownloadEngineResult rslt = engine.download(url, new File(filePath));
+						DownloadEngineResult rslt = engine.download(condition);
 						engine.release();
 
 						if (rslt.isResult()) {
