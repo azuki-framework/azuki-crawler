@@ -171,8 +171,8 @@ public final class StandAloneWebCrawleDownloaderTask extends StandAloneWebCrawle
 
 						debug("Download url : " + url.toExternalForm());
 
-						String contentPath = String.format("/%04d/%02d/%02d/%s", cln.get(Calendar.YEAR), cln.get(Calendar.MONTH) + 1,
-								cln.get(Calendar.DAY_OF_MONTH), contentId);
+						String contentPath = String.format("/%04d/%02d/%02d/%02d/%s", cln.get(Calendar.YEAR), cln.get(Calendar.MONTH) + 1,
+								cln.get(Calendar.DAY_OF_MONTH), cln.get(Calendar.HOUR_OF_DAY), contentId);
 						File dir = new File(PathUtility.cat(baseDirectory.getAbsolutePath(), "data", contentPath));
 						dir.mkdirs();
 
