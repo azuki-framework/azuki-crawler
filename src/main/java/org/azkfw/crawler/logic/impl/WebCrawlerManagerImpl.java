@@ -46,11 +46,19 @@ import org.azkfw.util.UUIDUtility;
 public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements WebCrawlerManager {
 
 	private static String DSQL_I01 = "WebCrawlerManagerI01";
+	private static String DSQL_I02 = "WebCrawlerManagerI02";
+	private static String DSQL_I03 = "WebCrawlerManagerI03";
+	private static String DSQL_I04 = "WebCrawlerManagerI04";
+	private static String DSQL_L01 = "WebCrawlerManagerL01";
 	private static String DSQL_S01 = "WebCrawlerManagerS01";
 	private static String DSQL_S02 = "WebCrawlerManagerS02";
+	private static String DSQL_S03 = "WebCrawlerManagerS03";
+	private static String DSQL_S04 = "WebCrawlerManagerS04";
+	private static String DSQL_U01 = "WebCrawlerManagerU01";
 	private static String DSQL_U02 = "WebCrawlerManagerU02";
+	private static String DSQL_U03 = "WebCrawlerManagerU03";
 	private static String DSQL_U04 = "WebCrawlerManagerU04";
-	
+
 	/**
 	 * コンストラクタ
 	 */
@@ -75,7 +83,7 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 		Map<String, Object> host = new HashMap<String, Object>();
 
 		DataAccessObject dao = null;
-		dao = getDao("WebCrawlerManagerL01");
+		dao = getDao(DSQL_L01);
 		List<Map<String, Object>> records = dao.query();
 
 		if (ListUtility.isNotEmpty(records)) {
@@ -93,7 +101,7 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 			params.put("status", 2);
 			params.put("date", date);
 
-			dao = getDao("WebCrawlerManagerU01", params);
+			dao = getDao(DSQL_U01, params);
 			dao.execute();
 		}
 
@@ -113,7 +121,7 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 		params.put("accessDate", date);
 
 		DataAccessObject dao = null;
-		dao = getDao("WebCrawlerManagerU01", params);
+		dao = getDao(DSQL_U01, params);
 		dao.execute();
 	}
 
@@ -123,11 +131,11 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 
 		DataAccessObject dao = null;
 		Parameter params = new Parameter();
-		
+
 		params.clear();
 		params.put("hostId", aHostId);
 		params.put("max", aPageSize);
-		dao = getDao(DSQL_S01, params);		
+		dao = getDao(DSQL_S01, params);
 		List<Map<String, Object>> records = dao.query();
 
 		if (ListUtility.isNotEmpty(records)) {
@@ -155,17 +163,17 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 	}
 
 	@Override
-	public void successDownloadContent(final String aContentId,final String aHistroyId, final String aPath, final int aStatusCode, final long aLength, final String aType)
-			throws DataAccessServiceException, SQLException {
+	public void successDownloadContent(final String aContentId, final String aHistroyId, final String aPath, final int aStatusCode,
+			final long aLength, final String aType) throws DataAccessServiceException, SQLException {
 		DataAccessObject dao = null;
 		Parameter params = new Parameter();
-		
+
 		params.clear();
 		params.put("id", aContentId);
 		params.put("status", 3);
 		dao = getDao(DSQL_U02, params);
 		dao.execute();
-		
+
 		params.clear();
 		params.put("contentId", aContentId);
 		params.put("historyId", aHistroyId);
@@ -180,16 +188,17 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 	}
 
 	@Override
-	public void successDownloadContent(final String aContentId, final String aHistroyId, final String aPath, final int aStatusCode) throws DataAccessServiceException, SQLException {
+	public void successDownloadContent(final String aContentId, final String aHistroyId, final String aPath, final int aStatusCode)
+			throws DataAccessServiceException, SQLException {
 		DataAccessObject dao = null;
 		Parameter params = new Parameter();
-		
+
 		params.clear();
 		params.put("id", aContentId);
 		params.put("status", 3);
 		dao = getDao(DSQL_U02, params);
 		dao.execute();
-		
+
 		params.clear();
 		params.put("contentId", aContentId);
 		params.put("historyId", aHistroyId);
@@ -205,7 +214,7 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 	public void errorDownloadContent(final String aContentId) throws DataAccessServiceException, SQLException {
 		DataAccessObject dao = null;
 		Parameter params = new Parameter();
-		
+
 		params.put("id", aContentId);
 		params.put("status", -1);
 		dao = getDao(DSQL_U02, params);
@@ -234,7 +243,7 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		DataAccessObject dao = null;
-		
+
 		dao = getDao(DSQL_S02);
 		List<Map<String, Object>> records = dao.query();
 
@@ -255,7 +264,7 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 			params.put("id", record.get("contentParseId"));
 			params.put("status", 2);
 
-			dao = getDao("WebCrawlerManagerU03", params);
+			dao = getDao(DSQL_U03, params);
 			dao.execute();
 
 			commit();
@@ -274,7 +283,7 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 		params.put("port", aPort);
 
 		DataAccessObject dao = null;
-		dao = getDao("WebCrawlerManagerS03", params);
+		dao = getDao(DSQL_S03, params);
 		List<Map<String, Object>> records = dao.query();
 
 		if (ListUtility.isNotEmpty(records)) {
@@ -308,7 +317,7 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 		params.put("date", date);
 
 		DataAccessObject dao = null;
-		dao = getDao("WebCrawlerManagerI02", params);
+		dao = getDao(DSQL_I02, params);
 		dao.execute();
 
 		host.put("id", id);
@@ -320,7 +329,7 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 			throws DataAccessServiceException, SQLException {
 		DataAccessObject dao = null;
 		Parameter params = new Parameter();
-		
+
 		Timestamp date = new Timestamp((new Date()).getTime());
 		for (URL url : aUrls) {
 			String areas = url.getFile();
@@ -331,16 +340,16 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 			params.clear();
 			params.put("areas", areas);
 			params.put("hostId", aHostId);
-			dao = getDao("WebCrawlerManagerS04", params);
+			dao = getDao(DSQL_S04, params);
 
 			Map<String, Object> data = dao.get();
-			
+
 			String contentId = null;
 			if (!data.isEmpty()) {
-				contentId = (String)data.get("contentId");
+				contentId = (String) data.get("contentId");
 			} else {
 				contentId = UUIDUtility.generateToShortString();
-				
+
 				params.clear();
 				params.put("id", contentId);
 				params.put("areas", areas);
@@ -348,19 +357,19 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 				params.put("engineNo", 0); // TODO: エンジン番号
 				params.put("refererContentId", aRefererContentId);
 				params.put("date", date);
-				dao = getDao("WebCrawlerManagerI03", params);
+				dao = getDao(DSQL_I03, params);
 				dao.execute();
 			}
-			
+
 			String historyId = UUIDUtility.generateToShortString();
-			
+
 			params.clear();
 			params.put("id", contentId);
 			params.put("historyId", historyId);
 			params.put("type", "");
 			params.put("date", date);
-			dao = getDao("WebCrawlerManagerI04", params);
-			dao.execute();			
+			dao = getDao(DSQL_I04, params);
+			dao.execute();
 		}
 
 		commit();
@@ -373,7 +382,7 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 		params.put("status", 3);
 
 		DataAccessObject dao = null;
-		dao = getDao("WebCrawlerManagerU03", params);
+		dao = getDao(DSQL_U03, params);
 		dao.execute();
 
 		commit();
@@ -385,7 +394,7 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 		params.put("status", -1);
 
 		DataAccessObject dao = null;
-		dao = getDao("WebCrawlerManagerU03", params);
+		dao = getDao(DSQL_U03, params);
 		dao.execute();
 
 		commit();
