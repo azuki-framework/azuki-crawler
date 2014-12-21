@@ -364,37 +364,41 @@ public class SimpleHtmlParseEngine extends AbstractHtmlParseEngine {
 		}
 
 		for (String url : anchorList) {
+			String buf = null;
 			try {
-				String buf = decorate(URLUtility.get(base, url));
+				buf = decorate(URLUtility.get(base, url));
 				urlCounter.countup(buf);
 				anchorCounter.countup(buf);
 			} catch (MalformedURLException ex) {
-				ex.printStackTrace();
+				warn("Malformed URL : " + buf);
 			}
 		}
 		for (String url : imageList) {
+			String buf = null;
 			try {
-				String buf = decorate(URLUtility.get(base, url));
+				buf = decorate(URLUtility.get(base, url));
 				urlCounter.countup(buf);
 				imageCounter.countup(buf);
 			} catch (MalformedURLException ex) {
-				ex.printStackTrace();
+				warn("Malformed URL : " + buf);
 			}
 		}
 		for (String url : scriptList) {
+			String buf = null;
 			try {
-				String buf = decorate(URLUtility.get(base, url));
+				buf = decorate(URLUtility.get(base, url));
 				urlCounter.countup(buf);
 			} catch (MalformedURLException ex) {
-				ex.printStackTrace();
+				warn("Malformed URL : " + buf);
 			}
 		}
 		for (String url : linkList) {
+			String buf = null;
 			try {
-				String buf = decorate(URLUtility.get(base, url));
+				buf = decorate(URLUtility.get(base, url));
 				urlCounter.countup(buf);
 			} catch (MalformedURLException ex) {
-				ex.printStackTrace();
+				warn("Malformed URL : " + buf);
 			}
 		}
 	}

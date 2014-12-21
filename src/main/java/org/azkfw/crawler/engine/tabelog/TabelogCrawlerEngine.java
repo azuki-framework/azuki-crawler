@@ -43,6 +43,11 @@ public final class TabelogCrawlerEngine extends AbstractCrawlerEngine {
 	}
 
 	@Override
+	public int getEngineNo() {
+		return 1;
+	}
+
+	@Override
 	public boolean isDownloadContent(final URL url) {
 		String str = url.toExternalForm();
 		if (PTN_SHOP.matcher(str).matches()) {

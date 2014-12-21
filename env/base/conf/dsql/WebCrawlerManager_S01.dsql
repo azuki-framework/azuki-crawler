@@ -1,20 +1,25 @@
 # ------------------------------------------------------------------------------
 # WebCrawlerManagerS01
-#
+# 対象ホストの未ダウンロードのコンテンツを取得する。
 # ------------------------------------------------------------------------------
 
                 SELECT
-                    A.content_id       AS id
-                  , A.content_areas    AS areas
-                  , C.host_name        AS referer_host_name
-                  , C.host_protocol    AS referer_host_protocol
-                  , C.host_port        AS referer_host_port
-                  , B.content_areas    AS referer_content_areas
+                    A.content_id         AS id
+                  , D.content_history_id AS history_id
+                  , A.content_areas      AS areas
+                  , C.host_name          AS referer_host_name
+                  , C.host_protocol      AS referer_host_protocol
+                  , C.host_port          AS referer_host_port
+                  , B.content_areas      AS referer_content_areas
                 FROM
                     tm_content A
-                    LEFT OUTER JOIN tm_content B ON A.referer_content_id = B.content_id
-                    LEFT OUTER JOIN tm_host    C ON B.host_id = C.host_id
+                    LEFT OUTER JOIN td_content_history D ON A.content_id         = D.content_id
+                    LEFT OUTER JOIN tm_content         B ON A.referer_content_id = B.content_id
+                    LEFT OUTER JOIN tm_host            C ON B.host_id            = C.host_id
                 WHERE
-                    A.status   = 1
-${hostId}       AND A.host_id  = ?
-                OFFSET 0 LIMIT 5
+                    A.status      = 1
+                AND D.result_code = -1
+${hostId}       AND A.host_id     = ?
+                ORDER BY
+                    D.update_date ASC
+${max}          OFFSET 0 LIMIT ?

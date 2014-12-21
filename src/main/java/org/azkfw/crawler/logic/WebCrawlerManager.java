@@ -86,18 +86,19 @@ public interface WebCrawlerManager extends Logic {
 	 * @throws DataAccessServiceException
 	 * @throws SQLException
 	 */
-	public void downloadContent(final String aContentId,final String aPath, final int aStatusCode, final long aLength, final String aType)
-			throws DataAccessServiceException, SQLException;
+	public void successDownloadContent(final String aContentId, final String aHistroyId, final String aPath, final int aStatusCode,
+			final long aLength, final String aType) throws DataAccessServiceException, SQLException;
 
 	/**
-	 * コンテンツのダウンロードに失敗
+	 * コンテンツのダウンロードに失敗(HttpCode 200 以外)
 	 * 
 	 * @param aContentId
 	 * @param aStatusCode
 	 * @throws DataAccessServiceException
 	 * @throws SQLException
 	 */
-	public void downloadContent(final String aContentId, final int aStatusCode) throws DataAccessServiceException, SQLException;
+	public void successDownloadContent(final String aContentId, final String aHistroyId, final String aPath, final int aStatusCode)
+			throws DataAccessServiceException, SQLException;
 
 	/**
 	 * コンテンツのダウンロードに失敗(例外)
@@ -106,7 +107,7 @@ public interface WebCrawlerManager extends Logic {
 	 * @throws DataAccessServiceException
 	 * @throws SQLException
 	 */
-	public void downloadErrorContent(final String aContentId) throws DataAccessServiceException, SQLException;
+	public void errorDownloadContent(final String aContentId) throws DataAccessServiceException, SQLException;
 
 	/**
 	 * コンテンツの解析を依頼する。
@@ -115,7 +116,7 @@ public interface WebCrawlerManager extends Logic {
 	 * @throws DataAccessServiceException
 	 * @throws SQLException
 	 */
-	public void requestContentParse(final String aContentId) throws DataAccessServiceException, SQLException;
+	public void requestContentParse(final String aContentId, final String aHistroyId) throws DataAccessServiceException, SQLException;
 
 	/**
 	 * 解析するコンテンツ情報を取得する。
@@ -138,7 +139,8 @@ public interface WebCrawlerManager extends Logic {
 	public Map<String, Object> registHost(final String aName, final String aProtocol, final int aPort) throws DataAccessServiceException,
 			SQLException;
 
-	public void registContents(final String aHostId, final List<URL> aUrls, final String aRefererContentId,final Date aDate) throws DataAccessServiceException, SQLException;
+	public void registContents(final String aHostId, final List<URL> aUrls, final String aRefererContentId, final Date aDate)
+			throws DataAccessServiceException, SQLException;
 
 	public void parseContent(final String aContentParseId) throws DataAccessServiceException, SQLException;
 

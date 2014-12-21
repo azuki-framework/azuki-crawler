@@ -19,9 +19,11 @@
 		<dynamicSQL name="WebCrawlerManagerI01" file="conf/dsql/WebCrawlerManager_I01.dsql" />
 		<dynamicSQL name="WebCrawlerManagerI02" file="conf/dsql/WebCrawlerManager_I02.dsql" />
 		<dynamicSQL name="WebCrawlerManagerI03" file="conf/dsql/WebCrawlerManager_I03.dsql" />
+		<dynamicSQL name="WebCrawlerManagerI04" file="conf/dsql/WebCrawlerManager_I04.dsql" />
 		<dynamicSQL name="WebCrawlerManagerU01" file="conf/dsql/WebCrawlerManager_U01.dsql" />
 		<dynamicSQL name="WebCrawlerManagerU02" file="conf/dsql/WebCrawlerManager_U02.dsql" />
 		<dynamicSQL name="WebCrawlerManagerU03" file="conf/dsql/WebCrawlerManager_U03.dsql" />
+		<dynamicSQL name="WebCrawlerManagerU04" file="conf/dsql/WebCrawlerManager_U04.dsql" />
 		<dynamicSQL name="WebCrawlerManagerS01" file="conf/dsql/WebCrawlerManager_S01.dsql" />
 		<dynamicSQL name="WebCrawlerManagerS02" file="conf/dsql/WebCrawlerManager_S02.dsql" />
 		<dynamicSQL name="WebCrawlerManagerS03" file="conf/dsql/WebCrawlerManager_S03.dsql" />

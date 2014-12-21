@@ -4,7 +4,7 @@
 # ------------------------------------------------------------------------------
 
                 SELECT
-                    count(*) AS cnt
+                    A.content_id AS content_id
                 FROM
                     tm_content A
                 WHERE

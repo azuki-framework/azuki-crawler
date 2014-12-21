@@ -48,6 +48,7 @@ import org.azkfw.util.MapUtility;
 import org.azkfw.util.PathUtility;
 import org.azkfw.util.StringUtility;
 import org.azkfw.util.URLUtility;
+import org.azkfw.util.UUIDUtility;
 
 /**
  * このクラスは、スタントアロンでWebクロールを行うクローラタスククラスです。
@@ -165,6 +166,7 @@ public final class StandAloneWebCrawleDownloaderTask extends StandAloneWebCrawle
 					Map<String, Object> page = pages.get(i);
 
 					String contentId = MapUtility.getString(page, "id");
+					String historyId = MapUtility.getString(page, "historyId");
 					String contentAreas = MapUtility.getString(page, "areas");
 
 					URL refererUrl = null;
@@ -177,7 +179,7 @@ public final class StandAloneWebCrawleDownloaderTask extends StandAloneWebCrawle
 							refererUrl = URLUtility.toURL(refererHostProtocol, refererHostName, refererHostPort, refererContentAreas);
 						}
 					} catch (MalformedURLException ex) {
-
+						// ここに処理が来ることはない
 					}
 
 					try {
@@ -185,9 +187,9 @@ public final class StandAloneWebCrawleDownloaderTask extends StandAloneWebCrawle
 
 						debug("Download url : " + url.toExternalForm());
 
-						String contentPath = String.format("/%04d/%02d/%02d/%02d/%s", cln.get(Calendar.YEAR), cln.get(Calendar.MONTH) + 1,
-								cln.get(Calendar.DAY_OF_MONTH), cln.get(Calendar.HOUR_OF_DAY), contentId);
-						File dir = new File(PathUtility.cat(baseDirectory.getAbsolutePath(), "data", contentPath));
+						String contentPath = String.format("/%04d/%02d/%02d/%02d", cln.get(Calendar.YEAR), cln.get(Calendar.MONTH) + 1,
+								cln.get(Calendar.DAY_OF_MONTH), cln.get(Calendar.HOUR_OF_DAY));
+						File dir = new File(PathUtility.cat(baseDirectory.getAbsolutePath(), "data", contentPath, historyId));
 						dir.mkdirs();
 
 						String filePath = PathUtility.cat(dir.getAbsolutePath(), "content.dat");
@@ -241,21 +243,21 @@ public final class StandAloneWebCrawleDownloaderTask extends StandAloneWebCrawle
 
 							if (200 == statusCode) {
 								long length = rslt.getLength();
-								debug("Length : " + length);
-
-								manager.downloadContent(contentId, contentPath, statusCode, length, contentType);
+																
+								// Success
+								manager.successDownloadContent(contentId, historyId, contentPath, statusCode, length, contentType);
 
 								if (isParseContent(url, contentType)) {
-									manager.requestContentParse(contentId);
+									manager.requestContentParse(contentId, historyId);
 								}
 							} else {
 								// Error
-								manager.downloadContent(contentId, statusCode);
+								manager.successDownloadContent(contentId, historyId, contentPath, statusCode);
 							}
 
 						} else {
 							// not found host
-							manager.downloadErrorContent(contentId);
+							manager.errorDownloadContent(contentId);
 						}
 
 					} catch (MalformedURLException ex) {

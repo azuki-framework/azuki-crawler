@@ -58,6 +58,8 @@ CREATE TABLE tm_content
   status integer NOT NULL DEFAULT 0,
   result_code integer NOT NULL DEFAULT (-1),
   host_id character(32),
+  referer_content_id character(32),
+  engine_no integer DEFAULT 0,
   create_date timestamp with time zone NOT NULL,
   update_date timestamp with time zone NOT NULL,
   delete_date timestamp with time zone,

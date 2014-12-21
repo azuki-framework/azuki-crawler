@@ -50,6 +50,10 @@ public class DefaultCrawlerEngineController implements CrawlerEngineController {
 		engines.add(new TabelogCrawlerEngine());
 	}
 
+	public int getEngineNo() {
+		return 0;
+	}
+
 	@Override
 	public boolean isDownloadContent(final URL url) {
 		for (CrawlerEngine engine : engines) {

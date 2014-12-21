@@ -8,11 +8,13 @@
                 (
                     content_parse_id
                   , content_id
+                  , content_history_id
                   , status
                 )
                 VALUES
                 (
 ${parseId}          ?
 ${contentId}      , ?
+${historyId}      , ?
 ${status}         , ?
                 )

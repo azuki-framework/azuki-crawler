@@ -147,12 +147,12 @@ public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask
 			Map<String, Object> content = manager.getParseContent();
 			if (MapUtility.isNotEmpty(content)) {
 
-				String contentParseId = MapUtility.getString(content, "contentParseId");
-				// String hostId = MapUtility.getString(content, "hostId");
+				String parseId = MapUtility.getString(content, "parseId");
+				String historyId = MapUtility.getString(content, "historyId");
+				String contentId = MapUtility.getString(content, "contentId");
 				String hostProtocol = MapUtility.getString(content, "hostProtocol");
 				String hostName = MapUtility.getString(content, "hostName");
 				Integer hostPort = MapUtility.getInteger(content, "hostPort");
-				String contentId = MapUtility.getString(content, "contentId");
 				String contentAreas = MapUtility.getString(content, "contentAreas");
 				String contentPath = MapUtility.getString(content, "contentPath");
 				String contentType = MapUtility.getString(content, "contentType");
@@ -168,7 +168,7 @@ public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask
 				try {
 					URL absoluteUrl = URLUtility.toURL(hostProtocol, hostName, hostPort, contentAreas);
 
-					File dir = new File(PathUtility.cat(baseDirectory.getAbsolutePath(), "data", contentPath));
+					File dir = new File(PathUtility.cat(baseDirectory.getAbsolutePath(), "data", contentPath, historyId));
 					String filePath = PathUtility.cat(dir.getAbsolutePath(), "content.dat");
 
 					// 解析
@@ -250,9 +250,9 @@ public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask
 					}
 
 					if (rslt.isResult()) {
-						manager.parseContent(contentParseId);
+						manager.parseContent(parseId);
 					} else {
-						manager.parseErrorContent(contentParseId);
+						manager.parseErrorContent(parseId);
 					}
 
 				} catch (MalformedURLException ex) {

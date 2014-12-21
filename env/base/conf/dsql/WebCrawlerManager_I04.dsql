@@ -4,14 +4,14 @@
 # ------------------------------------------------------------------------------
 
                     INSERT INTO
-                        tm_content
+                        td_content_history
                     (
                         content_id
-                      , content_areas
-                      , status
-                      , host_id
-                      , engine_no
-                      , referer_content_id
+                      , content_history_id
+                      , content_type
+                      , content_length
+                      , content_path
+                      , result_code
                       , create_date
                       , update_date
                       , delete_date
@@ -19,11 +19,11 @@
                     VALUES
                     (
 ${id}                   ?
-${areas}              , ?
-                      , 1
-${hostId}             , ?
-${engineNo}           , ?
-${refererContentId}   , ?
+${historyId}          , ?
+${type}               , ?
+                      , -1
+                      , NULL
+                      , -1
 ${date}               , ?
 ${date}               , ?
                       , NULL

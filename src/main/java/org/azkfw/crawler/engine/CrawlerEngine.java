@@ -32,6 +32,8 @@ import org.azkfw.crawler.parser.engine.ParseEngine;
  */
 public interface CrawlerEngine {
 
+	public int getEngineNo();
+
 	/**
 	 * ダウンロード対象のコンテンツか判断する。
 	 * 
