@@ -145,4 +145,7 @@ public interface WebCrawlerManager extends Logic {
 	public void parseContent(final String aContentParseId) throws DataAccessServiceException, SQLException;
 
 	public void parseErrorContent(final String aContentParseId) throws DataAccessServiceException, SQLException;
+	
+	public void addTag(final String contentId , final long tagId) throws DataAccessServiceException, SQLException;
+	
 }

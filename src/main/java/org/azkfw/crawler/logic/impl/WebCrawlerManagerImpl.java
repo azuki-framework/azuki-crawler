@@ -49,11 +49,13 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 	private static String DSQL_I02 = "WebCrawlerManagerI02";
 	private static String DSQL_I03 = "WebCrawlerManagerI03";
 	private static String DSQL_I04 = "WebCrawlerManagerI04";
+	private static String DSQL_I05 = "WebCrawlerManagerI05";
 	private static String DSQL_L01 = "WebCrawlerManagerL01";
 	private static String DSQL_S01 = "WebCrawlerManagerS01";
 	private static String DSQL_S02 = "WebCrawlerManagerS02";
 	private static String DSQL_S03 = "WebCrawlerManagerS03";
 	private static String DSQL_S04 = "WebCrawlerManagerS04";
+	private static String DSQL_S05 = "WebCrawlerManagerS05";
 	private static String DSQL_U01 = "WebCrawlerManagerU01";
 	private static String DSQL_U02 = "WebCrawlerManagerU02";
 	private static String DSQL_U03 = "WebCrawlerManagerU03";
@@ -212,11 +214,11 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 
 	@Override
 	public void errorDownloadContent(final String aContentId) throws DataAccessServiceException, SQLException {
-		DataAccessObject dao = null;
 		Parameter params = new Parameter();
-
 		params.put("id", aContentId);
 		params.put("status", -1);
+
+		DataAccessObject dao = null;
 		dao = getDao(DSQL_U02, params);
 		dao.execute();
 
@@ -325,6 +327,7 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 		return host;
 	}
 
+	@Override
 	public void registContents(final String aHostId, final List<URL> aUrls, final String aRefererContentId, final Date aDate)
 			throws DataAccessServiceException, SQLException {
 		DataAccessObject dao = null;
@@ -388,6 +391,7 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 		commit();
 	}
 
+	@Override
 	public void parseErrorContent(final String aContentParseId) throws DataAccessServiceException, SQLException {
 		Parameter params = new Parameter();
 		params.put("id", aContentParseId);
@@ -399,4 +403,22 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 
 		commit();
 	}
+
+	@Override
+	public void addTag(final String contentId, final long tagId) throws DataAccessServiceException, SQLException {
+		Parameter params = new Parameter();
+		params.put("contentId", contentId);
+		params.put("tagId", tagId);
+
+		DataAccessObject dao = null;
+		dao = getDao(DSQL_S05, params);
+		if (0 == dao.count()) {
+
+			dao = getDao(DSQL_I05, params);
+			dao.execute();
+
+			commit();
+		}
+	}
+
 }
