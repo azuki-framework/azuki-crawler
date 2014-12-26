@@ -22,11 +22,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -36,6 +34,7 @@ import org.azkfw.business.BusinessServiceException;
 import org.azkfw.business.dao.DataAccessServiceException;
 import org.azkfw.business.property.Property;
 import org.azkfw.business.property.PropertyFile;
+import org.azkfw.crawler.CrawlInfo;
 import org.azkfw.crawler.CrawlerServiceException;
 import org.azkfw.crawler.content.Content;
 import org.azkfw.crawler.content.FileContent;
@@ -121,7 +120,6 @@ public final class TabelogWebCrawleParserTask extends StandAloneWebCrawleTask {
 			if (MapUtility.isNotEmpty(content)) {
 
 				String contentParseId = MapUtility.getString(content, "contentParseId");
-				String hostId = MapUtility.getString(content, "hostId");
 				String hostProtocol = MapUtility.getString(content, "hostProtocol");
 				String hostName = MapUtility.getString(content, "hostName");
 				Integer hostPort = MapUtility.getInteger(content, "hostPort");
@@ -213,12 +211,14 @@ public final class TabelogWebCrawleParserTask extends StandAloneWebCrawleTask {
 						Date date = new Date();
 						for (String bufHostId : hostUrls.keySet()) {
 							Set<String> bufUrls = hostUrls.get(bufHostId);
-							List<URL> urlList = new ArrayList<URL>();
-							for (String url : bufUrls) {
+							Map<URL, CrawlInfo> urlInfos = new HashMap<URL, CrawlInfo>();
+							for (String str : bufUrls) {
 								//URLDecoder.decode(url, charset);
-								urlList.add(new URL(url));
+								URL url = new URL(str);
+								CrawlInfo info = crawlerEngineController.getCrawlInfo(url);
+								urlInfos.put(url, info);
 							}
-							manager.registContents(bufHostId, urlList, contentId, date);
+							manager.registContents(bufHostId, urlInfos, contentId, date);
 						}
 					}
 

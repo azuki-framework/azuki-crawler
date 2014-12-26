@@ -20,6 +20,8 @@ package org.azkfw.crawler.engine.tabelog;
 import java.net.URL;
 import java.util.regex.Pattern;
 
+import org.azkfw.crawler.CrawlInfo;
+import org.azkfw.crawler.CrawlType;
 import org.azkfw.crawler.content.Content;
 import org.azkfw.crawler.downloader.engine.DownloadEngine;
 import org.azkfw.crawler.engine.AbstractCrawlerEngine;
@@ -43,8 +45,18 @@ public final class TabelogCrawlerEngine extends AbstractCrawlerEngine {
 	}
 
 	@Override
-	public int getEngineNo() {
-		return 1;
+	public CrawlInfo getCrawlInfo(final URL url) {
+		String str = url.toExternalForm();
+		if (PTN_SHOP.matcher(str).matches()) {
+			return new CrawlInfo(CrawlType.Once);
+		}
+		if (PTN_SEARCH.matcher(str).matches()) {
+			return new CrawlInfo(CrawlType.Loop);
+		}
+		if (PTN_CATEGORY.matcher(str).matches()) {
+			return new CrawlInfo(CrawlType.Loop);
+		}
+		return null;
 	}
 
 	@Override

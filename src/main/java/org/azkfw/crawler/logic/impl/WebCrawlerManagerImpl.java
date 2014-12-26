@@ -31,6 +31,7 @@ import org.azkfw.business.dao.DataAccessObject;
 import org.azkfw.business.dao.DataAccessServiceException;
 import org.azkfw.business.dsql.Parameter;
 import org.azkfw.business.logic.AbstractDynamicSQLLogic;
+import org.azkfw.crawler.CrawlInfo;
 import org.azkfw.crawler.logic.WebCrawlerManager;
 import org.azkfw.util.DateUtility;
 import org.azkfw.util.ListUtility;
@@ -52,6 +53,7 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 	private static String DSQL_I03 = "WebCrawlerManagerI03";
 	private static String DSQL_I04 = "WebCrawlerManagerI04";
 	private static String DSQL_I05 = "WebCrawlerManagerI05";
+	private static String DSQL_I06 = "WebCrawlerManagerI06";
 	private static String DSQL_L01 = "WebCrawlerManagerL01";
 	private static String DSQL_U01 = "WebCrawlerManagerU01";
 	private static String DSQL_U02 = "WebCrawlerManagerU02";
@@ -350,13 +352,15 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 	}
 
 	@Override
-	public void registContents(final String aHostId, final List<URL> aUrls, final String aRefererContentId, final Date aDate)
+	public void registContents(final String aHostId, final Map<URL, CrawlInfo> aUrlInfos, final String aRefererContentId, final Date aDate)
 			throws DataAccessServiceException, SQLException {
 		DataAccessObject dao = null;
 		Parameter params = new Parameter();
 
 		Timestamp date = new Timestamp((new Date()).getTime());
-		for (URL url : aUrls) {
+		for (URL url : aUrlInfos.keySet()) {
+			CrawlInfo info = aUrlInfos.get(url);
+
 			String areas = url.getFile();
 			if (StringUtility.isEmpty(areas)) {
 				areas = "/";
@@ -369,12 +373,14 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 
 			Map<String, Object> data = dao.get();
 
+			// コンテンツ情報は一度のみ登録
 			String contentId = null;
 			if (!data.isEmpty()) {
-				contentId = (String) data.get("contentId");
+				//contentId = (String) data.get("contentId");
 			} else {
-				contentId = UUIDUtility.generateToShortString();
 
+				// コンテンツ
+				contentId = UUIDUtility.generateToShortString();
 				params.clear();
 				params.put("id", contentId);
 				params.put("areas", areas);
@@ -384,17 +390,25 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 				params.put("date", date);
 				dao = getDao(DSQL_I03, params);
 				dao.execute();
+
+				// 履歴
+				String historyId = UUIDUtility.generateToShortString();
+				params.clear();
+				params.put("id", contentId);
+				params.put("historyId", historyId);
+				params.put("type", "");
+				params.put("date", date);
+				dao = getDao(DSQL_I04, params);
+				dao.execute();
+
+				// クロール情報
+				params.clear();
+				params.put("contentId", contentId);
+				params.put("crawlType", info.getType().getType());
+				dao = getDao(DSQL_I06, params);
+				dao.execute();
 			}
 
-			String historyId = UUIDUtility.generateToShortString();
-
-			params.clear();
-			params.put("id", contentId);
-			params.put("historyId", historyId);
-			params.put("type", "");
-			params.put("date", date);
-			dao = getDao(DSQL_I04, params);
-			dao.execute();
 		}
 
 		commit();

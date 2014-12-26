@@ -14,4 +14,4 @@
                     A.status = 1
                 AND A.delete_date IS NULL
                 ORDER BY
-                    A.last_access_date DESC
+                    A.last_access_date

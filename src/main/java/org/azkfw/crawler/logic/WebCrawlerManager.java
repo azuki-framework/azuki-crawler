@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.azkfw.business.dao.DataAccessServiceException;
 import org.azkfw.business.logic.Logic;
+import org.azkfw.crawler.CrawlInfo;
 
 /**
  * このインターフェースは、 Webクロール管理機能を表現するインターフェースです。
@@ -139,7 +140,7 @@ public interface WebCrawlerManager extends Logic {
 	public Map<String, Object> registHost(final String aName, final String aProtocol, final int aPort) throws DataAccessServiceException,
 			SQLException;
 
-	public void registContents(final String aHostId, final List<URL> aUrls, final String aRefererContentId, final Date aDate)
+	public void registContents(final String aHostId, final Map<URL, CrawlInfo> aUrlInfos, final String aRefererContentId, final Date aDate)
 			throws DataAccessServiceException, SQLException;
 
 	public void parseContent(final String aContentParseId) throws DataAccessServiceException, SQLException;

@@ -21,6 +21,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.azkfw.crawler.CrawlInfo;
 import org.azkfw.crawler.content.Content;
 import org.azkfw.crawler.downloader.engine.DownloadEngine;
 import org.azkfw.crawler.downloader.engine.SimpleDownloadEngine;
@@ -50,8 +51,15 @@ public class DefaultCrawlerEngineController implements CrawlerEngineController {
 		engines.add(new TabelogCrawlerEngine());
 	}
 
-	public int getEngineNo() {
-		return 0;
+	@Override
+	public CrawlInfo getCrawlInfo(final URL url) {
+		for (CrawlerEngine engine : engines) {
+			CrawlInfo info = engine.getCrawlInfo(url);
+			if (null != info) {
+				return info;
+			}
+		}
+		return new CrawlInfo();
 	}
 
 	@Override

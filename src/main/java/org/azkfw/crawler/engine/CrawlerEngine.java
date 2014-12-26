@@ -19,6 +19,7 @@ package org.azkfw.crawler.engine;
 
 import java.net.URL;
 
+import org.azkfw.crawler.CrawlInfo;
 import org.azkfw.crawler.content.Content;
 import org.azkfw.crawler.downloader.engine.DownloadEngine;
 import org.azkfw.crawler.parser.engine.ParseEngine;
@@ -32,7 +33,7 @@ import org.azkfw.crawler.parser.engine.ParseEngine;
  */
 public interface CrawlerEngine {
 
-	public int getEngineNo();
+	public CrawlInfo getCrawlInfo(final URL url);
 
 	/**
 	 * ダウンロード対象のコンテンツか判断する。
