@@ -21,6 +21,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +32,7 @@ import org.azkfw.business.dao.DataAccessServiceException;
 import org.azkfw.business.dsql.Parameter;
 import org.azkfw.business.logic.AbstractDynamicSQLLogic;
 import org.azkfw.crawler.logic.WebCrawlerManager;
+import org.azkfw.util.DateUtility;
 import org.azkfw.util.ListUtility;
 import org.azkfw.util.MapUtility;
 import org.azkfw.util.StringUtility;
@@ -51,15 +53,18 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 	private static String DSQL_I04 = "WebCrawlerManagerI04";
 	private static String DSQL_I05 = "WebCrawlerManagerI05";
 	private static String DSQL_L01 = "WebCrawlerManagerL01";
+	private static String DSQL_U01 = "WebCrawlerManagerU01";
+	private static String DSQL_U02 = "WebCrawlerManagerU02";
+	private static String DSQL_U03 = "WebCrawlerManagerU03";
+	private static String DSQL_U04 = "WebCrawlerManagerU04";
 	private static String DSQL_S01 = "WebCrawlerManagerS01";
 	private static String DSQL_S02 = "WebCrawlerManagerS02";
 	private static String DSQL_S03 = "WebCrawlerManagerS03";
 	private static String DSQL_S04 = "WebCrawlerManagerS04";
 	private static String DSQL_S05 = "WebCrawlerManagerS05";
-	private static String DSQL_U01 = "WebCrawlerManagerU01";
-	private static String DSQL_U02 = "WebCrawlerManagerU02";
-	private static String DSQL_U03 = "WebCrawlerManagerU03";
-	private static String DSQL_U04 = "WebCrawlerManagerU04";
+
+	private static String DSQL_S10 = "WebCrawlerManagerS10";
+	private static String DSQL_S11 = "WebCrawlerManagerS11";
 
 	/**
 	 * コンストラクタ
@@ -131,6 +136,8 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 	public List<Map<String, Object>> getDownloadPages(final String aHostId, final int aPageSize) throws DataAccessServiceException, SQLException {
 		List<Map<String, Object>> pages = new ArrayList<Map<String, Object>>();
 
+		Timestamp date = new Timestamp((new Date()).getTime());
+
 		DataAccessObject dao = null;
 		Parameter params = new Parameter();
 
@@ -154,6 +161,7 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 				params.clear();
 				params.put("id", record.get("id"));
 				params.put("status", 2);
+				params.put("date", date);
 				dao = getDao(DSQL_U02, params);
 				dao.execute();
 
@@ -167,12 +175,16 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 	@Override
 	public void successDownloadContent(final String aContentId, final String aHistroyId, final String aPath, final int aStatusCode,
 			final long aLength, final String aType) throws DataAccessServiceException, SQLException {
+
+		Timestamp date = new Timestamp((new Date()).getTime());
+
 		DataAccessObject dao = null;
 		Parameter params = new Parameter();
 
 		params.clear();
 		params.put("id", aContentId);
 		params.put("status", 3);
+		params.put("date", date);
 		dao = getDao(DSQL_U02, params);
 		dao.execute();
 
@@ -183,6 +195,7 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 		params.put("path", aPath);
 		params.put("type", aType);
 		params.put("length", Long.valueOf(aLength));
+		params.put("date", date);
 		dao = getDao(DSQL_U04, params);
 		dao.execute();
 
@@ -192,12 +205,16 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 	@Override
 	public void successDownloadContent(final String aContentId, final String aHistroyId, final String aPath, final int aStatusCode)
 			throws DataAccessServiceException, SQLException {
+
+		Timestamp date = new Timestamp((new Date()).getTime());
+
 		DataAccessObject dao = null;
 		Parameter params = new Parameter();
 
 		params.clear();
 		params.put("id", aContentId);
 		params.put("status", 3);
+		params.put("date", date);
 		dao = getDao(DSQL_U02, params);
 		dao.execute();
 
@@ -206,6 +223,7 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 		params.put("historyId", aHistroyId);
 		params.put("code", Integer.valueOf(aStatusCode));
 		params.put("path", aPath);
+		params.put("date", date);
 		dao = getDao(DSQL_U04, params);
 		dao.execute();
 
@@ -214,9 +232,13 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 
 	@Override
 	public void errorDownloadContent(final String aContentId) throws DataAccessServiceException, SQLException {
+
+		Timestamp date = new Timestamp((new Date()).getTime());
+
 		Parameter params = new Parameter();
 		params.put("id", aContentId);
 		params.put("status", -1);
+		params.put("date", date);
 
 		DataAccessObject dao = null;
 		dao = getDao(DSQL_U02, params);
@@ -419,6 +441,34 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 
 			commit();
 		}
+	}
+
+	@Override
+	public Map<String, Object> getReport(final Date date) throws DataAccessServiceException, SQLException {
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		Calendar cln = Calendar.getInstance();
+		cln.setTime(date);
+
+		Date toDay = DateUtility.createDate(cln.get(Calendar.YEAR), cln.get(Calendar.MONTH) + 1, cln.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+		Date fromDay = DateUtility.getDayOfAddDay(toDay, -1);
+
+		Parameter params = new Parameter();
+		params.put("fromDate", new java.sql.Date(fromDay.getTime()));
+		params.put("toDate", new java.sql.Date(toDay.getTime()));
+
+		DataAccessObject dao = null;
+
+		dao = getDao(DSQL_S10, params);
+		long cntRegistContent = dao.count();
+
+		dao = getDao(DSQL_S11, params);
+		long cntDownloadContent = dao.count();
+
+		result.put("registContent", cntRegistContent);
+		result.put("downloadContent", cntDownloadContent);
+
+		return result;
 	}
 
 }

@@ -10,6 +10,7 @@ ${code}             result_code      = ?
 ${path}           , content_path     = ?
 ${type}           , content_type     = ?
 ${length}         , content_length   = ?
+${date}           , update_date      = ?
                 WHERE
 ${contentId}        content_id         = ?
 ${historyId}    AND content_history_id = ?

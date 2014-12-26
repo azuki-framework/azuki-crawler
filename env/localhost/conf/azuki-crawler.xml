@@ -44,6 +44,13 @@
 			</schedule>
 		</thread>
 		
+		<thread title="レポートタスク" description="" startup="false">
+			<task classname="org.azkfw.crawler.task.StandAloneWebCrawleReportTask">
+			</task>
+			<schedule classname="org.azkfw.crawler.schedule.CountSchedule">
+				<parameter key="count" value="1" />
+			</schedule>
+		</thread>
 		
 		<thread title="テストタスク" description="" startup="false">
 			<task classname="org.azkfw.crawler.task.TestCrawlerTask">

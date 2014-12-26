@@ -145,7 +145,16 @@ public interface WebCrawlerManager extends Logic {
 	public void parseContent(final String aContentParseId) throws DataAccessServiceException, SQLException;
 
 	public void parseErrorContent(final String aContentParseId) throws DataAccessServiceException, SQLException;
-	
-	public void addTag(final String contentId , final long tagId) throws DataAccessServiceException, SQLException;
-	
+
+	public void addTag(final String contentId, final long tagId) throws DataAccessServiceException, SQLException;
+
+	/**
+	 * 指定日付の前日のレポート情報を取得する。
+	 * 
+	 * @param date 指定日付
+	 * @return レポート情報
+	 * @throws DataAccessServiceException
+	 * @throws SQLException
+	 */
+	public Map<String, Object> getReport(final Date date) throws DataAccessServiceException, SQLException;
 }

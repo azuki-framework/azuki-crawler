@@ -57,11 +57,16 @@
 		<dependency>
 			<groupId>org.azkfw</groupId>
 			<artifactId>azuki-base</artifactId>
-			<version>1.4.2</version>
+			<version>1.4.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.azkfw</groupId>
 			<artifactId>azuki-business</artifactId>
+			<version>1.4.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.azkfw</groupId>
+			<artifactId>azuki-biz</artifactId>
 			<version>1.4.1</version>
 		</dependency>
 

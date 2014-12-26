@@ -1,0 +1,13 @@
+# ------------------------------------------------------------------------------
+# WebCrawlerManagerS11
+# 指定期間にダウンロードされたコンテンツ数を取得する。
+# ------------------------------------------------------------------------------
+
+                SELECT
+                    count(*) AS cnt
+                FROM
+                    td_content_history 
+                WHERE
+                    result_code = 200
+${fromDate}     AND update_date >= ?
+${toDate}       AND update_date <  ?

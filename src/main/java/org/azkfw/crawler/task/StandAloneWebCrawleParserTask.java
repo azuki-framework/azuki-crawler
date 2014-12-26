@@ -280,8 +280,6 @@ public final class StandAloneWebCrawleParserTask extends StandAloneWebCrawleTask
 			result.setStop(true);
 		}
 
-		result.setResult(true);
-		result.setStop(false);
 		return result;
 	}
 

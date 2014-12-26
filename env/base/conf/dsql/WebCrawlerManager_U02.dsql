@@ -7,5 +7,6 @@
                     tm_content
                 SET
 ${status}           status           = ?
+${date}           , update_date      = ?
                 WHERE
 ${id}               content_id       = ?

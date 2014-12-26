@@ -42,6 +42,13 @@
 				<parameter key="interval" value="1s" />
 			</schedule>
 		</thread>
+		<thread title="レポートタスク" description="" startup="true">
+			<task classname="org.azkfw.crawler.task.StandAloneWebCrawleReportTask">
+			</task>
+			<schedule classname="org.azkfw.crawler.schedule.DatetimeSchedule">
+				<parameter key="pattern" value="0 7 * * *" />
+			</schedule>
+		</thread>
 	</threads>
 
 </crawler>
