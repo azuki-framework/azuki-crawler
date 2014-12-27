@@ -140,10 +140,11 @@ public final class TabelogWebCrawleParserTask extends StandAloneWebCrawleTask {
 					URL absoluteUrl = URLUtility.toURL(hostProtocol, hostName, hostPort, contentAreas);
 
 					File dir = new File(PathUtility.cat(baseDirectory.getAbsolutePath(), "data", contentPath));
-					String filePath = PathUtility.cat(dir.getAbsolutePath(), "content.dat");
+					String contentFilePath = PathUtility.cat(dir.getAbsolutePath(), "content.dat");
+					String linkFilePath = PathUtility.cat(dir.getAbsolutePath(), "link.txt");
 
 					// 解析
-					ParseEngine engine = getParseEngine(absoluteUrl, new FileContent(new File(filePath)));
+					ParseEngine engine = getParseEngine(absoluteUrl, new FileContent(new File(contentFilePath)));
 					if (engine instanceof AbstractHtmlParseEngine) {
 						AbstractHtmlParseEngine e = (AbstractHtmlParseEngine) engine;
 						if (StringUtility.isNotEmpty(charset)) {
@@ -161,8 +162,9 @@ public final class TabelogWebCrawleParserTask extends StandAloneWebCrawleTask {
 						SimpleHtmlParseEngine e = (SimpleHtmlParseEngine) engine;
 
 						Counter urls = e.getAnchors();
-						Map<String, Set<String>> hostUrls = new HashMap<String, Set<String>>();
+						writeAnchors(new File(linkFilePath), urls);
 
+						Map<String, Set<String>> hostUrls = new HashMap<String, Set<String>>();
 						for (String url : urls.keyset()) {
 							try {
 								URL bufUrl = new URL(url);

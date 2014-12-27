@@ -17,6 +17,12 @@
  */
 package org.azkfw.crawler.task;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.azkfw.crawler.parser.engine.SimpleHtmlParseEngine.Counter;
+import org.azkfw.io.CsvBufferedWriter;
+
 /**
  * このクラスは、スタンドアロンで動作するWebクローラを実装するためのクラスです。
  * 
@@ -49,6 +55,30 @@ public abstract class StandAloneWebCrawleTask extends AbstractBusinessCrawlerTas
 	 */
 	public StandAloneWebCrawleTask(final String aName) {
 		super(aName);
+	}
+
+	protected final void writeAnchors(final File file, final Counter counter) {
+		CsvBufferedWriter writer = null;
+		try {
+			writer = new CsvBufferedWriter(file, "UTF-8");
+			writer.setSeparateCharacter('\t');
+
+			for (String url : counter.keyset()) {
+				int count = counter.getCount(url);
+				writer.writeCsvLine(Integer.toString(count), url);
+			}
+
+		} catch (IOException ex) {
+			error("link.txt writer error.[" + file.getAbsolutePath() + "]", ex);
+		} finally {
+			if (null != writer) {
+				try {
+					writer.close();
+				} catch (IOException ex) {
+					warn(ex);
+				}
+			}
+		}
 	}
 
 }
