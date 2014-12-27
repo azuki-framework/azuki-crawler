@@ -48,7 +48,6 @@ import org.azkfw.util.MapUtility;
 import org.azkfw.util.PathUtility;
 import org.azkfw.util.StringUtility;
 import org.azkfw.util.URLUtility;
-import org.azkfw.util.UUIDUtility;
 
 /**
  * このクラスは、スタントアロンでWebクロールを行うクローラタスククラスです。
@@ -243,7 +242,7 @@ public final class StandAloneWebCrawleDownloaderTask extends StandAloneWebCrawle
 
 							if (200 == statusCode) {
 								long length = rslt.getLength();
-																
+
 								// Success
 								manager.successDownloadContent(contentId, historyId, contentPath, statusCode, length, contentType);
 
