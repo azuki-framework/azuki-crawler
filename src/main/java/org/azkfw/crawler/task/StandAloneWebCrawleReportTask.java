@@ -40,7 +40,7 @@ import org.azkfw.business.property.Property;
 import org.azkfw.business.property.PropertyFile;
 import org.azkfw.crawler.CrawlerServiceException;
 import org.azkfw.crawler.lang.CrawlerSetupException;
-import org.azkfw.crawler.logic.WebCrawlerManager;
+import org.azkfw.crawler.logic.WebCrawlerMaintenanceManager;
 import org.azkfw.util.DateUtility;
 import org.azkfw.util.MapUtility;
 
@@ -56,7 +56,7 @@ public final class StandAloneWebCrawleReportTask extends StandAloneWebCrawleTask
 
 	private String userName;
 	private String password;
-	
+
 	private String tmplMailSubject;
 	private String tmplMailToName;
 	private String tmplMailToAddress;
@@ -84,7 +84,7 @@ public final class StandAloneWebCrawleReportTask extends StandAloneWebCrawleTask
 			tmplMailToAddress = p.getString("mail.to.address");
 			tmplMailFromName = p.getString("mail.from.name");
 			tmplMailFromAddress = p.getString("mail.from.address");
-			
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -114,17 +114,17 @@ public final class StandAloneWebCrawleReportTask extends StandAloneWebCrawleTask
 		CrawlerTaskResult result = new CrawlerTaskResult();
 
 		try {
-			WebCrawlerManager manager = (WebCrawlerManager) getLogic("WebCrawlerManager");
+			WebCrawlerMaintenanceManager manager = (WebCrawlerMaintenanceManager) getLogic("WebCrawlerMaintenanceManager");
 
 			Date date = new Date();
 			Calendar cln = Calendar.getInstance();
 			cln.setTime(DateUtility.getDayOfAddDay(date, -1));
 			String dateString = String.format("%04d/%02d/%02d", cln.get(Calendar.YEAR), cln.get(Calendar.MONTH) + 1, cln.get(Calendar.DAY_OF_MONTH));
-			
+
 			String mailFromAddress = tmplMailFromAddress;
 			String mailFromName = tmplMailFromName.replaceAll("\\$\\{date\\}", dateString);
 			String mailSubject = tmplMailSubject.replaceAll("\\$\\{date\\}", dateString);
-			
+
 			String ln = "\r\n";
 			Map<String, Object> report = manager.getReport(date);
 			long regist = MapUtility.getLong(report, "registContent", -1L);

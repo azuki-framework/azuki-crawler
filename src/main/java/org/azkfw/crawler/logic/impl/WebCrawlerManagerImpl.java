@@ -21,7 +21,6 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +32,6 @@ import org.azkfw.business.dsql.Parameter;
 import org.azkfw.business.logic.AbstractDynamicSQLLogic;
 import org.azkfw.crawler.CrawlInfo;
 import org.azkfw.crawler.logic.WebCrawlerManager;
-import org.azkfw.util.DateUtility;
 import org.azkfw.util.ListUtility;
 import org.azkfw.util.MapUtility;
 import org.azkfw.util.StringUtility;
@@ -64,9 +62,6 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 	private static String DSQL_S03 = "WebCrawlerManagerS03";
 	private static String DSQL_S04 = "WebCrawlerManagerS04";
 	private static String DSQL_S05 = "WebCrawlerManagerS05";
-
-	private static String DSQL_S10 = "WebCrawlerManagerS10";
-	private static String DSQL_S11 = "WebCrawlerManagerS11";
 
 	/**
 	 * コンストラクタ
@@ -455,34 +450,6 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 
 			commit();
 		}
-	}
-
-	@Override
-	public Map<String, Object> getReport(final Date date) throws DataAccessServiceException, SQLException {
-		Map<String, Object> result = new HashMap<String, Object>();
-
-		Calendar cln = Calendar.getInstance();
-		cln.setTime(date);
-
-		Date toDay = DateUtility.createDate(cln.get(Calendar.YEAR), cln.get(Calendar.MONTH) + 1, cln.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
-		Date fromDay = DateUtility.getDayOfAddDay(toDay, -1);
-
-		Parameter params = new Parameter();
-		params.put("fromDate", new java.sql.Date(fromDay.getTime()));
-		params.put("toDate", new java.sql.Date(toDay.getTime()));
-
-		DataAccessObject dao = null;
-
-		dao = getDao(DSQL_S10, params);
-		long cntRegistContent = dao.count();
-
-		dao = getDao(DSQL_S11, params);
-		long cntDownloadContent = dao.count();
-
-		result.put("registContent", cntRegistContent);
-		result.put("downloadContent", cntDownloadContent);
-
-		return result;
 	}
 
 }
