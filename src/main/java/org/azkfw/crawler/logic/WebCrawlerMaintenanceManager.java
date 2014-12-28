@@ -42,4 +42,6 @@ public interface WebCrawlerMaintenanceManager extends Logic {
 	 * @throws SQLException
 	 */
 	public Map<String, Object> getReport(final Date date) throws DataAccessServiceException, SQLException;
+
+	public void updateCrawlType() throws DataAccessServiceException, SQLException;
 }

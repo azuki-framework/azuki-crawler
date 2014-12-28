@@ -1,0 +1,11 @@
+# ------------------------------------------------------------------------------
+# WebCrawlerMaintenanceManagerU01
+# クロールタイプを更新する。
+# ------------------------------------------------------------------------------
+
+                UPDATE
+                    td_content_crawler
+                SET
+${crawlType}        crawl_type = ?
+                WHERE
+${contentId}        content_id = ?

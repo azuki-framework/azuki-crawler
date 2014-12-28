@@ -51,6 +51,13 @@
 				<parameter key="count" value="1" />
 			</schedule>
 		</thread>
+		<thread title="メンテナンスタスク" description="" startup="false">
+			<task classname="org.azkfw.crawler.task.StandAloneWebCrawleMaintenanceTask">
+			</task>
+			<schedule classname="org.azkfw.crawler.schedule.CountSchedule">
+				<parameter key="count" value="1" />
+			</schedule>
+		</thread>
 		
 		<thread title="テストタスク" description="" startup="false">
 			<task classname="org.azkfw.crawler.task.TestCrawlerTask">

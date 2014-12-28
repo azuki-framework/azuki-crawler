@@ -34,5 +34,7 @@
 		
 		<dynamicSQL name="WebCrawlerMaintenanceManagerS01" file="conf/dsql/WebCrawlerMaintenanceManager_S01.dsql" />
 		<dynamicSQL name="WebCrawlerMaintenanceManagerS02" file="conf/dsql/WebCrawlerMaintenanceManager_S02.dsql" />
+		<dynamicSQL name="WebCrawlerMaintenanceManagerS03" file="conf/dsql/WebCrawlerMaintenanceManager_S03.dsql" />
+		<dynamicSQL name="WebCrawlerMaintenanceManagerU01" file="conf/dsql/WebCrawlerMaintenanceManager_U01.dsql" />
 	</dynamicSQLs>
 </azuki>
