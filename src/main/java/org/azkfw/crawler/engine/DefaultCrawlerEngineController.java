@@ -25,6 +25,7 @@ import org.azkfw.crawler.CrawlInfo;
 import org.azkfw.crawler.content.Content;
 import org.azkfw.crawler.downloader.engine.DownloadEngine;
 import org.azkfw.crawler.downloader.engine.SimpleDownloadEngine;
+import org.azkfw.crawler.engine.gnavi.GnaviCrawlerEngine;
 import org.azkfw.crawler.engine.tabelog.TabelogCrawlerEngine;
 import org.azkfw.crawler.parser.engine.ParseEngine;
 import org.azkfw.crawler.parser.engine.SimpleHtmlParseEngine;
@@ -49,6 +50,7 @@ public class DefaultCrawlerEngineController implements CrawlerEngineController {
 
 		// TODO: debug
 		engines.add(new TabelogCrawlerEngine());
+		engines.add(new GnaviCrawlerEngine());
 	}
 
 	@Override

@@ -26,7 +26,7 @@
 			<task classname="org.azkfw.crawler.task.StandAloneWebCrawleDownloaderTask">
 			</task>
 			<schedule classname="org.azkfw.crawler.schedule.TimerSchedule">
-				<parameter key="interval" value="60s" />
+				<parameter key="interval" value="20s" />
 			</schedule>
 		</thread>
 		<thread title="HTML解析タスク" description="" startup="false">
