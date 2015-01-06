@@ -347,8 +347,10 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 	}
 
 	@Override
-	public void registContents(final String aHostId, final Map<URL, CrawlInfo> aUrlInfos, final String aRefererContentId, final Date aDate)
+	public Map<String, String> registContents(final String aHostId, final Map<URL, CrawlInfo> aUrlInfos, final String aRefererContentId, final Date aDate)
 			throws DataAccessServiceException, SQLException {
+		Map<String, String> result = new HashMap<String, String>();
+		
 		DataAccessObject dao = null;
 		Parameter params = new Parameter();
 
@@ -371,9 +373,8 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 			// コンテンツ情報は一度のみ登録
 			String contentId = null;
 			if (!data.isEmpty()) {
-				//contentId = (String) data.get("contentId");
+				contentId = (String) data.get("contentId");
 			} else {
-
 				// コンテンツ
 				contentId = UUIDUtility.generateToShortString();
 				params.clear();
@@ -404,9 +405,12 @@ public class WebCrawlerManagerImpl extends AbstractDynamicSQLLogic implements We
 				dao.execute();
 			}
 
+			result.put(url.toExternalForm(), contentId);
 		}
 
 		commit();
+		
+		return result;
 	}
 
 	@Override

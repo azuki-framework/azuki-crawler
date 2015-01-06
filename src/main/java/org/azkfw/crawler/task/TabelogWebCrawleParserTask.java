@@ -47,6 +47,7 @@ import org.azkfw.crawler.parser.engine.ParseEngine;
 import org.azkfw.crawler.parser.engine.ParseEngineResult;
 import org.azkfw.crawler.parser.engine.SimpleHtmlParseEngine;
 import org.azkfw.crawler.parser.engine.SimpleHtmlParseEngine.Counter;
+import org.azkfw.store.Store;
 import org.azkfw.util.MapUtility;
 import org.azkfw.util.PathUtility;
 import org.azkfw.util.StringUtility;
@@ -112,6 +113,10 @@ public final class TabelogWebCrawleParserTask extends StandAloneWebCrawleTask {
 	@Override
 	protected CrawlerTaskResult doExecute() throws CrawlerServiceException {
 		CrawlerTaskResult result = new CrawlerTaskResult();
+
+		Store<String, Object> session = getSession();
+		Map<String, String> urlIdMap = (Map<String, String>) session.get("urlIdMap", new HashMap<String, String>());
+		session.put("urlIdMap", urlIdMap);
 
 		try {
 			WebCrawlerManager manager = (WebCrawlerManager) getLogic("WebCrawlerManager");
@@ -215,12 +220,17 @@ public final class TabelogWebCrawleParserTask extends StandAloneWebCrawleTask {
 							Set<String> bufUrls = hostUrls.get(bufHostId);
 							Map<URL, CrawlInfo> urlInfos = new HashMap<URL, CrawlInfo>();
 							for (String str : bufUrls) {
-								//URLDecoder.decode(url, charset);
-								URL url = new URL(str);
-								CrawlInfo info = crawlerEngineController.getCrawlInfo(url);
-								urlInfos.put(url, info);
+								if (!urlIdMap.containsKey(str)) {
+									//URLDecoder.decode(url, charset);
+									URL url = new URL(str);
+									CrawlInfo info = crawlerEngineController.getCrawlInfo(url);
+
+									urlInfos.put(url, info);
+								}
 							}
-							manager.registContents(bufHostId, urlInfos, contentId, date);
+
+							Map<String, String> registUrlId = manager.registContents(bufHostId, urlInfos, contentId, date);
+							urlIdMap.putAll(registUrlId);
 						}
 					}
 
