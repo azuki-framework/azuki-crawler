@@ -63,7 +63,7 @@ goto execCmd
 
 :execCmd
 set MAIN
-call java -cp %CLASSPATH% %MAINCLASS% %ACTION% -baseDir ./ -configFile %PROPERTIESFILE% -pluginFile %PLUGINFILE%
+call java -Xmx1024m -cp %CLASSPATH% %MAINCLASS% %ACTION% -baseDir ./ -configFile %PROPERTIESFILE% -pluginFile %PLUGINFILE%
 goto end
 
 :end
