@@ -38,8 +38,7 @@ import org.azkfw.crawler.CrawlInfo;
 import org.azkfw.crawler.CrawlerServiceException;
 import org.azkfw.crawler.content.Content;
 import org.azkfw.crawler.content.FileContent;
-import org.azkfw.crawler.engine.CrawlerEngineController;
-import org.azkfw.crawler.engine.CrawlerEngineControllerFactory;
+import org.azkfw.crawler.engine.CrawlerEngine;
 import org.azkfw.crawler.lang.CrawlerSetupException;
 import org.azkfw.crawler.logic.WebCrawlerManager;
 import org.azkfw.crawler.parser.engine.AbstractHtmlParseEngine;
@@ -47,6 +46,7 @@ import org.azkfw.crawler.parser.engine.ParseEngine;
 import org.azkfw.crawler.parser.engine.ParseEngineResult;
 import org.azkfw.crawler.parser.engine.SimpleHtmlParseEngine;
 import org.azkfw.crawler.parser.engine.SimpleHtmlParseEngine.Counter;
+import org.azkfw.parameter.Parameter;
 import org.azkfw.store.Store;
 import org.azkfw.util.MapUtility;
 import org.azkfw.util.PathUtility;
@@ -69,8 +69,8 @@ public final class TabelogWebCrawleParserTask extends StandAloneWebCrawleTask {
 	/** base directory */
 	private File baseDirectory;
 
-	/** Crawler engine controller */
-	private CrawlerEngineController crawlerEngineController;
+	/** Crawler engine */
+	private CrawlerEngine crawlerEngine;
 
 	/**
 	 * コンストラクタ
@@ -89,7 +89,28 @@ public final class TabelogWebCrawleParserTask extends StandAloneWebCrawleTask {
 
 		info("Base Directory : " + baseDirectory.getAbsolutePath());
 
-		crawlerEngineController = CrawlerEngineControllerFactory.getDefaultController();
+		Parameter param = getParameter();
+		String crawlerEngineClassPath = param.getString("CrawlerEngine");
+		if (StringUtility.isNotEmpty(crawlerEngineClassPath)) {
+			try {
+				@SuppressWarnings("rawtypes")
+				Class clazz = Class.forName(crawlerEngineClassPath);
+				Object obj = clazz.newInstance();
+				if (crawlerEngine instanceof CrawlerEngine) {
+					crawlerEngine = (CrawlerEngine) obj;
+				} else {
+					throw new CrawlerSetupException("No crawlerEngin class.");
+				}
+			} catch (ClassNotFoundException ex) {
+				throw new CrawlerSetupException(ex);
+			} catch (IllegalAccessException ex) {
+				throw new CrawlerSetupException(ex);
+			} catch (InstantiationException ex) {
+				throw new CrawlerSetupException(ex);
+			}
+		} else {
+			throw new CrawlerSetupException("Unset task parameter.[CrawlerEngine]");
+		}
 	}
 
 	@Override
@@ -223,7 +244,7 @@ public final class TabelogWebCrawleParserTask extends StandAloneWebCrawleTask {
 								if (!urlIdMap.containsKey(str)) {
 									//URLDecoder.decode(url, charset);
 									URL url = new URL(str);
-									CrawlInfo info = crawlerEngineController.getCrawlInfo(url);
+									CrawlInfo info = crawlerEngine.getCrawlInfo(url);
 
 									urlInfos.put(url, info);
 								}
@@ -283,7 +304,7 @@ public final class TabelogWebCrawleParserTask extends StandAloneWebCrawleTask {
 	}
 
 	protected boolean isDownloadContent(final URL aUrl) {
-		boolean result = crawlerEngineController.isDownloadContent(aUrl);
+		boolean result = crawlerEngine.isDownloadContent(aUrl);
 		return result;
 	}
 

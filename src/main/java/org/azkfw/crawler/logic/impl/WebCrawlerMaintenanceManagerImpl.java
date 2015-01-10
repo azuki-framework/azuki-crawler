@@ -31,8 +31,7 @@ import org.azkfw.business.dao.DataAccessServiceException;
 import org.azkfw.business.dsql.Parameter;
 import org.azkfw.business.logic.AbstractDynamicSQLLogic;
 import org.azkfw.crawler.CrawlInfo;
-import org.azkfw.crawler.engine.CrawlerEngineController;
-import org.azkfw.crawler.engine.CrawlerEngineControllerFactory;
+import org.azkfw.crawler.engine.CrawlerEngine;
 import org.azkfw.crawler.logic.WebCrawlerMaintenanceManager;
 import org.azkfw.util.DateUtility;
 import org.azkfw.util.MapUtility;
@@ -98,9 +97,7 @@ public class WebCrawlerMaintenanceManagerImpl extends AbstractDynamicSQLLogic im
 	}
 
 	@Override
-	public void updateCrawlType() throws DataAccessServiceException, SQLException {
-		CrawlerEngineController controller = CrawlerEngineControllerFactory.getDefaultController();
-
+	public void updateCrawlType(final CrawlerEngine engine) throws DataAccessServiceException, SQLException {
 		DataAccessObject dao = null;
 		Parameter params = new Parameter();
 
@@ -117,7 +114,7 @@ public class WebCrawlerMaintenanceManagerImpl extends AbstractDynamicSQLLogic im
 			try {
 				URL url = URLUtility.toURL(hostProtocol, hostName, hostPort, contentAreas);
 
-				CrawlInfo info = controller.getCrawlInfo(url);
+				CrawlInfo info = engine.getCrawlInfo(url);
 
 				if (null != info) {
 					params.clear();

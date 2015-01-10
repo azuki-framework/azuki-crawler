@@ -26,8 +26,6 @@ package org.azkfw.crawler.engine;
  */
 public class CrawlerEngineControllerFactory {
 
-	private static final CrawlerEngineController DEFAULT_CONTROLLER = new DefaultCrawlerEngineController();
-
 	/**
 	 * コンストラクタ
 	 * <p>
@@ -38,12 +36,4 @@ public class CrawlerEngineControllerFactory {
 
 	}
 
-	/**
-	 * デフォルトのクローラエンジンコントローラを取得する。
-	 * 
-	 * @return クローラエンジンコントローラ
-	 */
-	public static final CrawlerEngineController getDefaultController() {
-		return DEFAULT_CONTROLLER;
-	}
 }

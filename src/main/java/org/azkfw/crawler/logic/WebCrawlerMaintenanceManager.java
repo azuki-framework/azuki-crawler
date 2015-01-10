@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.azkfw.business.dao.DataAccessServiceException;
 import org.azkfw.business.logic.Logic;
+import org.azkfw.crawler.engine.CrawlerEngine;
 
 /**
  * このインターフェースは、 Webクロール管理機能を表現するインターフェースです。
@@ -43,5 +44,5 @@ public interface WebCrawlerMaintenanceManager extends Logic {
 	 */
 	public Map<String, Object> getReport(final Date date) throws DataAccessServiceException, SQLException;
 
-	public void updateCrawlType() throws DataAccessServiceException, SQLException;
+	public void updateCrawlType(final CrawlerEngine engine) throws DataAccessServiceException, SQLException;
 }

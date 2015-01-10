@@ -39,10 +39,10 @@ import org.azkfw.crawler.CrawlerServiceException;
 import org.azkfw.crawler.downloader.engine.DownloadEngine;
 import org.azkfw.crawler.downloader.engine.DownloadEngineCondition;
 import org.azkfw.crawler.downloader.engine.DownloadEngineResult;
-import org.azkfw.crawler.engine.CrawlerEngineController;
-import org.azkfw.crawler.engine.CrawlerEngineControllerFactory;
+import org.azkfw.crawler.engine.CrawlerEngine;
 import org.azkfw.crawler.lang.CrawlerSetupException;
 import org.azkfw.crawler.logic.WebCrawlerManager;
+import org.azkfw.parameter.Parameter;
 import org.azkfw.util.ListUtility;
 import org.azkfw.util.MapUtility;
 import org.azkfw.util.PathUtility;
@@ -62,8 +62,8 @@ public final class StandAloneWebCrawleDownloaderTask extends StandAloneWebCrawle
 	/** base directory */
 	private File baseDirectory;
 
-	/** Crawler engine controller */
-	private CrawlerEngineController crawlerEngineController;
+	/** Crawler engine */
+	private CrawlerEngine crawlerEngine;
 
 	/**
 	 * コンストラクタ
@@ -82,7 +82,28 @@ public final class StandAloneWebCrawleDownloaderTask extends StandAloneWebCrawle
 
 		info("Base Directory : " + baseDirectory.getAbsolutePath());
 
-		crawlerEngineController = CrawlerEngineControllerFactory.getDefaultController();
+		Parameter param = getParameter();
+		String crawlerEngineClassPath = param.getString("CrawlerEngine");
+		if (StringUtility.isNotEmpty(crawlerEngineClassPath)) {
+			try {
+				@SuppressWarnings("rawtypes")
+				Class clazz = Class.forName(crawlerEngineClassPath);
+				Object obj = clazz.newInstance();
+				if (crawlerEngine instanceof CrawlerEngine) {
+					crawlerEngine = (CrawlerEngine) obj;
+				} else {
+					throw new CrawlerSetupException("No crawlerEngin class.");
+				}
+			} catch (ClassNotFoundException ex) {
+				throw new CrawlerSetupException(ex);
+			} catch (IllegalAccessException ex) {
+				throw new CrawlerSetupException(ex);
+			} catch (InstantiationException ex) {
+				throw new CrawlerSetupException(ex);
+			}
+		} else {
+			throw new CrawlerSetupException("Unset task parameter.[CrawlerEngine]");
+		}
 	}
 
 	@Override
@@ -280,11 +301,11 @@ public final class StandAloneWebCrawleDownloaderTask extends StandAloneWebCrawle
 	}
 
 	protected boolean isParseContent(final URL aURL, final String aContentType) {
-		boolean result = crawlerEngineController.isParseContent(aURL, aContentType);
+		boolean result = crawlerEngine.isParseContent(aURL, aContentType);
 		return result;
 	}
 
 	protected DownloadEngine getDownloadEngine(final URL url) {
-		return crawlerEngineController.getDownloadEngine(url);
+		return crawlerEngine.getDownloadEngine(url);
 	}
 }
