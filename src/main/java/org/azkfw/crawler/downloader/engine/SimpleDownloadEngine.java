@@ -45,6 +45,7 @@ import org.azkfw.util.ObjectUtility;
  */
 public class SimpleDownloadEngine extends AbstractDownloadEngine {
 
+	/** Http client */
 	private HttpClient httpClient;
 
 	/**
