@@ -18,7 +18,7 @@
 
 	<groupId>org.azkfw</groupId>
 	<artifactId>azuki-crawler</artifactId>
-	<version>1.4.0</version>
+	<version>1.4.1</version>
 	<packaging>jar</packaging>
 
 	<name>azuki-crawler</name>
@@ -90,12 +90,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>9.1-901.jdbc4</version>
-		</dependency>
-
-		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.8.1</version>
@@ -121,70 +115,11 @@
 				<configuration>
 					<archive>
 						<manifestEntries>
-						    <Built-By>AzukiFramework</Built-By>
+							<Built-By>AzukiFramework</Built-By>
 						</manifestEntries>
 					</archive>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-
-	<profiles>
-		<!-- 開発環境用環境 -->
-		<profile>
-			<id>development</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-assembly-plugin</artifactId>
-						<version>2.2.1</version>
-						<configuration>
-							<descriptors>
-								<descriptor>src/main/assembly/development.xml</descriptor>
-							</descriptors>
-						</configuration>
-						<executions>
-							<execution>
-								<phase>install</phase>
-								<goals>
-									<goal>assembly</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<!-- 本番環境用環境 -->
-		<profile>
-			<id>production</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-assembly-plugin</artifactId>
-						<version>2.2.1</version>
-						<configuration>
-							<descriptors>
-								<descriptor>src/main/assembly/production.xml</descriptor>
-							</descriptors>
-						</configuration>
-						<executions>
-							<execution>
-								<phase>install</phase>
-								<goals>
-									<goal>assembly</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-	
 </project>
