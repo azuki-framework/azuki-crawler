@@ -32,7 +32,22 @@ import org.azkfw.crawler.parser.engine.ParseEngine;
  * @author kawakicchi
  */
 public interface CrawlerEngine {
+	
+	/**
+	 * ホストグループを取得する。
+	 * @param aName
+	 * @param aProtocol
+	 * @param aPort
+	 * @return 不明な場合、-1
+	 */
+	public int getHostGroup(final String aName, final String aProtocol, final int aPort);
 
+	/**
+	 * クロール情報を取得する。
+	 * 
+	 * @param url URL
+	 * @return クロール情報
+	 */
 	public CrawlInfo getCrawlInfo(final URL url);
 
 	/**
