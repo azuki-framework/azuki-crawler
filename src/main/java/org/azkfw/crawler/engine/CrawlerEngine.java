@@ -54,17 +54,19 @@ public interface CrawlerEngine {
 	 * ダウンロード対象のコンテンツか判断する。
 	 * 
 	 * @param url コンテンツURL
+	 * @param referUrl 参照元URL
 	 * @return 判断結果。ダウンロード対象の場合、<code>true</code>を返す。
 	 */
-	public boolean isDownloadContent(final URL url);
+	public boolean isDownloadContent(final URL url, final URL referUrl);
 
 	/**
 	 * ダウンロードエンジンを取得する。
 	 * 
 	 * @param url コンテンツURL
+	 * @param referUrl 参照元URL
 	 * @return ダウンロードエンジン。
 	 */
-	public DownloadEngine getDownloadEngine(final URL url);
+	public DownloadEngine getDownloadEngine(final URL url, final URL referUrl);
 
 	/**
 	 * 解析対象のコンテンツか判断する。
