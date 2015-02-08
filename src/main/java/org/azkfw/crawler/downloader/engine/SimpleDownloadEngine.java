@@ -118,8 +118,10 @@ public class SimpleDownloadEngine extends AbstractDownloadEngine {
 		try {
 			doBefore(httpClient, condition);
 
-			httpGet = new HttpGet(targetUrl.toExternalForm());
+			long startTime = System.currentTimeMillis();
+			info(String.format("URL : %s", targetUrl.toExternalForm()));
 
+			httpGet = new HttpGet(targetUrl.toExternalForm());
 			HttpResponse response = httpClient.execute(httpGet);
 
 			int statusCode = response.getStatusLine().getStatusCode();
@@ -128,6 +130,7 @@ public class SimpleDownloadEngine extends AbstractDownloadEngine {
 			Header[] headers = response.getAllHeaders();
 			for (Header header : headers) {
 				result.addHeader(header);
+				info(String.format("%s : %s", header.getName(), header.getValue()));
 			}
 
 			if (200 == statusCode) {
@@ -135,11 +138,12 @@ public class SimpleDownloadEngine extends AbstractDownloadEngine {
 				reader = httpEntity.getContent();
 
 				writer = new FileOutputStream(destFile);
-				byte[] buffer = new byte[512];
+				byte[] buffer = new byte[1024*10];
 				int len;
 				long length = 0;
-				while (-1 != (len = reader.read(buffer, 0, 512))) {
+				while (-1 != (len = reader.read(buffer, 0, 1024*10))) {
 					if (0 == len) {
+						info("0");
 						continue;
 					}
 					writer.write(buffer, 0, len);
@@ -147,6 +151,8 @@ public class SimpleDownloadEngine extends AbstractDownloadEngine {
 				}
 				result.setLength(length);
 			}
+			long endTime = System.currentTimeMillis();
+			info(String.format("<<<<< END [%d] (%.2fs)", statusCode, (float) (endTime - startTime) / 1000.f));
 
 			doAfter(httpClient, condition);
 
