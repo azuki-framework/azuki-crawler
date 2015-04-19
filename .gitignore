@@ -1,5 +1,10 @@
 *.class
 
+# Eclipse 
+/.settings
+.project
+.classpath
+
 # Mac System Files #
 .DS_Store
 
@@ -8,9 +13,6 @@
 
 # Maven temporary
 /target
-
-# log directory
-/logs
 
 # Package Files #
 *.jar
