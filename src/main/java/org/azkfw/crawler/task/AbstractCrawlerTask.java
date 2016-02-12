@@ -21,7 +21,7 @@ import org.azkfw.crawler.CrawlerServiceException;
 import org.azkfw.crawler.lang.CrawlerSetupException;
 import org.azkfw.crawler.performance.Performance;
 import org.azkfw.crawler.task.support.CrawlerTaskControlSupport;
-import org.azkfw.lang.LoggingObject;
+import org.azkfw.log.LoggingObject;
 import org.azkfw.parameter.Parameter;
 import org.azkfw.parameter.ParameterSupport;
 

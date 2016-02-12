@@ -19,7 +19,7 @@ package org.azkfw.crawler.access;
 
 import java.net.InetSocketAddress;
 
-import org.azkfw.lang.LoggingObject;
+import org.azkfw.log.LoggingObject;
 
 /**
  * このクラスは、マネージャーへのアクセス制限を行うクラスです。

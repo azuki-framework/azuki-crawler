@@ -17,7 +17,7 @@
  */
 package org.azkfw.crawler.parser.engine;
 
-import org.azkfw.lang.LoggingObject;
+import org.azkfw.log.LoggingObject;
 
 /**
  * このクラスは、解析エンジンを定義するための基底クラスです。

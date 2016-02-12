@@ -43,7 +43,7 @@ import org.azkfw.crawler.store.CrawlerSessionStore;
 import org.azkfw.crawler.task.CrawlerTask;
 import org.azkfw.crawler.task.CrawlerTaskResult;
 import org.azkfw.crawler.task.support.CrawlerTaskControlSupport;
-import org.azkfw.lang.LoggingObject;
+import org.azkfw.log.LoggingObject;
 import org.azkfw.parameter.Parameter;
 import org.azkfw.parameter.ParameterSupport;
 import org.azkfw.persistence.session.SessionSupport;

@@ -18,7 +18,7 @@
 package org.azkfw.crawler.schedule;
 
 import org.azkfw.crawler.lang.CrawlerSetupException;
-import org.azkfw.lang.LoggingObject;
+import org.azkfw.log.LoggingObject;
 import org.azkfw.parameter.Parameter;
 import org.azkfw.parameter.ParameterSupport;
 

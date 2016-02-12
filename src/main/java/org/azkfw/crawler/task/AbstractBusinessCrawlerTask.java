@@ -22,13 +22,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.azkfw.business.BusinessServiceException;
+import org.azkfw.business.database.DatabaseConnectionSupport;
 import org.azkfw.business.logic.Logic;
 import org.azkfw.business.logic.LogicManager;
-import org.azkfw.business.property.Property;
-import org.azkfw.business.property.PropertyManager;
-import org.azkfw.business.property.PropertySupport;
-import org.azkfw.context.ContextSupport;
-import org.azkfw.persistence.database.DatabaseConnectionSupport;
+import org.azkfw.plugin.PluginManager;
+import org.azkfw.plugin.PluginServiceException;
 import org.azkfw.util.StringUtility;
 
 /**
@@ -43,9 +41,7 @@ import org.azkfw.util.StringUtility;
  */
 public abstract class AbstractBusinessCrawlerTask extends AbstractDatabaseCrawlerTask {
 
-	/**
-	 * Logics
-	 */
+	/** Logics */
 	private Map<String, Map<String, Logic>> logics;
 
 	/**
@@ -59,23 +55,75 @@ public abstract class AbstractBusinessCrawlerTask extends AbstractDatabaseCrawle
 	/**
 	 * コンストラクタ
 	 * 
-	 * @param aName Name
+	 * @param name 名前
 	 */
-	public AbstractBusinessCrawlerTask(final String aName) {
-		super(aName);
+	public AbstractBusinessCrawlerTask(final String name) {
+		super(name);
 		logics = new HashMap<String, Map<String, Logic>>();
 	}
 
 	/**
 	 * コンストラクタ
 	 * 
-	 * @param aClass Class
+	 * @param clazz クラス
 	 */
-	public AbstractBusinessCrawlerTask(final Class<?> aClass) {
-		super(aClass);
+	public AbstractBusinessCrawlerTask(final Class<?> clazz) {
+		super(clazz);
 		logics = new HashMap<String, Map<String, Logic>>();
 	}
 
+	/**
+	 * ロジックを取得する。
+	 * 
+	 * @param name ロジック名
+	 * @return ロジック
+	 * @throws BusinessServiceException ビジネスサービス層に起因する問題が発生した場合
+	 */
+	protected final Logic getLogic(final String name) throws BusinessServiceException {
+		return getLogic(StringUtility.EMPTY, name);
+	}
+	
+	/**
+	 * ロジックを取得する。
+	 * 
+	 * @param namespace 名前空間
+	 * @param name ロジック名
+	 * @return ロジック
+	 * @throws BusinessServiceException ビジネスサービス層に起因する問題が発生した場合
+	 */
+	protected final Logic getLogic(final String namespace, final String name) throws BusinessServiceException {
+		Logic logic = null;
+		try {
+			Map<String, Logic> logics = null;
+			if (this.logics.containsKey(namespace)) {
+				logics = this.logics.get(namespace);
+			} else {
+				logics = new HashMap<String, Logic>();
+				this.logics.put(namespace, logics);
+			}
+			
+			if (logics.containsKey(name)) {
+				logic = logics.get(name);
+			} else {
+				logic = LogicManager.create(name);
+				if (null != logic) {
+					if (logic instanceof DatabaseConnectionSupport) {
+						DatabaseConnectionSupport support = (DatabaseConnectionSupport) logic;
+						support.setConnection(getConnection());
+					}
+					PluginManager.getInstance().support(logic);
+					logic.initialize();
+				}
+				logics.put(name, logic);
+			}
+		} catch (SQLException ex) {
+			throw new BusinessServiceException(ex);
+		} catch (PluginServiceException ex) {
+			throw new BusinessServiceException(ex);
+		}
+		return logic;
+	}
+	
 	@Override
 	protected void doBeforeExecute() {
 		super.doBeforeExecute();
@@ -85,10 +133,9 @@ public abstract class AbstractBusinessCrawlerTask extends AbstractDatabaseCrawle
 
 	@Override
 	protected void doAfterExecute() {
-		for (String namespace : logics.keySet()) {
-			Map<String, Logic> ls = logics.get(namespace);
-			for (String name : ls.keySet()) {
-				ls.get(name).destroy();
+		for (Map<String, Logic> logics : this.logics.values()) {
+			for (Logic logic : logics.values()) {
+				logic.destroy();
 			}
 		}
 		logics.clear();
@@ -96,76 +143,4 @@ public abstract class AbstractBusinessCrawlerTask extends AbstractDatabaseCrawle
 		super.doAfterExecute();
 	}
 
-	/**
-	 * ロジックを取得する。
-	 * 
-	 * @param aName ロジック名
-	 * @return ロジック
-	 * @throws BusinessServiceException ビジネスサービス層に起因する問題が発生した場合
-	 */
-	protected final Logic getLogic(final String aName) throws BusinessServiceException {
-		return getLogic(StringUtility.EMPTY, aName);
-	}
-
-	/**
-	 * ロジックを取得する。
-	 * 
-	 * @param aNamespace 名前空間
-	 * @param aName ロジック名
-	 * @return ロジック
-	 * @throws BusinessServiceException ビジネスサービス層に起因する問題が発生した場合
-	 */
-	protected final Logic getLogic(final String aNamespace, final String aName) throws BusinessServiceException {
-		Logic logic = null;
-		try {
-
-			Map<String, Logic> ls = null;
-			if (logics.containsKey(aNamespace)) {
-				ls = logics.get(aNamespace);
-			} else {
-				ls = new HashMap<String, Logic>();
-				logics.put(aNamespace, ls);
-			}
-
-			if (ls.containsKey(aName)) {
-				logic = ls.get(aName);
-			} else {
-				logic = LogicManager.create(aNamespace, aName);
-				if (null != logic) {
-					doLogicSupport(logic);
-					logic.initialize();
-				}
-				ls.put(aName, logic);
-			}
-
-		} catch (SQLException ex) {
-			throw new BusinessServiceException(ex);
-		}
-		return logic;
-	}
-
-	/**
-	 * ロジックにサポートを行う。
-	 * <p>
-	 * ロジックに新機能を追加したい場合、このメソッドをオーバーライドしスーパークラスの同メソッドを呼び出した後に追加機能をサポートすること。
-	 * </p>
-	 * 
-	 * @param aLogic ロジック
-	 * @throws SQLException SQL操作時に問題が発生した場合
-	 */
-	protected void doLogicSupport(final Logic aLogic) throws SQLException {
-		if (aLogic instanceof ContextSupport) {
-			((ContextSupport) aLogic).setContext(getContext());
-		}
-		if (aLogic instanceof PropertySupport) {
-			Property property = PropertyManager.get(aLogic.getClass());
-			if (null == property) {
-				property = PropertyManager.load(aLogic.getClass(), getContext());
-			}
-			((PropertySupport) aLogic).setProperty(property);
-		}
-		if (aLogic instanceof DatabaseConnectionSupport) {
-			((DatabaseConnectionSupport) aLogic).setConnection(getConnection());
-		}
-	}
 }

@@ -32,7 +32,7 @@ import org.azkfw.crawler.server.CrawlerManagerServer;
 import org.azkfw.crawler.thread.BasicCrawlerThread;
 import org.azkfw.crawler.thread.CrawlerThread;
 import org.azkfw.crawler.thread.CrawlerThread.Status;
-import org.azkfw.lang.LoggingObject;
+import org.azkfw.log.LoggingObject;
 import org.azkfw.plugin.PluginManager;
 import org.azkfw.plugin.PluginServiceException;
 import org.azkfw.util.StringUtility;
@@ -224,8 +224,8 @@ public class CrawlerServer extends LoggingObject {
 		if (StringUtility.isNotEmpty(pluginFile)) {
 			InputStream stream = context.getResourceAsStream(pluginFile);
 			if (null != stream) {
-				PluginManager.initialize();
-				PluginManager.load(stream, context);
+				PluginManager.getInstance().initialize();
+				PluginManager.getInstance().load(stream, context);
 			} else {
 				fatal("Not found plugin file.[" + pluginFile + "]");
 			}
@@ -235,7 +235,7 @@ public class CrawlerServer extends LoggingObject {
 	}
 
 	private void release() {
-		PluginManager.destroy();
+		PluginManager.getInstance().destroy();
 	}
 
 	/**

@@ -19,9 +19,8 @@ package org.azkfw.crawler.task;
 
 import java.sql.SQLException;
 
-import org.azkfw.persistence.database.DatabaseConnection;
-import org.azkfw.persistence.database.DatabaseConnectionManager;
-import org.azkfw.persistence.database.DatabaseSource;
+import org.azkfw.business.database.DatabaseConnection;
+import org.azkfw.database.DatabaseManager;
 
 /**
  * このクラスは、データベース機能を実装するクローラタスククラスです。
@@ -32,86 +31,52 @@ import org.azkfw.persistence.database.DatabaseSource;
  */
 public abstract class AbstractDatabaseCrawlerTask extends AbstractPersistenceCrawlerTask {
 
-	/**
-	 * データベースソース
-	 */
-	private DatabaseSource source;
-
-	/**
-	 * コネクション
-	 */
-	private DatabaseConnection myConnection;
+	/** Database */
+	private DatabaseConnection connection;
 
 	/**
 	 * コンストラクタ
 	 */
 	public AbstractDatabaseCrawlerTask() {
-		super();
+
 	}
 
 	/**
 	 * コンストラクタ
 	 * 
-	 * @param aName Name
+	 * @param name 名前
 	 */
-	public AbstractDatabaseCrawlerTask(final String aName) {
-		super(aName);
+	public AbstractDatabaseCrawlerTask(final String name) {
+		super(name);
 	}
 
 	/**
 	 * コンストラクタ
 	 * 
-	 * @param aClass Class
+	 * @param clazz クラス
 	 */
-	public AbstractDatabaseCrawlerTask(final Class<?> aClass) {
-		super(aClass);
-	}
-
-	@Override
-	protected void doBeforeExecute() {
-		super.doBeforeExecute();
-
-	}
-
-	@Override
-	protected void doAfterExecute() {
-		try {
-			if (null != myConnection) {
-				myConnection.getConnection().commit();
-			}
-		} catch (SQLException ex) {
-			fatal(ex);
-		}
-		if (null != source && null != myConnection) {
-			try {
-				source.returnConnection(myConnection);
-			} catch (SQLException ex) {
-				warn(ex);
-			}
-			myConnection = null;
-			source = null;
-		}
-
-		super.doAfterExecute();
+	public AbstractDatabaseCrawlerTask(final Class<?> clazz) {
+		super(clazz);
 	}
 
 	/**
 	 * コネクションを取得する。
 	 * 
 	 * @return コネクション
-	 * @throws SQL実行時に問題が発生した場合
+	 * @throws SQLException SQL操作に起因する問題が発生した場合
 	 */
 	protected final DatabaseConnection getConnection() throws SQLException {
-		if (null == myConnection) {
-			source = DatabaseConnectionManager.getSource();
-			myConnection = source.getConnection();
-			if (null != myConnection) {
-				myConnection.getConnection().setAutoCommit(false);
+		try {
+			if (null == connection) {
+				connection = new DatabaseConnection(DatabaseManager.getInstance().getConnection());
+				connection.getConnection().setAutoCommit(false);
 			}
+		} catch (SQLException ex) {
+			throw ex;
 		}
-		return myConnection;
+		return connection;
 	}
-
+	
 	/**
 	 * コミット処理を行う。
 	 * 
@@ -134,5 +99,31 @@ public abstract class AbstractDatabaseCrawlerTask extends AbstractPersistenceCra
 		if (null != connection) {
 			connection.getConnection().rollback();
 		}
+	}
+
+	@Override
+	protected void doBeforeExecute() {
+		super.doBeforeExecute();
+		// TODO Write doBeforeExecute code.
+
+	}
+
+	@Override
+	protected void doAfterExecute() {
+		if (null != connection) {
+			try {
+				connection.getConnection().commit();
+			} catch (SQLException ex) {
+				fatal(ex);
+			}
+			try {
+				connection.getConnection().close();
+			} catch (SQLException ex) {
+				fatal(ex);
+			}
+			connection = null;
+		}
+
+		super.doAfterExecute();
 	}
 }

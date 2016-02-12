@@ -23,7 +23,7 @@ import java.net.InetSocketAddress;
 
 import org.azkfw.crawler.CrawlerServer;
 import org.azkfw.crawler.config.CrawlerConfig.CrawlerControllerConfig;
-import org.azkfw.lang.LoggingObject;
+import org.azkfw.log.LoggingObject;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;

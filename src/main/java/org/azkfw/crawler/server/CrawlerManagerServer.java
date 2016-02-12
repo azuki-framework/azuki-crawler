@@ -42,7 +42,7 @@ import org.azkfw.crawler.task.support.CrawlerTaskStateSupport;
 import org.azkfw.crawler.thread.CrawlerTaskLog;
 import org.azkfw.crawler.thread.CrawlerThread;
 import org.azkfw.crawler.thread.CrawlerThread.Status;
-import org.azkfw.lang.LoggingObject;
+import org.azkfw.log.LoggingObject;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;

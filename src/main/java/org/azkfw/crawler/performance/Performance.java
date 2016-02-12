@@ -17,7 +17,7 @@
  */
 package org.azkfw.crawler.performance;
 
-import org.azkfw.lang.LoggingObject;
+import org.azkfw.log.LoggingObject;
 
 /**
  * このクラスは、パフォーマンス計測を行うクラスです。

@@ -17,7 +17,7 @@
  */
 package org.azkfw.crawler.downloader.engine;
 
-import org.azkfw.lang.LoggingObject;
+import org.azkfw.log.LoggingObject;
 
 /**
  * このクラスは、ダウンロードエンジンを定義するための基底クラスです。
